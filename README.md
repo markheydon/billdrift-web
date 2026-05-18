@@ -38,6 +38,9 @@ Future versions will expand automation and provider integrations.
 
 ## Roadmap
 
+See the live roadmap here:
+👉 [BillDrift Roadmap](https://github.com/users/markheydon/projects/11/views/1)
+
 - [ ] Core domain model & reconciliation engine
 - [ ] PDF ingestion (Giacom)
 - [ ] Stripe CSV ingestion
