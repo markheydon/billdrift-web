@@ -1,6 +1,0 @@
-{
-  "appHost": {
-    "path": "BillDrift.AppHost/BillDrift.AppHost.csproj"
-  },
-  "channel": "stable"
-}

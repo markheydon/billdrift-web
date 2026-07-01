@@ -1,0 +1,7 @@
+{
+  "appHost": {
+    "path": "src/BillDrift.AppHost/BillDrift.AppHost.csproj",
+    "language": "csharp"
+  },
+  "channel": "stable"
+}
