@@ -93,16 +93,6 @@
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
 
-### Constitution Alignment *(mandatory for BillDrift)*
-
-Map feature requirements to `.specify/memory/constitution.md` principles:
-
-- **Code Quality (I)**: [module boundaries, complexity notes]
-- **Testing (II)**: [required test types, fixtures, billing-critical paths]
-- **UX Consistency (III)**: [terminology, approval flow, error/empty states]
-- **Security (IV)**: [secrets, authz, upload validation, audit events]
-- **Human Control (V)**: [deterministic reconciliation, dry-run, no silent Stripe writes]
-
 *Example of marking unclear requirements:*
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]

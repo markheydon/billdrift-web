@@ -40,17 +40,7 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-Verify compliance with `.specify/memory/constitution.md` (BillDrift v1.0.0):
-
-| Principle | Gate Question | Pass? |
-|-----------|---------------|-------|
-| I. Code Quality | Are module boundaries clear (ingestion / reconciliation / approval / Stripe actions)? Is added complexity justified in Complexity Tracking? | ☐ |
-| II. Testing | Are unit, integration, and contract tests planned for billing-critical paths with fixtures? | ☐ |
-| III. UX Consistency | Are discrepancy views, approval flows, and error states defined with consistent terminology? | ☐ |
-| IV. Security | Are secrets, authz, file validation, audit logging, and dependency risks addressed? | ☐ |
-| V. Human Control | Are reconciliation rules deterministic? Is dry-run required before Stripe writes? Is auto-apply excluded? | ☐ |
-
-Any unchecked gate MUST be resolved or documented as a justified violation in Complexity Tracking.
+[Gates determined based on constitution file]
 
 ## Project Structure
 
