@@ -1,0 +1,15 @@
+[
+  {
+    "mexIdRaw": "MEX10001",
+    "productNameRaw": "365 Business Basic",
+    "quantityRaw": "10",
+    "chargeTypeRaw": "Recurring",
+    "periodStartRaw": "01/01/2026",
+    "periodEndRaw": "31/01/2026",
+    "lineCostRaw": "120.00",
+    "supplierReferenceIds": [
+      "REF-1001"
+    ],
+    "sourceLineKey": "REF-1001"
+  }
+]

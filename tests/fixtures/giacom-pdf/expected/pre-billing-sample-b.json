@@ -1,0 +1,28 @@
+[
+  {
+    "mexIdRaw": "MEX10003",
+    "productNameRaw": "Teams Essentials",
+    "quantityRaw": "3",
+    "chargeTypeRaw": "Recurring",
+    "periodStartRaw": "01/02/2026",
+    "periodEndRaw": "28/02/2026",
+    "lineCostRaw": "45.00",
+    "supplierReferenceIds": [
+      "REF-3001"
+    ],
+    "sourceLineKey": "REF-3001"
+  },
+  {
+    "mexIdRaw": "MEX10003",
+    "productNameRaw": "Backup Add-on",
+    "quantityRaw": "3",
+    "chargeTypeRaw": "Adjustment",
+    "periodStartRaw": "15/02/2026",
+    "periodEndRaw": "28/02/2026",
+    "lineCostRaw": "-5.00",
+    "supplierReferenceIds": [
+      "REF-3002"
+    ],
+    "sourceLineKey": "REF-3002"
+  }
+]
