@@ -2,10 +2,11 @@ using BillDrift.Infrastructure.Import.Giacom.Internal;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
-public static class LineKeyResolver
+internal static class LineKeyResolver
 {
     public static string Resolve(ParsedProductLine line)
     {
+        // Prefer the first non-empty supplier reference; otherwise fall back to positional key for idempotency.
         var reference = line.SupplierReferenceIds.FirstOrDefault(r => !string.IsNullOrWhiteSpace(r));
         if (!string.IsNullOrWhiteSpace(reference))
         {

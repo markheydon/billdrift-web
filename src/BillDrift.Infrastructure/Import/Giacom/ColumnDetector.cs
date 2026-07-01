@@ -1,10 +1,10 @@
-using System.Text.RegularExpressions;
 using BillDrift.Infrastructure.Import.Giacom.Internal;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
-public static class ColumnDetector
+internal static class ColumnDetector
 {
+    // Maps header tokens to logical column names; aliases tolerate Giacom label drift across report variants.
     private static readonly Dictionary<string, string[]> HeaderAliases = new(StringComparer.OrdinalIgnoreCase)
     {
         ["ProductName"] = ["Product", "Description", "Product Name"],
@@ -49,6 +49,7 @@ public static class ColumnDetector
         var definitions = new List<ColumnDefinition>();
         for (var i = 0; i < columnCenters.Count; i++)
         {
+            // Column X-ranges are midpoints between adjacent header centers; outer columns extend by a fixed margin.
             var minX = i == 0
                 ? columnCenters[i].CenterX - GiacomIngestionLimits.OuterColumnExtensionPoints
                 : (columnCenters[i - 1].CenterX + columnCenters[i].CenterX) / 2;
@@ -57,6 +58,7 @@ public static class ColumnDetector
                 ? columnCenters[i].CenterX + GiacomIngestionLimits.OuterColumnExtensionPoints
                 : (columnCenters[i].CenterX + columnCenters[i + 1].CenterX) / 2;
 
+            // Product name column absorbs wrapped text — keep it wide by stopping before the next column center.
             if (columnCenters[i].Name == "ProductName" && i + 1 < columnCenters.Count)
             {
                 maxX = columnCenters[i + 1].CenterX - 5;
@@ -70,6 +72,7 @@ public static class ColumnDetector
 
     private static PdfTextLine? FindHeaderLine(IReadOnlyList<PdfTextLine> lines)
     {
+        // Scan the first three pages for a row with at least three recognized header aliases.
         var pages = lines.Select(l => l.PageNumber).Distinct().OrderBy(p => p).Take(3);
         foreach (var page in pages)
         {

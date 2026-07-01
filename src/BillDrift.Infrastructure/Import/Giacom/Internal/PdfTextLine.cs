@@ -1,6 +1,6 @@
 namespace BillDrift.Infrastructure.Import.Giacom.Internal;
 
-public sealed record PdfTextLine(
+internal sealed record PdfTextLine(
     IReadOnlyList<PdfWord> Words,
     int PageNumber,
     double BaselineY,

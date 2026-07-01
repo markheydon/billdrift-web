@@ -3,8 +3,9 @@ using BillDrift.Infrastructure.Import.Giacom.Internal;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
-public static class CustomerBlockSegmenter
+internal static class CustomerBlockSegmenter
 {
+    // Mex ID appears as a labeled field or standalone token (MEX#####).
     private static readonly Regex MexIdToken = new(@"MEX\d+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex MexIdLabel = new(@"(?i)(?:mex\s*id|sub\s*account)\s*:?\s*(MEX\d+)", RegexOptions.Compiled);
     private static readonly Regex CustomerLabel = new(@"(?i)customer(?:\s*name)?\s*:\s*(.+?)(?:\s+mex|\s*$)", RegexOptions.Compiled);
@@ -32,6 +33,7 @@ public static class CustomerBlockSegmenter
                 continue;
             }
 
+            // Standalone Mex ID on a short line — customer name is usually on the preceding row.
             if (MexIdToken.IsMatch(line.Text) && line.Text.Trim().Length <= 20)
             {
                 mexId = MexIdToken.Match(line.Text).Value;
@@ -87,6 +89,7 @@ public static class CustomerBlockSegmenter
             return labelMatch.Groups[1].Value.Trim();
         }
 
+        // Text before "Mex ID" on the same line when no explicit label is present.
         var beforeMex = Regex.Split(text, @"(?i)mex\s*id")[0].Trim();
         if (!string.IsNullOrWhiteSpace(beforeMex) && !beforeMex.Contains(':'))
         {
@@ -118,6 +121,7 @@ public static class CustomerBlockSegmenter
             return true;
         }
 
+        // Repeated column header rows inside multi-page blocks.
         var lower = text.ToLowerInvariant();
         return lower.Contains("product") && lower.Contains("qty") && lower.Contains("cost");
     }

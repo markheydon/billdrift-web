@@ -5,7 +5,7 @@ using BillDrift.Infrastructure.Import.Giacom.Internal;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
-public sealed class RawGiacomBillingLineMapper
+internal sealed class RawGiacomBillingLineMapper
 {
     public sealed record MapResult(
         RawGiacomBillingLine? Line,
@@ -18,6 +18,7 @@ public sealed class RawGiacomBillingLineMapper
         string sourceDocumentId,
         DateTimeOffset extractedAt)
     {
+        // Line-level skip tier: missing quantity or cost prevents RawGiacomBillingLine emission.
         if (string.IsNullOrWhiteSpace(parsedLine.QuantityRaw))
         {
             return Skip(parsedLine, block, sourceDocumentId, IngestionFailureReason.QuantityUnparseable,

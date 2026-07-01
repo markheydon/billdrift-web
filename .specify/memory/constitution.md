@@ -1,20 +1,17 @@
 <!--
 Sync Impact Report
 ==================
-Version change: (template) → 1.0.0
-Modified principles: N/A (initial adoption)
-Added sections:
-  - Core Principles (5 principles)
-  - Domain Constraints
-  - Development Workflow & Quality Gates
-  - Governance
+Version change: 1.0.0 → 1.1.0
+Modified principles:
+  - I. Code Quality & Maintainability → expanded with mandatory code commenting rules
+Added sections: None
 Removed sections: None
 Templates requiring updates:
-  - .specify/templates/plan-template.md ✅ updated
-  - .specify/templates/spec-template.md ✅ updated
-  - .specify/templates/tasks-template.md ✅ updated
+  - .specify/templates/plan-template.md ✅ no change (Constitution Check filled dynamically)
+  - .specify/templates/spec-template.md ✅ no change (no comment-specific constraints)
+  - .specify/templates/tasks-template.md ✅ updated (Polish phase comment verification)
   - .specify/templates/commands/*.md — N/A (no command files present)
-  - README.md — no changes required (aligned with domain description)
+  - README.md ✅ no changes required
 Follow-up TODOs: None
 -->
 
@@ -31,6 +28,15 @@ open-source billing-reconciliation tool.
   actions) MUST live in well-named modules with single, explicit responsibilities.
 - Public interfaces between modules MUST be typed and documented; implicit coupling
   across ingestion sources (Giacom PDF, Stripe CSV/API) is prohibited.
+- Code comments are REQUIRED, not optional. Every module, public interface, and
+  non-trivial algorithm MUST include comments that explain intent, business rules,
+  and non-obvious behavior.
+- Billing and reconciliation logic (comparison rules, tolerance handling, field
+  mapping, parser assumptions, Stripe mutation semantics) MUST be commented so
+  operators and contributors can verify correctness without reverse-engineering.
+- Comments MUST explain why a decision was made, not merely restate what the code
+  does; redundant comments that duplicate obvious code are discouraged, but
+  absence of required comments is prohibited.
 - Linting and formatting MUST pass in CI before merge; style drift is not accepted.
 - Complexity beyond the simplest working design MUST be documented in the feature plan
   Complexity Tracking table with rejected alternatives.
@@ -38,7 +44,8 @@ open-source billing-reconciliation tool.
 
 **Rationale**: Billing drift resolution depends on trustworthy, inspectable logic.
 Maintainable code reduces the risk of silent reconciliation errors and lowers the
-barrier for community contribution.
+barrier for community contribution. Mandatory comments make billing rules auditable
+and reduce reliance on tribal knowledge when reconciling supplier data against Stripe.
 
 ### II. Testing Standards (NON-NEGOTIABLE)
 
@@ -144,8 +151,9 @@ while removing manual work—not to replace operator judgment with silent automa
 - Pull requests MUST not merge with failing CI, missing tests for billing-critical
   changes, or unresolved security findings above the project's accepted threshold.
 - Code review MUST explicitly confirm: reconciliation correctness, approval/dry-run
-  paths for Stripe writes, secret handling, and UX consistency for operator-facing
-  flows.
+  paths for Stripe writes, secret handling, UX consistency for operator-facing
+  flows, and adequate code comments on new or modified billing-critical logic,
+  public interfaces, and non-obvious implementation choices.
 - New ingestion sources or Stripe write capabilities MUST include fixture data,
   contract tests, and operator-facing documentation before release.
 - Runtime development guidance lives in feature `quickstart.md` files and `README.md`;
@@ -171,4 +179,4 @@ clarifications and non-semantic wording.
 **Compliance review**: Feature specs, plans, and tasks generated via Spec Kit MUST be
 reviewed against this constitution before implementation begins and again before merge.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-26 | **Last Amended**: 2026-06-26
+**Version**: 1.1.0 | **Ratified**: 2026-06-26 | **Last Amended**: 2026-07-01

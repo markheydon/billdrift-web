@@ -1,6 +1,6 @@
 namespace BillDrift.Infrastructure.Import.Giacom.Internal;
 
-public sealed record ParsedProductLine(
+internal sealed record ParsedProductLine(
     int BlockIndex,
     int LineIndex,
     int PageNumber,

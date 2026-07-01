@@ -277,8 +277,17 @@ dotnet_diagnostic.CA1062.severity = none
 dotnet_diagnostic.CA1848.severity = suggestion
 
 # CS1591: Missing XML comment for publicly visible type or member
-#         Suppressed until full API documentation is in place
+#         Enforced as error on Domain, Application, and Infrastructure (constitution Principle I)
 dotnet_diagnostic.CS1591.severity = none
+
+[src/BillDrift.Domain/**/*.cs]
+dotnet_diagnostic.CS1591.severity = error
+
+[src/BillDrift.Application/**/*.cs]
+dotnet_diagnostic.CS1591.severity = error
+
+[src/BillDrift.Infrastructure/**/*.cs]
+dotnet_diagnostic.CS1591.severity = error
 
 # ──────────────────────────────────────
 # Test project overrides

@@ -2,7 +2,7 @@ using BillDrift.Application.Import;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
-public static class ReportClassifier
+internal static class ReportClassifier
 {
     private static readonly string[] PreBillingMarkers =
     [
@@ -21,6 +21,7 @@ public static class ReportClassifier
 
     public static GiacomReportType Classify(IReadOnlyList<string> firstPageLines)
     {
+        // Classification uses first-page text only; unknown markers do not fail ingestion.
         var text = string.Join('\n', firstPageLines).ToLowerInvariant();
 
         if (PreBillingMarkers.Any(text.Contains))
