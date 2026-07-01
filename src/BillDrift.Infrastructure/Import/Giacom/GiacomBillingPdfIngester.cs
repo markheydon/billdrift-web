@@ -4,12 +4,44 @@ using BillDrift.Infrastructure.Import.Giacom.Internal;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
+/// <summary>
+/// Orchestrates the Giacom supplier billing PDF ingestion pipeline from stream intake through
+/// <see cref="RawGiacomBillingLine"/> emission.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Pipeline stages (sequential):
+/// intake → classification → extraction → column detection → block segmentation →
+/// line parsing → name merge → mapping → output assembly → logging.
+/// </para>
+/// <para>
+/// <b>Report types:</b> classifies first-page text as
+/// <see cref="GiacomReportType.PreBilling"/> (estimate / pre-billing markers) or
+/// <see cref="GiacomReportType.PostBilling"/> (invoice / post-billing markers);
+/// continues with <see cref="GiacomReportType.Unknown"/> when markers are absent.
+/// </para>
+/// <para>
+/// <b>Deterministic identity:</b> <see cref="GiacomPdfIngestionResult.SourceDocumentId"/> is the
+/// lowercase SHA-256 hex digest of the PDF bytes, stable across re-import of identical content.
+/// Each emitted line receives a <c>RawImportId</c> derived from that document id and a resolved line key.
+/// </para>
+/// <para>
+/// <b>Partial failure tiers:</b> skip line (unparseable quantity/cost), skip block (missing Mex ID
+/// or customer name), fail document (empty stream, size/page limits, encrypted PDF, unreadable text,
+/// or all blocks skipped). Valid lines are emitted even when siblings are skipped.
+/// </para>
+/// <para>
+/// <b>Non-authoritative supplier data:</b> extraction only — no Offer/SKU mapping, normalization,
+/// or Stripe writes. Downstream <c>IGiacomBillingNormalizer</c> handles authoritative billing records.
+/// </para>
+/// </remarks>
 public sealed class GiacomBillingPdfIngester : IGiacomBillingPdfIngester
 {
     private readonly PdfTextExtractor _textExtractor = new();
     private readonly ProductLineParser _lineParser = new();
     private readonly RawGiacomBillingLineMapper _lineMapper = new();
 
+    /// <inheritdoc />
     public GiacomPdfIngestionResult Ingest(Stream pdfStream, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pdfStream);

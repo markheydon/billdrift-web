@@ -3,7 +3,7 @@ using BillDrift.Infrastructure.Import.Giacom.Internal;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
-public sealed class ProductLineParser
+internal sealed class ProductLineParser
 {
     private static readonly Regex PeriodRangePattern = new(
         @"(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\s*(?:-|to)\s*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})",
@@ -73,6 +73,7 @@ public sealed class ProductLineParser
 
         foreach (var word in line.Words)
         {
+            // Assign each word to a column by horizontal center; unmatched words spill into product name.
             var centerX = word.X + (word.Width / 2);
             var column = ResolveColumn(centerX, columns);
             if (column is null)
@@ -104,6 +105,7 @@ public sealed class ProductLineParser
             return null;
         }
 
+        // Overlapping ranges (e.g. wide product column) — prefer the rightmost matching column.
         return matches.Count == 1
             ? matches[0]
             : matches.OrderByDescending(c => c.MinX).First();
@@ -117,6 +119,7 @@ public sealed class ProductLineParser
             return fields;
         }
 
+        // Some PDFs glue period text and cost into one column cell (e.g. "01/01/2024-31/01/2024120.00").
         var match = Regex.Match(fields.PeriodRaw, @"^(?<period>.+?)(?<cost>-?\d+\.\d{2})$");
         if (!match.Success)
         {
@@ -132,6 +135,7 @@ public sealed class ProductLineParser
 
     internal static bool IsProductLineCandidate(FieldValues fields)
     {
+        // Require at least two populated numeric/text fields to distinguish product rows from noise.
         var populated = 0;
         if (!string.IsNullOrWhiteSpace(fields.ProductNameRaw))
         {

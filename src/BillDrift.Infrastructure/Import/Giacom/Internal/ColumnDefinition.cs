@@ -1,6 +1,6 @@
 namespace BillDrift.Infrastructure.Import.Giacom.Internal;
 
-public sealed record ColumnDefinition(
+internal sealed record ColumnDefinition(
     string Name,
     double MinX,
     double MaxX)

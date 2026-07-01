@@ -2,7 +2,7 @@ using BillDrift.Infrastructure.Import.Giacom.Internal;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
-public static class ProductNameMerger
+internal static class ProductNameMerger
 {
     public static IReadOnlyList<ParsedProductLine> Merge(IReadOnlyList<ParsedProductLine> lines)
     {
@@ -16,6 +16,7 @@ public static class ProductNameMerger
 
         foreach (var line in lines)
         {
+            // Continuation rows carry only wrapped product name text — append to the preceding product line.
             var isContinuation = string.IsNullOrWhiteSpace(line.QuantityRaw) &&
                                  string.IsNullOrWhiteSpace(line.LineCostRaw) &&
                                  !string.IsNullOrWhiteSpace(line.ProductNameRaw) &&

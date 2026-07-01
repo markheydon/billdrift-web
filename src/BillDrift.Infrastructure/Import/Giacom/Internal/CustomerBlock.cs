@@ -1,6 +1,6 @@
 namespace BillDrift.Infrastructure.Import.Giacom.Internal;
 
-public sealed record CustomerBlock(
+internal sealed record CustomerBlock(
     int BlockIndex,
     int PageNumber,
     string? CustomerNameRaw,

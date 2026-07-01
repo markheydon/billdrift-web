@@ -1,6 +1,6 @@
 {
   "integration": "speckit",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "installed_at": "2026-06-26T17:30:38.739000+00:00",
   "files": {
     ".specify/scripts/powershell/common.ps1": "1d64eef3a96d92ade478af5cdc8494791fd62f70961ce0187ea2e057a2aa2b65",

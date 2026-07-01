@@ -2,11 +2,10 @@ using BillDrift.Application.Import;
 using BillDrift.Infrastructure.Import.Giacom.Internal;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Exceptions;
-using UglyToad.PdfPig.Content;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
-public sealed class PdfTextExtractor
+internal sealed class PdfTextExtractor
 {
     public sealed record ExtractionResult(
         IReadOnlyList<PdfTextLine> Lines,
@@ -68,6 +67,7 @@ public sealed class PdfTextExtractor
 
     private static List<PdfTextLine> GroupWordsOnPage(IReadOnlyList<PdfWord> words)
     {
+        // Sort top-to-bottom (descending Y), then left-to-right for reading order.
         var sorted = words
             .OrderByDescending(w => w.Y)
             .ThenBy(w => w.X)
@@ -85,6 +85,7 @@ public sealed class PdfTextExtractor
         for (var i = 1; i < sorted.Count; i++)
         {
             var word = sorted[i];
+            // Words within Y tolerance belong to the same visual line.
             if (Math.Abs(word.Y - clusterY) <= GiacomIngestionLimits.LineGroupingYTolerance)
             {
                 currentCluster.Add(word);

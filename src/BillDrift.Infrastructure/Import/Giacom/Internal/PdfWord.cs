@@ -1,6 +1,6 @@
 namespace BillDrift.Infrastructure.Import.Giacom.Internal;
 
-public sealed record PdfWord(
+internal sealed record PdfWord(
     string Text,
     double X,
     double Y,
