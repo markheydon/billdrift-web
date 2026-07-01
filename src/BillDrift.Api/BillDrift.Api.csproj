@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BillDrift.Application\BillDrift.Application.csproj" />
+    <ProjectReference Include="..\BillDrift.Infrastructure\BillDrift.Infrastructure.csproj" />
     <ProjectReference Include="..\BillDrift.ServiceDefaults\BillDrift.ServiceDefaults.csproj" />
   </ItemGroup>
 

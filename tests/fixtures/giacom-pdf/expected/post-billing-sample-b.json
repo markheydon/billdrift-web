@@ -1,0 +1,15 @@
+[
+  {
+    "mexIdRaw": "MEX10004",
+    "productNameRaw": "365 E3",
+    "quantityRaw": "2",
+    "chargeTypeRaw": "Recurring",
+    "periodStartRaw": "01/03/2026",
+    "periodEndRaw": "31/03/2026",
+    "lineCostRaw": "200.00",
+    "supplierReferenceIds": [
+      "REF-4001"
+    ],
+    "sourceLineKey": "REF-4001"
+  }
+]

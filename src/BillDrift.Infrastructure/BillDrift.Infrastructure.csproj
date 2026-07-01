@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="PdfPig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BillDrift.Application\BillDrift.Application.csproj" />
     <ProjectReference Include="..\BillDrift.Domain\BillDrift.Domain.csproj" />
   </ItemGroup>
