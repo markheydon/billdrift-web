@@ -1,0 +1,39 @@
+{
+  "customer": {
+    "customerId": "cus_test123",
+    "name": "Contoso Ltd",
+    "metadata": { "mex_id": "MEX12345" }
+  },
+  "subscription": {
+    "subscriptionId": "sub_test456",
+    "customerId": "cus_test123",
+    "status": "active",
+    "metadata": { "mex_id": "MEX12345" }
+  },
+  "subscriptionItem": {
+    "subscriptionItemId": "si_test789",
+    "subscriptionId": "sub_test456",
+    "priceId": "price_test111",
+    "productId": "prod_test222",
+    "quantity": 5,
+    "metadata": {
+      "mex_id": "MEX12345",
+      "offer_id": "OFFER-MS365-BB",
+      "sku_id": "SKU-MS365-BB"
+    }
+  },
+  "product": {
+    "productId": "prod_test222",
+    "name": "Microsoft 365 Business Basic",
+    "metadata": {}
+  },
+  "price": {
+    "priceId": "price_test111",
+    "productId": "prod_test222",
+    "unitAmount": 1200,
+    "currency": "gbp",
+    "recurringInterval": "month",
+    "recurringIntervalCount": 1,
+    "metadata": {}
+  }
+}

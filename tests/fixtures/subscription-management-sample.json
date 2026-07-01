@@ -1,0 +1,20 @@
+{
+  "id": {
+    "sourceKind": "GiacomSubscriptionManagement",
+    "sourceDocumentId": "sub-mgmt-2026-01.csv",
+    "sourceLineKey": "row-15"
+  },
+  "customerNameRaw": "Contoso Ltd",
+  "mexIdRaw": "MEX12345",
+  "tenantIdRaw": "tenant-abc-123",
+  "offerIdRaw": "OFFER-MS365-BB",
+  "skuIdRaw": "SKU-MS365-BB",
+  "licencesRaw": "10",
+  "termRaw": "Annual",
+  "frequencyRaw": "Monthly",
+  "renewalDateRaw": "2027-01-01",
+  "statusRaw": "Active",
+  "supplierSubscriptionIdRaw": "SUB-GIACOM-99",
+  "sourceDocumentId": "sub-mgmt-2026-01.csv",
+  "rowNumber": 15
+}

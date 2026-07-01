@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="src/BillDrift.Api/BillDrift.Api.csproj" />
+  <Project Path="src/BillDrift.AppHost/BillDrift.AppHost.csproj" />
+  <Project Path="src/BillDrift.Application/BillDrift.Application.csproj" />
+  <Project Path="src/BillDrift.Domain/BillDrift.Domain.csproj" />
+  <Project Path="src/BillDrift.Infrastructure/BillDrift.Infrastructure.csproj" />
+  <Project Path="src/BillDrift.ServiceDefaults/BillDrift.ServiceDefaults.csproj" />
+  <Project Path="src/BillDrift.Web/BillDrift.Web.csproj" />
+  <Project Path="tests/BillDrift.AppHost.Tests/BillDrift.AppHost.Tests.csproj" />
+  <Project Path="tests/BillDrift.Application.Tests/BillDrift.Application.Tests.csproj" />
+  <Project Path="tests/BillDrift.Domain.Tests/BillDrift.Domain.Tests.csproj" />
+</Solution>

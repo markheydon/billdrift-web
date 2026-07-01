@@ -1,0 +1,18 @@
+{
+  "id": {
+    "sourceKind": "GiacomPriceList",
+    "sourceDocumentId": "ResellerPricingVsRRP.csv",
+    "sourceLineKey": "row-200"
+  },
+  "offerIdRaw": "OFFER-MS365-BB",
+  "skuIdRaw": "SKU-MS365-BB",
+  "termRaw": "Annual",
+  "frequencyRaw": "Monthly",
+  "wholesaleRaw": "8.50",
+  "rrpRaw": "12.00",
+  "marginRaw": "3.50",
+  "marginPercentRaw": "29.17",
+  "statusRaw": "Active",
+  "sourceDocumentId": "ResellerPricingVsRRP.csv",
+  "rowNumber": 200
+}
