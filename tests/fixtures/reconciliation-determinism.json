@@ -1,0 +1,4 @@
+{
+  "description": "Determinism test inputs snapshot reference",
+  "runScope": { "start": "2026-01-01", "end": "2026-01-31" }
+}

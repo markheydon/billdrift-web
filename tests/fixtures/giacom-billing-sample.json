@@ -1,0 +1,17 @@
+{
+  "id": {
+    "sourceKind": "GiacomBillingPdf",
+    "sourceDocumentId": "billing-2026-01.pdf",
+    "sourceLineKey": "REF-1001"
+  },
+  "mexIdRaw": "MEX12345",
+  "productNameRaw": "Microsoft 365 Business Basic",
+  "quantityRaw": "10",
+  "chargeTypeRaw": "Recurring",
+  "periodStartRaw": "2026-01-01",
+  "periodEndRaw": "2026-01-31",
+  "lineCostRaw": "120.00",
+  "supplierReferenceIds": ["REF-1001", "LINE-42"],
+  "sourceDocumentId": "billing-2026-01.pdf",
+  "extractedAt": "2026-01-15T10:00:00Z"
+}

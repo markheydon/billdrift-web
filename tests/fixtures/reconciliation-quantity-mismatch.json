@@ -1,0 +1,7 @@
+{
+  "description": "Quantity mismatch scenario: subscription truth 10 licences, Stripe quantity 5",
+  "subscriptionLicenceCount": 10,
+  "stripeQuantity": 5,
+  "expectedMismatchType": "QuantityMismatch",
+  "expectedActionType": "UpdateQuantity"
+}
