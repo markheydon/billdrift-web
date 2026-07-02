@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.Azure.Storage" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BillDrift.Api\BillDrift.Api.csproj" />
     <ProjectReference Include="..\BillDrift.Web\BillDrift.Web.csproj" />
   </ItemGroup>

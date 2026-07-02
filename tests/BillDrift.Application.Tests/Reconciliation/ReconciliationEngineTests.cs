@@ -96,4 +96,29 @@ public class ReconciliationEngineTests
 
         run.Mismatches.Should().Contain(m => m.Type == MismatchType.MappingAmbiguous);
     }
+
+    [Fact]
+    public void Null_classification_context_preserves_legacy_engine_behaviour()
+    {
+        var inputs = ReconciliationTestDataBuilder.MissingInStripe();
+        var withoutClassification = CreateEngine().Execute(new ReconciliationRequest(
+            null,
+            ReconciliationTestDataBuilder.DefaultScope,
+            inputs,
+            Classifications: null));
+
+        var withEmptyClassification = CreateEngine().Execute(new ReconciliationRequest(
+            null,
+            ReconciliationTestDataBuilder.DefaultScope,
+            inputs,
+            Classifications: new BillDrift.Application.Classification.ClassificationContext(
+                new Dictionary<string, BillDrift.Domain.Classification.ItemClassification>(),
+                DateTimeOffset.UtcNow)));
+
+        withoutClassification.Mismatches.Should().Contain(m => m.Type == MismatchType.MissingInStripe);
+        withEmptyClassification.Mismatches.Should().Contain(m => m.Type == MismatchType.MissingInStripe);
+        withoutClassification.Mismatches.Select(m => m.Type)
+            .Should()
+            .BeEquivalentTo(withEmptyClassification.Mismatches.Select(m => m.Type));
+    }
 }

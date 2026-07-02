@@ -1,0 +1,21 @@
+---
+description: .NET build and quality requirements
+alwaysApply: true
+---
+
+# Build Quality
+
+Before considering any task complete:
+
+- Run `dotnet build`.
+- Resolve all build errors.
+- Resolve all build warnings.
+- Treat warnings as defects unless explicitly instructed otherwise.
+- Do not leave compiler warnings in generated code.
+- Verify all projects in the solution build successfully.
+
+Additionally, all testing should complete not just recently worked on tasks:
+
+- Run `dotnet test` with no restrictions on tests.
+- Resolve all failures unless  explicitly instructed otherwise.
+- Aspire AppHosts tests are no exception and should also be testing successfully.

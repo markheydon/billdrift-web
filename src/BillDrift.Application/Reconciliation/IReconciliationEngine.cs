@@ -1,3 +1,4 @@
+using BillDrift.Application.Classification;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
 
@@ -10,11 +11,13 @@ namespace BillDrift.Application.Reconciliation;
 /// <param name="Scope">Billing period that bounds which charges and subscriptions are in scope.</param>
 /// <param name="Inputs">Immutable snapshot of normalized supplier, subscription, Stripe, and price data.</param>
 /// <param name="Options">Optional flags and tolerances that control mismatch detection behaviour.</param>
+/// <param name="Classifications">Optional pre-computed item classifications; when null the engine uses legacy mapping behaviour.</param>
 public sealed record ReconciliationRequest(
     RunId? RunId,
     BillingPeriod Scope,
     ReconciliationInputs Inputs,
-    ReconciliationOptions? Options = null);
+    ReconciliationOptions? Options = null,
+    ClassificationContext? Classifications = null);
 
 /// <summary>
 /// Tuning parameters for mismatch detection and proposed-change generation during reconciliation.

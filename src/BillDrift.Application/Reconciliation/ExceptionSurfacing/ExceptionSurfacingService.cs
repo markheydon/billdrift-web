@@ -1,3 +1,4 @@
+using BillDrift.Application.Classification;
 using BillDrift.Application.Reconciliation.ExceptionSurfacing.Phases;
 using BillDrift.Domain.Reconciliation;
 
@@ -19,11 +20,20 @@ public sealed class ExceptionSurfacingService
     /// <param name="run">Completed reconciliation run (immutable).</param>
     /// <param name="options">Optional scope flags for derived detection; defaults applied when null.</param>
     /// <returns>Deterministic view model except for <see cref="ReconciliationExceptionViewModel.GeneratedAt"/>.</returns>
-    public ReconciliationExceptionViewModel Surface(ReconciliationRun run, ReconciliationOptions? options = null)
+    public ReconciliationExceptionViewModel Surface(ReconciliationRun run, ReconciliationOptions? options = null) =>
+        Surface(run, options, classifications: null);
+
+    /// <summary>
+    /// Surfaces operator-facing exceptions with optional classification context for SR-6 suppression.
+    /// </summary>
+    public ReconciliationExceptionViewModel Surface(
+        ReconciliationRun run,
+        ReconciliationOptions? options,
+        ClassificationContext? classifications)
     {
         ArgumentNullException.ThrowIfNull(run);
 
-        var context = new SurfacingContext(run, options);
+        var context = new SurfacingContext(run, options, classifications);
         _collect.Execute(context);
         _suppress.Execute(context);
         _consolidate.Execute(context);

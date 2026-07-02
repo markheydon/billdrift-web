@@ -1,3 +1,4 @@
+using BillDrift.Application.Classification;
 using BillDrift.Application.Reconciliation.Indexing;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
@@ -36,6 +37,9 @@ public sealed class ReconciliationContext
     /// <summary>Proposed corrective actions (append-only).</summary>
     public List<ProposedChange> ProposedChanges { get; } = [];
 
+    /// <summary>Item classifications for this run, when supplied or enriched.</summary>
+    public ClassificationContext? Classifications { get; set; }
+
     private int _mismatchSequence;
 
     /// <summary>
@@ -47,6 +51,7 @@ public sealed class ReconciliationContext
         Request = request;
         RunId = request.RunId ?? RunId.New();
         Options = request.Options ?? new ReconciliationOptions();
+        Classifications = request.Classifications;
     }
 
     /// <summary>
