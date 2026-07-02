@@ -1,0 +1,1 @@
+{ "scenario": "missing-in-stripe", "description": "Active subscription truth with no Stripe billing item" }

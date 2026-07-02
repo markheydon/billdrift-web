@@ -1,3 +1,4 @@
+using BillDrift.Application.Reconciliation;
 using BillDrift.Infrastructure.Import.Giacom;
 using BillDrift.Infrastructure.Import.Stripe;
 
@@ -8,6 +9,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddGiacomBillingPdfIngestion();
 builder.Services.AddStripeBillingCsvIngestion();
+builder.Services.AddReconciliationEngine();
 
 var app = builder.Build();
 
