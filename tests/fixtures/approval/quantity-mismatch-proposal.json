@@ -1,0 +1,5 @@
+{
+  "scenario": "quantity-mismatch-proposal",
+  "reconciliationFixture": "quantity-mismatch",
+  "description": "Single quantity mismatch proposal for V2 approve validation"
+}

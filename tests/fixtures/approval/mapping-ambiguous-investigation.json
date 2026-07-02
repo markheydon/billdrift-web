@@ -1,0 +1,5 @@
+{
+  "scenario": "mapping-ambiguous-investigation",
+  "reconciliationFixture": "mapping-ambiguous",
+  "description": "Mapping ambiguous investigation item for V4 ineligible approve validation"
+}

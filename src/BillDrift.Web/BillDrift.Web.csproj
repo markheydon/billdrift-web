@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" />
+    <ProjectReference Include="..\BillDrift.Application\BillDrift.Application.csproj" />
     <ProjectReference Include="..\BillDrift.ServiceDefaults\BillDrift.ServiceDefaults.csproj" />
   </ItemGroup>
 

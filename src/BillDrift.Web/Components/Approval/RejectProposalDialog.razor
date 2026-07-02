@@ -1,0 +1,24 @@
+<FluentTextArea @bind-Value="_reason" Label="Rejection reason" Required="true" Rows="4" />
+<FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8">
+    <FluentButton Appearance="ButtonAppearance.Primary" OnClick="ConfirmAsync">Reject</FluentButton>
+    <FluentButton OnClick="CancelAsync">Cancel</FluentButton>
+</FluentStack>
+
+@code {
+    [CascadingParameter]
+    public IDialogInstance Dialog { get; set; } = default!;
+
+    private string _reason = string.Empty;
+
+    private async Task ConfirmAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_reason))
+        {
+            return;
+        }
+
+        await Dialog.CloseAsync(DialogResult.Ok(_reason.Trim()));
+    }
+
+    private async Task CancelAsync() => await Dialog.CloseAsync(DialogResult.Cancel());
+}

@@ -1,0 +1,47 @@
+@inject IApprovalApiClient ApiClient
+
+<FluentStack Orientation="Orientation.Vertical">
+    <h3>Audit history</h3>
+    @if (_events is null)
+    {
+        <FluentProgressBar />
+    }
+    else if (_events.Count == 0)
+    {
+        <FluentMessageBar Intent="MessageBarIntent.Info">No audit events recorded.</FluentMessageBar>
+    }
+    else
+    {
+        <table class="approval-table">
+            <thead>
+            <tr>
+                <th>Time</th>
+                <th>Type</th>
+                <th>Summary</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var auditEvent in _events)
+            {
+                <tr>
+                    <td>@auditEvent.Timestamp.ToString("u")</td>
+                    <td>@auditEvent.EventType</td>
+                    <td>@auditEvent.Summary</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</FluentStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public Guid RunId { get; set; }
+
+    private IReadOnlyList<ApprovalAuditEvent>? _events;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _events = await ApiClient.GetAuditAsync(RunId);
+    }
+}

@@ -1,13 +1,20 @@
 using BillDrift.Web.Components;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.Services.AddFluentUIComponents();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddOutputCache();
+
+builder.Services.AddHttpClient<BillDrift.Web.Services.IApprovalApiClient, BillDrift.Web.Services.ApprovalApiClient>(client =>
+{
+    client.BaseAddress = new Uri("https+http://api");
+});
 
 var app = builder.Build();
 
