@@ -1,0 +1,1 @@
+{ "scenario": "mex-id-mismatch", "description": "Mex ID conflict between subscription truth and Stripe" }

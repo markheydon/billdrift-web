@@ -1,4 +1,5 @@
 using BillDrift.Application.Mapping;
+using BillDrift.Application.Reconciliation.ExceptionSurfacing;
 using BillDrift.Domain.Reconciliation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,6 +40,7 @@ public static class ReconciliationServiceCollectionExtensions
     {
         services.AddSingleton<IProductMappingResolver, ProductMappingResolver>();
         services.AddSingleton<IReconciliationEngine, ReconciliationEngine>();
+        services.AddSingleton<ExceptionSurfacingService>();
         return services;
     }
 }
