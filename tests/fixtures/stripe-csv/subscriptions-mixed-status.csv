@@ -1,0 +1,4 @@
+Customer ID,Customer Name,id,Subscription Item ID,Product ID,Price ID,Product Name,Quantity,Status,Amount,Interval,metadata[mex_id],metadata[offer_id],metadata[sku_id]
+cus_A1,Acme Corp,sub_001,si_001,prod_001,price_001,Office 365,5,active,10.00,month,MEX001,OFF001,SKU001
+cus_B2,Beta Inc,sub_002,si_002,prod_002,price_002,Azure,1,canceled,25.00,month,MEX002,OFF002,SKU002
+cus_C3,Gamma LLC,sub_003,si_003,prod_001,price_001,Office 365,2,past_due,10.00,month,MEX003,OFF001,SKU001

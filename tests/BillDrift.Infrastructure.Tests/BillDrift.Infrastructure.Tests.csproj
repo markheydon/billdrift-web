@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <None Include="..\fixtures\giacom-pdf\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="fixtures\giacom-pdf" />
+    <None Include="..\fixtures\stripe-csv\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="fixtures\stripe-csv" />
   </ItemGroup>
 
 </Project>

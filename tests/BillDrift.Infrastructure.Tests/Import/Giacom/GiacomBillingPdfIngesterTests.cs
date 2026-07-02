@@ -84,7 +84,7 @@ public class GiacomBillingPdfIngesterTests
     {
         var encryptedBytes = Convert.FromBase64String(EncryptedPdfBase64);
         using var stream = new MemoryStream(encryptedBytes);
-        var result = _ingester.Ingest(stream);
+        var result = _ingester.Ingest(stream, TestContext.Current.CancellationToken);
 
         result.Status.Should().Be(IngestionOutcomeStatus.Failure);
         result.Lines.Should().BeEmpty();
@@ -149,7 +149,7 @@ public class GiacomBillingPdfIngesterTests
     private GiacomPdfIngestionResult Ingest(byte[] pdfBytes)
     {
         using var stream = new MemoryStream(pdfBytes);
-        return _ingester.Ingest(stream);
+        return _ingester.Ingest(stream, TestContext.Current.CancellationToken);
     }
 
     private const string EncryptedPdfBase64 =

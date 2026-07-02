@@ -29,7 +29,7 @@ public class FixtureWriterTests
     {
         var pdf = File.ReadAllBytes(Path.Combine(root, pdfName));
         using var stream = new MemoryStream(pdf);
-        var result = ingester.Ingest(stream);
+        var result = ingester.Ingest(stream, TestContext.Current.CancellationToken);
         GoldenFileComparer.WriteGoldenFile(result.Lines, Path.Combine(root, goldenRelativePath));
     }
 }

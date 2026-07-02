@@ -44,11 +44,18 @@ public class RawImportTests
     public void RawStripe_types_preserve_metadata()
     {
         var item = new RawStripeSubscriptionItem(
+            RawImportId.Create(ImportSourceKind.StripeExport, "doc-1", "si_test"),
             "si_test",
             "sub_test",
             "price_test",
             "prod_test",
+            "cus_test",
             3,
+            "Product",
+            "active",
+            "10.00",
+            "month",
+            1,
             new Dictionary<string, string> { ["mex_id"] = "MEX1" });
 
         item.Metadata["mex_id"].Should().Be("MEX1");
