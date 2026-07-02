@@ -1,3 +1,5 @@
+using BillDrift.Application.Classification;
+using BillDrift.Domain.Classification;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
 
@@ -67,6 +69,11 @@ public sealed class SuppressPhase
             }
 
             if (ApplySr2MexIdSuppression(candidate, mexIdCustomers, toRemove, context))
+            {
+                continue;
+            }
+
+            if (ApplySr6ClassificationSuppression(candidate, context, toRemove))
             {
                 continue;
             }
@@ -215,6 +222,52 @@ public sealed class SuppressPhase
             SuppressionRule.CatalogueSubsumedBySubscription,
             "Subscription-level price exception subsumes catalogue exception."));
         return true;
+    }
+
+    private static bool ApplySr6ClassificationSuppression(
+        SurfacedException candidate,
+        SurfacingContext context,
+        HashSet<SurfacedExceptionId> toRemove)
+    {
+        if (candidate.Category != ExceptionCategory.MissingBillingItem ||
+            context.ClassificationsByStableKey is null ||
+            candidate.MatchGroupId is null ||
+            !context.MatchGroupById.TryGetValue(candidate.MatchGroupId.Value, out var group))
+        {
+            return false;
+        }
+
+        if (group.SubscriptionLine is { } subscriptionLine)
+        {
+            var itemRef = ReconciliationItemRefFactory.FromSubscriptionLine(subscriptionLine);
+            if (context.ClassificationsByStableKey.TryGetValue(itemRef.StableKey, out var classification) &&
+                classification.Classification == ReconciliationItemClassification.Internal)
+            {
+                toRemove.Add(candidate.Id);
+                context.Suppressed.Add(new SuppressionRecord(
+                    candidate.SourceMismatchIds.FirstOrDefault(),
+                    SuppressionRule.ClassificationInternal,
+                    "Internal classification suppresses missing-billing exception."));
+                return true;
+            }
+        }
+
+        if (group.SubscriptionLine is null && group.StripeItem is not null)
+        {
+            var stripeRef = ReconciliationItemRefFactory.FromStripeBillingItem(group.StripeItem);
+            if (context.ClassificationsByStableKey.TryGetValue(stripeRef.StableKey, out var classification) &&
+                classification.Classification == ReconciliationItemClassification.CustomService)
+            {
+                toRemove.Add(candidate.Id);
+                context.Suppressed.Add(new SuppressionRecord(
+                    candidate.SourceMismatchIds.FirstOrDefault(),
+                    SuppressionRule.ClassificationCustomService,
+                    "Custom/service classification suppresses missing-billing exception."));
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool ApplySr5InactiveOrphan(

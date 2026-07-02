@@ -1,4 +1,6 @@
+using BillDrift.Application.Classification;
 using BillDrift.Application.Reconciliation.Indexing;
+using BillDrift.Domain.Classification;
 using BillDrift.Domain.Reconciliation;
 
 namespace BillDrift.Application.Reconciliation.ExceptionSurfacing;
@@ -33,13 +35,20 @@ public sealed class SurfacingContext
     /// <summary>Audit trail of suppressions applied during the suppress phase.</summary>
     public List<SuppressionRecord> Suppressed { get; } = [];
 
+    /// <summary>Item classifications keyed by stable key for SR-6 suppression.</summary>
+    public IReadOnlyDictionary<string, ItemClassification>? ClassificationsByStableKey { get; }
+
     /// <summary>
     /// Creates a surfacing context from a completed reconciliation run.
     /// </summary>
-    public SurfacingContext(ReconciliationRun run, ReconciliationOptions? options)
+    public SurfacingContext(
+        ReconciliationRun run,
+        ReconciliationOptions? options,
+        ClassificationContext? classifications = null)
     {
         Run = run ?? throw new ArgumentNullException(nameof(run));
         Options = options ?? new ReconciliationOptions();
+        ClassificationsByStableKey = classifications?.ByStableKey;
 
         MatchGroupById = run.MatchGroups.ToDictionary(g => g.Id);
         MismatchById = run.Mismatches.ToDictionary(m => m.Id);

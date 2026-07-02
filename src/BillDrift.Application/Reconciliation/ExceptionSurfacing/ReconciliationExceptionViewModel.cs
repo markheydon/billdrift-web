@@ -53,7 +53,9 @@ public enum SuppressionRule
     RootCauseMexId,
     LowConfidence,
     CatalogueSubsumedBySubscription,
-    OutOfScopeInactive
+    OutOfScopeInactive,
+    ClassificationInternal,
+    ClassificationCustomService
 }
 
 /// <summary>Deterministic identifier for a surfaced exception within a run.</summary>
@@ -119,7 +121,8 @@ public sealed record SurfacedException(
     ProposedChangeId? ProposedChangeId,
     int SuppressedSiblingCount,
     IReadOnlyList<MismatchId> SourceMismatchIds,
-    MatchGroupId? MatchGroupId = null);
+    MatchGroupId? MatchGroupId = null,
+    string? ClassificationRuleBasis = null);
 
 /// <summary>Commercial product context for an exception when known.</summary>
 public sealed record ProductContext(

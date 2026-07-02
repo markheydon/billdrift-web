@@ -1,5 +1,7 @@
+using BillDrift.Application.Classification;
 using BillDrift.Application.Reconciliation.Matching;
 using BillDrift.Domain.Billing;
+using BillDrift.Domain.Classification;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
 
@@ -79,7 +81,10 @@ public sealed class MatchGroupBuildStage : IReconciliationStage
                     $"Cannot map subscription truth line to a known product. Source: {line.CommercialKeyRoot.OfferId.Value}/{line.CommercialKeyRoot.SkuId.Value}. No product mapping found.");
                 mappingBlocksBilling = true;
             }
-            else if (productMapping!.Classification == ProductClassification.NonCsp &&
+            else if (ClassificationReconciliationHelpers.IsNonCspForReconciliation(
+                         line,
+                         productMapping,
+                         context.Classifications) &&
                      !options.IncludeNonCspProducts)
             {
                 EmitSubscriptionNonCspMapping(context, line, commercialKey, productMapping.NormalizedProductName);
@@ -91,6 +96,11 @@ public sealed class MatchGroupBuildStage : IReconciliationStage
                 line.Customer,
                 commercialKey,
                 options.IncludeInactiveSubscriptions);
+
+            if (ClassificationReconciliationHelpers.ShouldBlockFuzzyCspMatch(line, context.Classifications))
+            {
+                stripeMatch = new StripeItemMatchResult(null, [], false);
+            }
 
             StripeBillingItem? stripeItem = stripeMatch.IsAmbiguous ? null : stripeMatch.Item;
             var confidence = mappingBlocksBilling ? MatchConfidence.None : resolution.Confidence;
@@ -158,6 +168,18 @@ public sealed class MatchGroupBuildStage : IReconciliationStage
             {
                 EmitNonCspMapping(context, line);
                 continue;
+            }
+
+            if (context.Classifications is not null)
+            {
+                var supplierRef = ReconciliationItemRefFactory.FromSupplierCostLine(line);
+                if (context.Classifications.Get(supplierRef)?.Classification ==
+                    ReconciliationItemClassification.NonCspSupplier &&
+                    !context.Options.IncludeNonCspProducts)
+                {
+                    EmitNonCspMapping(context, line);
+                    continue;
+                }
             }
 
             var attached = false;

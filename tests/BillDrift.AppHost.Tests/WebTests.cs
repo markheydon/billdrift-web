@@ -4,7 +4,10 @@ namespace BillDrift.AppHost.Tests;
 
 public class WebTests
 {
-    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+    // The AppHost graph now includes an Azurite storage emulator container, which must be
+    // pulled/started by the container runtime before the app is considered started. Allow
+    // enough time for a first-run image pull.
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(5);
 
     [Fact]
     public async Task GetWebResourceRootReturnsOkStatusCode()

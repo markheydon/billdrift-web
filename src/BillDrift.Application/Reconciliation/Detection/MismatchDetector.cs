@@ -44,6 +44,14 @@ public sealed class MismatchDetector
 
         if (group.StripeItem is null)
         {
+            if (group.SubscriptionLine is not null &&
+                ClassificationReconciliationHelpers.ShouldSuppressMissingInStripe(
+                    group.SubscriptionLine,
+                    context.Classifications))
+            {
+                return;
+            }
+
             var mismatch = CreateMismatch(
                 context,
                 MismatchType.MissingInStripe,

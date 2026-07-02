@@ -110,6 +110,21 @@ Use Azure Storage Explorer or `az storage entity show` against Azurite:
 | SC-007 | V1 |
 | SC-008 | V7 |
 
+## Validation Checklist (2026-07-02)
+
+| Scenario | Status | Notes |
+|----------|--------|-------|
+| V1 Microsoft CSP | PASS | `ClassificationRuleEngineTests` + `classify-csp-full-signals` builder |
+| V2 Internal suppression | PASS | `ClassificationIntegrationTests.InternalCustomer_*` |
+| V3 Non-CSP manual review | PASS | `ClassificationIntegrationTests.NonCspSupplier_*` |
+| V4 Override precedence | PASS | `ClassificationOverrideTests` |
+| V5 Override clear | PASS | `ClassificationOverrideTests` |
+| V6 Determinism | PASS | `ClassificationServiceTests` |
+| V7 Conservative default | PASS | `ClassificationRuleEngineTests` |
+| V8 Custom/service Stripe-only | PASS | `ClassificationIntegrationTests.CustomService_*` |
+
+Run: `dotnet test tests/BillDrift.Application.Tests --filter "FullyQualifiedName~Classification"`
+
 ## Related Contracts
 
 - Rules: [classification-rules.md](./contracts/classification-rules.md)

@@ -160,6 +160,11 @@ public sealed class ProposedChangeFactory
 
     private static bool CanProposeBillImpacting(ReconciliationContext context, EntityMatchGroup group)
     {
+        if (ClassificationReconciliationHelpers.ShouldBlockBillImpactingProposals(group, context.Classifications))
+        {
+            return false;
+        }
+
         if (group.Confidence == MatchConfidence.Low || group.Confidence == MatchConfidence.None)
         {
             return false;
