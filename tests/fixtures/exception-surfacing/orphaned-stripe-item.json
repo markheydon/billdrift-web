@@ -1,0 +1,1 @@
+{ "scenario": "orphaned-stripe-item", "description": "Stripe item with no matching subscription truth" }

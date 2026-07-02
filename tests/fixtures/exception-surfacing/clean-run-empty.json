@@ -1,0 +1,1 @@
+{ "scenario": "clean-run-empty", "description": "Clean reconciliation run with zero surfaced exceptions" }
