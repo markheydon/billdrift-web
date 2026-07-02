@@ -1,0 +1,1 @@
+{ "scenario": "supplier-orphan-line", "description": "Supplier cost line with no matching subscription truth" }

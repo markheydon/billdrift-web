@@ -1,0 +1,1 @@
+{ "scenario": "catalogue-missing", "description": "Product mapping exists but no Stripe price in catalogue" }

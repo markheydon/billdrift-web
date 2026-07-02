@@ -1,0 +1,1 @@
+{ "scenario": "billing-frequency-mismatch", "description": "Monthly truth vs annual Stripe price" }

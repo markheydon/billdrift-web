@@ -1,0 +1,5 @@
+{
+  "scenario": "quantity-mismatch",
+  "expectedMismatchTypes": ["QuantityMismatch"],
+  "expectedActionTypes": ["UpdateQuantity"]
+}
