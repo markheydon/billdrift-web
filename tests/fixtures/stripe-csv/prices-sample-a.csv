@@ -1,0 +1,3 @@
+id,Product ID,Currency,Amount,Interval,Interval Count,Description
+price_001,prod_001,gbp,10.00,month,1,Monthly Office
+price_002,prod_002,gbp,25.00,month,1,Monthly Azure

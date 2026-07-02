@@ -1,0 +1,3 @@
+customer_id,Customer Name,subscription_id,item_id,product_id,price_id,Product Name,quantity,status,Amount,Interval,metadata[mex_id],metadata[offer_id],metadata[sku_id]
+cus_A1,Acme Corp,sub_001,si_001,prod_001,price_001,Office 365,5,active,10.00,month,MEX001,OFF001,SKU001
+cus_A1,Acme Corp,sub_001,si_002,prod_002,price_002,Azure,2,active,25.00,month,MEX001,OFF002,SKU002

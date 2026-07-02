@@ -69,5 +69,26 @@ public enum IngestionFailureReason
     FileSizeExceeded,
 
     /// <summary>PDF contained no extractable content.</summary>
-    EmptyDocument
+    EmptyDocument,
+
+    /// <summary>Required CSV column alias not found in header row.</summary>
+    MandatoryHeaderMissing,
+
+    /// <summary>Unit amount or price field could not be parsed as a monetary value.</summary>
+    AmountUnparseable,
+
+    /// <summary>Expected Stripe object ID (sub_, si_, prod_, price_, cus_) was empty.</summary>
+    StripeIdMissing,
+
+    /// <summary>Mapping metadata (Mex/Offer/SKU) is incomplete on a row.</summary>
+    MetadataIncomplete,
+
+    /// <summary>Mapping metadata keys are partially present or inconsistent.</summary>
+    MetadataInconsistent,
+
+    /// <summary>Subscription item references a product or price ID not found in the catalogue bundle.</summary>
+    CatalogueReferenceUnresolved,
+
+    /// <summary>CSV file has a header row but zero data rows.</summary>
+    EmptyFile
 }

@@ -21,10 +21,10 @@
 
 **Purpose**: Add CSV parser dependency, fixture layout, and package references.
 
-- [ ] T001 Add `CsvHelper` package reference to `src/BillDrift.Infrastructure/BillDrift.Infrastructure.csproj` via central package management
-- [ ] T002 [P] Create `tests/fixtures/stripe-csv/` and `tests/fixtures/stripe-csv/expected/` directory structure
-- [ ] T003 [P] Add `tests/fixtures/stripe-csv/README.md` documenting required fixtures per `quickstart.md` and commit policy for sanitized CSV exports
-- [ ] T004 Obtain and place sanitized CSV fixtures (minimum: `subscriptions-sample-a.csv`, `products-sample-a.csv`, `prices-sample-a.csv`, `subscriptions-column-variant.csv`, `subscriptions-mixed-status.csv`, `subscriptions-partial-metadata.csv`, `subscriptions-partial-success.csv`) under `tests/fixtures/stripe-csv/`
+- [x] T001 Add `CsvHelper` package reference to `src/BillDrift.Infrastructure/BillDrift.Infrastructure.csproj` via central package management
+- [x] T002 [P] Create `tests/fixtures/stripe-csv/` and `tests/fixtures/stripe-csv/expected/` directory structure
+- [x] T003 [P] Add `tests/fixtures/stripe-csv/README.md` documenting required fixtures per `quickstart.md` and commit policy for sanitized CSV exports
+- [x] T004 Obtain and place sanitized CSV fixtures (minimum: `subscriptions-sample-a.csv`, `products-sample-a.csv`, `prices-sample-a.csv`, `subscriptions-column-variant.csv`, `subscriptions-mixed-status.csv`, `subscriptions-partial-metadata.csv`, `subscriptions-partial-success.csv`) under `tests/fixtures/stripe-csv/`
 
 **Checkpoint**: Solution builds with CsvHelper; fixture directories ready (CSVs may arrive in parallel with parser work).
 
@@ -36,27 +36,27 @@
 
 **⚠️ CRITICAL**: No user story work until this phase is complete.
 
-- [ ] T005 Extend `IngestionFailureReason` enum with Stripe CSV codes (`MandatoryHeaderMissing`, `AmountUnparseable`, `StripeIdMissing`, `MetadataIncomplete`, `MetadataInconsistent`, `CatalogueReferenceUnresolved`, `EmptyFile`) in `src/BillDrift.Application/Import/IngestionEnums.cs` per `data-model.md`
-- [ ] T006 [P] Implement `StripeCsvFileKind` enum in `src/BillDrift.Application/Import/StripeCsvFileKind.cs`
-- [ ] T007 [P] Implement `StripeCsvIngestionOptions` record in `src/BillDrift.Application/Import/StripeCsvIngestionOptions.cs` per `data-model.md`
-- [ ] T008 [P] Implement `StripeCsvFileInput` record in `src/BillDrift.Application/Import/StripeCsvFileInput.cs`
-- [ ] T009 [P] Implement `StripeCsvIngestionRequest` record in `src/BillDrift.Application/Import/StripeCsvIngestionRequest.cs`
-- [ ] T010 [P] Implement `StripeCsvSourceFileInfo` record in `src/BillDrift.Application/Import/StripeCsvSourceFileInfo.cs`
-- [ ] T011 [P] Implement `StripeCsvIngestionSummary` record in `src/BillDrift.Application/Import/StripeCsvIngestionSummary.cs`
-- [ ] T012 Implement `StripeCsvIngestionResult` record in `src/BillDrift.Application/Import/StripeCsvIngestionResult.cs` with validation rules from `data-model.md`
-- [ ] T013 Implement `IStripeBillingCsvIngester` interface in `src/BillDrift.Application/Import/IStripeBillingCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
-- [ ] T014 Extend `RawStripeSubscriptionItem` with `Id`, `CustomerId`, `ProductName`, `SubscriptionStatus`, `UnitAmountRaw`, `IntervalRaw`, `SourceRowNumber` in `src/BillDrift.Domain/Import/Stripe/RawStripeSubscriptionItem.cs`
-- [ ] T015 [P] Extend `RawStripeProduct` with `Id` and `SourceRowNumber` in `src/BillDrift.Domain/Import/Stripe/RawStripeProduct.cs`
-- [ ] T016 [P] Extend `RawStripePrice` with `Id`, `Description`, and `SourceRowNumber` in `src/BillDrift.Domain/Import/Stripe/RawStripePrice.cs`
-- [ ] T017 [P] Implement `ParsedSubscriptionRow` in `src/BillDrift.Infrastructure/Import/Stripe/Internal/ParsedSubscriptionRow.cs`
-- [ ] T018 [P] Implement `ParsedProductRow` in `src/BillDrift.Infrastructure/Import/Stripe/Internal/ParsedProductRow.cs`
-- [ ] T019 [P] Implement `ParsedPriceRow` in `src/BillDrift.Infrastructure/Import/Stripe/Internal/ParsedPriceRow.cs`
-- [ ] T020 Implement SHA-256 per-file hash and bundle ID helper in `src/BillDrift.Infrastructure/Import/Stripe/StripeFileIdentity.cs` per research R2
-- [ ] T021 Implement intake limits (`MaxFileSizeBytes` default 10 MB) in `src/BillDrift.Infrastructure/Import/Stripe/StripeIngestionLimits.cs`
-- [ ] T022 Implement `StripeCsvHeaderMap` column alias registry in `src/BillDrift.Infrastructure/Import/Stripe/StripeCsvHeaderMap.cs` per `contracts/stripe-csv-header-map.md`
-- [ ] T023 Implement `StripeCsvRowReader` CsvHelper wrapper in `src/BillDrift.Infrastructure/Import/Stripe/StripeCsvRowReader.cs`
-- [ ] T024 Create `StripeImportServiceCollectionExtensions` skeleton in `src/BillDrift.Infrastructure/Import/Stripe/StripeImportServiceCollectionExtensions.cs`
-- [ ] T025 Reuse or extract shared `GoldenFileComparer` for Stripe tests in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/GoldenFileComparer.cs` (reference Giacom implementation if not yet shared)
+- [x] T005 Extend `IngestionFailureReason` enum with Stripe CSV codes (`MandatoryHeaderMissing`, `AmountUnparseable`, `StripeIdMissing`, `MetadataIncomplete`, `MetadataInconsistent`, `CatalogueReferenceUnresolved`, `EmptyFile`) in `src/BillDrift.Application/Import/IngestionEnums.cs` per `data-model.md`
+- [x] T006 [P] Implement `StripeCsvFileKind` enum in `src/BillDrift.Application/Import/StripeCsvFileKind.cs`
+- [x] T007 [P] Implement `StripeCsvIngestionOptions` record in `src/BillDrift.Application/Import/StripeCsvIngestionOptions.cs` per `data-model.md`
+- [x] T008 [P] Implement `StripeCsvFileInput` record in `src/BillDrift.Application/Import/StripeCsvFileInput.cs`
+- [x] T009 [P] Implement `StripeCsvIngestionRequest` record in `src/BillDrift.Application/Import/StripeCsvIngestionRequest.cs`
+- [x] T010 [P] Implement `StripeCsvSourceFileInfo` record in `src/BillDrift.Application/Import/StripeCsvSourceFileInfo.cs`
+- [x] T011 [P] Implement `StripeCsvIngestionSummary` record in `src/BillDrift.Application/Import/StripeCsvIngestionSummary.cs`
+- [x] T012 Implement `StripeCsvIngestionResult` record in `src/BillDrift.Application/Import/StripeCsvIngestionResult.cs` with validation rules from `data-model.md`
+- [x] T013 Implement `IStripeBillingCsvIngester` interface in `src/BillDrift.Application/Import/IStripeBillingCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
+- [x] T014 Extend `RawStripeSubscriptionItem` with `Id`, `CustomerId`, `ProductName`, `SubscriptionStatus`, `UnitAmountRaw`, `IntervalRaw`, `SourceRowNumber` in `src/BillDrift.Domain/Import/Stripe/RawStripeSubscriptionItem.cs`
+- [x] T015 [P] Extend `RawStripeProduct` with `Id` and `SourceRowNumber` in `src/BillDrift.Domain/Import/Stripe/RawStripeProduct.cs`
+- [x] T016 [P] Extend `RawStripePrice` with `Id`, `Description`, and `SourceRowNumber` in `src/BillDrift.Domain/Import/Stripe/RawStripePrice.cs`
+- [x] T017 [P] Implement `ParsedSubscriptionRow` in `src/BillDrift.Infrastructure/Import/Stripe/Internal/ParsedSubscriptionRow.cs`
+- [x] T018 [P] Implement `ParsedProductRow` in `src/BillDrift.Infrastructure/Import/Stripe/Internal/ParsedProductRow.cs`
+- [x] T019 [P] Implement `ParsedPriceRow` in `src/BillDrift.Infrastructure/Import/Stripe/Internal/ParsedPriceRow.cs`
+- [x] T020 Implement SHA-256 per-file hash and bundle ID helper in `src/BillDrift.Infrastructure/Import/Stripe/StripeFileIdentity.cs` per research R2
+- [x] T021 Implement intake limits (`MaxFileSizeBytes` default 10 MB) in `src/BillDrift.Infrastructure/Import/Stripe/StripeIngestionLimits.cs`
+- [x] T022 Implement `StripeCsvHeaderMap` column alias registry in `src/BillDrift.Infrastructure/Import/Stripe/StripeCsvHeaderMap.cs` per `contracts/stripe-csv-header-map.md`
+- [x] T023 Implement `StripeCsvRowReader` CsvHelper wrapper in `src/BillDrift.Infrastructure/Import/Stripe/StripeCsvRowReader.cs`
+- [x] T024 Create `StripeImportServiceCollectionExtensions` skeleton in `src/BillDrift.Infrastructure/Import/Stripe/StripeImportServiceCollectionExtensions.cs`
+- [x] T025 Reuse or extract shared `GoldenFileComparer` for Stripe tests in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/GoldenFileComparer.cs` (reference Giacom implementation if not yet shared)
 
 **Checkpoint**: Application contract compiles; domain raw types extended; internal parse types and header map available.
 
@@ -72,20 +72,20 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T026 [P] [US1] Create integration test skeleton in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/StripeBillingCsvIngesterTests.cs` with subscriptions-only ingest hooks
-- [ ] T027 [P] [US1] Add multi-item subscription assertion test in `StripeBillingCsvIngesterTests.cs` per spec acceptance scenario 1
+- [x] T026 [P] [US1] Create integration test skeleton in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/StripeBillingCsvIngesterTests.cs` with subscriptions-only ingest hooks
+- [x] T027 [P] [US1] Add multi-item subscription assertion test in `StripeBillingCsvIngesterTests.cs` per spec acceptance scenario 1
 
 ### Implementation for User Story 1
 
-- [ ] T028 [US1] Implement `SubscriptionsCsvParser` in `src/BillDrift.Infrastructure/Import/Stripe/SubscriptionsCsvParser.cs` mapping headers via `StripeCsvHeaderMap`
-- [ ] T029 [US1] Implement customer and subscription deduplication assembly in `src/BillDrift.Infrastructure/Import/Stripe/RawStripeRecordMapper.cs` (customers + subscriptions from subscription rows)
-- [ ] T030 [US1] Implement subscription item mapping with quantity/amount/interval parsing in `RawStripeRecordMapper.cs`
-- [ ] T031 [US1] Implement `RawImportId.Create(ImportSourceKind.StripeExport, sourceDocumentId, lineKey)` for subscription items in `RawStripeRecordMapper.cs` per research R7
-- [ ] T032 [US1] Implement `StripeBillingCsvIngester` orchestrator skeleton (subscriptions-only path) in `src/BillDrift.Infrastructure/Import/Stripe/StripeBillingCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
-- [ ] T033 [US1] Complete subscriptions-only ingest path with result assembly and summary counts in `StripeBillingCsvIngester.cs`
-- [ ] T034 [US1] Complete `AddStripeBillingCsvIngestion` DI registration (`Singleton<IStripeBillingCsvIngester>`) in `StripeImportServiceCollectionExtensions.cs`
-- [ ] T035 [US1] Generate golden JSON `tests/fixtures/stripe-csv/expected/subscriptions-sample-a.json` from validated subscriptions-only output
-- [ ] T036 [US1] Complete subscriptions golden-file assertions in `StripeBillingCsvIngesterTests.cs`
+- [x] T028 [US1] Implement `SubscriptionsCsvParser` in `src/BillDrift.Infrastructure/Import/Stripe/SubscriptionsCsvParser.cs` mapping headers via `StripeCsvHeaderMap`
+- [x] T029 [US1] Implement customer and subscription deduplication assembly in `src/BillDrift.Infrastructure/Import/Stripe/RawStripeRecordMapper.cs` (customers + subscriptions from subscription rows)
+- [x] T030 [US1] Implement subscription item mapping with quantity/amount/interval parsing in `RawStripeRecordMapper.cs`
+- [x] T031 [US1] Implement `RawImportId.Create(ImportSourceKind.StripeExport, sourceDocumentId, lineKey)` for subscription items in `RawStripeRecordMapper.cs` per research R7
+- [x] T032 [US1] Implement `StripeBillingCsvIngester` orchestrator skeleton (subscriptions-only path) in `src/BillDrift.Infrastructure/Import/Stripe/StripeBillingCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
+- [x] T033 [US1] Complete subscriptions-only ingest path with result assembly and summary counts in `StripeBillingCsvIngester.cs`
+- [x] T034 [US1] Complete `AddStripeBillingCsvIngestion` DI registration (`Singleton<IStripeBillingCsvIngester>`) in `StripeImportServiceCollectionExtensions.cs`
+- [x] T035 [US1] Generate golden JSON `tests/fixtures/stripe-csv/expected/subscriptions-sample-a.json` from validated subscriptions-only output
+- [x] T036 [US1] Complete subscriptions golden-file assertions in `StripeBillingCsvIngesterTests.cs`
 
 **Checkpoint**: MVP ingests subscriptions CSV independently; golden test passes; multi-item rows emitted.
 
@@ -99,17 +99,17 @@
 
 ### Tests for User Story 2
 
-- [ ] T037 [P] [US2] Add full-bundle golden-file test in `StripeBillingCsvIngesterTests.cs` per `quickstart.md` Scenario 1
-- [ ] T038 [P] [US2] Add catalogue resolution assertion (100% referenced IDs found) in `StripeBillingCsvIngesterTests.cs` per SC-007
+- [x] T037 [P] [US2] Add full-bundle golden-file test in `StripeBillingCsvIngesterTests.cs` per `quickstart.md` Scenario 1
+- [x] T038 [P] [US2] Add catalogue resolution assertion (100% referenced IDs found) in `StripeBillingCsvIngesterTests.cs` per SC-007
 
 ### Implementation for User Story 2
 
-- [ ] T039 [P] [US2] Implement `ProductsCsvParser` in `src/BillDrift.Infrastructure/Import/Stripe/ProductsCsvParser.cs`
-- [ ] T040 [P] [US2] Implement `PricesCsvParser` in `src/BillDrift.Infrastructure/Import/Stripe/PricesCsvParser.cs`
-- [ ] T041 [US2] Extend `RawStripeRecordMapper` with product and price mapping + `RawImportId` assignment in `RawStripeRecordMapper.cs`
-- [ ] T042 [US2] Integrate catalogue assembly stages into `StripeBillingCsvIngester.cs` (products + prices file kinds)
-- [ ] T043 [US2] Generate golden JSON `tests/fixtures/stripe-csv/expected/bundle-sample-a.json` for full three-file bundle
-- [ ] T044 [US2] Preserve unknown metadata keys on product and price records in parsers per FR-013
+- [x] T039 [P] [US2] Implement `ProductsCsvParser` in `src/BillDrift.Infrastructure/Import/Stripe/ProductsCsvParser.cs`
+- [x] T040 [P] [US2] Implement `PricesCsvParser` in `src/BillDrift.Infrastructure/Import/Stripe/PricesCsvParser.cs`
+- [x] T041 [US2] Extend `RawStripeRecordMapper` with product and price mapping + `RawImportId` assignment in `RawStripeRecordMapper.cs`
+- [x] T042 [US2] Integrate catalogue assembly stages into `StripeBillingCsvIngester.cs` (products + prices file kinds)
+- [x] T043 [US2] Generate golden JSON `tests/fixtures/stripe-csv/expected/bundle-sample-a.json` for full three-file bundle
+- [x] T044 [US2] Preserve unknown metadata keys on product and price records in parsers per FR-013
 
 **Checkpoint**: Full bundle ingest passes; catalogue collections populated; SC-007 resolution test passes.
 
@@ -123,14 +123,14 @@
 
 ### Tests for User Story 3
 
-- [ ] T045 [P] [US3] Create `StripeStatusFilterTests` in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/StripeStatusFilterTests.cs`
-- [ ] T046 [P] [US3] Add mixed-status filter tests (default vs `IncludeInactiveSubscriptions`) in `StripeBillingCsvIngesterTests.cs` per `quickstart.md` Scenario 2
+- [x] T045 [P] [US3] Create `StripeStatusFilterTests` in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/StripeStatusFilterTests.cs`
+- [x] T046 [P] [US3] Add mixed-status filter tests (default vs `IncludeInactiveSubscriptions`) in `StripeBillingCsvIngesterTests.cs` per `quickstart.md` Scenario 2
 
 ### Implementation for User Story 3
 
-- [ ] T047 [US3] Implement `StripeStatusFilter` with active/inactive status sets in `src/BillDrift.Infrastructure/Import/Stripe/StripeStatusFilter.cs` per research R6
-- [ ] T048 [US3] Integrate status filtering stage into pipeline after subscription assembly in `StripeBillingCsvIngester.cs`
-- [ ] T049 [US3] Populate `StripeCsvIngestionSummary.SubscriptionsFilteredByStatus` without treating exclusions as errors in `StripeBillingCsvIngester.cs`
+- [x] T047 [US3] Implement `StripeStatusFilter` with active/inactive status sets in `src/BillDrift.Infrastructure/Import/Stripe/StripeStatusFilter.cs` per research R6
+- [x] T048 [US3] Integrate status filtering stage into pipeline after subscription assembly in `StripeBillingCsvIngester.cs`
+- [x] T049 [US3] Populate `StripeCsvIngestionSummary.SubscriptionsFilteredByStatus` without treating exclusions as errors in `StripeBillingCsvIngester.cs`
 
 **Checkpoint**: SC-005 filter tests pass; canceled excluded by default; diagnostic mode includes inactive rows.
 
@@ -144,16 +144,16 @@
 
 ### Tests for User Story 4
 
-- [ ] T050 [P] [US4] Create `StripeMetadataParserTests` in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/StripeMetadataParserTests.cs` for key alias and bracket-column patterns
-- [ ] T051 [P] [US4] Add metadata gap warning tests in `StripeBillingCsvIngesterTests.cs` per `quickstart.md` Scenario 3
+- [x] T050 [P] [US4] Create `StripeMetadataParserTests` in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/StripeMetadataParserTests.cs` for key alias and bracket-column patterns
+- [x] T051 [P] [US4] Add metadata gap warning tests in `StripeBillingCsvIngesterTests.cs` per `quickstart.md` Scenario 3
 
 ### Implementation for User Story 4
 
-- [ ] T052 [US4] Implement `StripeMetadataParser` (bracket columns + flat keys + supplier ref prefixes) in `src/BillDrift.Infrastructure/Import/Stripe/StripeMetadataParser.cs` per research R5 and `contracts/stripe-csv-header-map.md`
-- [ ] T053 [US4] Integrate metadata parsing into `SubscriptionsCsvParser.cs` and attach full dictionary to parsed rows
-- [ ] T054 [US4] Implement metadata gap/inconsistency detection and warning log emission in `StripeBillingCsvIngester.cs` per FR-024/FR-025
-- [ ] T055 [US4] Implement Mex/Offer/SKU trim and casing normalization while preserving raw values for traceability in `RawStripeRecordMapper.cs`
-- [ ] T056 [US4] Increment `Summary.MetadataWarnings` in result assembly per `data-model.md`
+- [x] T052 [US4] Implement `StripeMetadataParser` (bracket columns + flat keys + supplier ref prefixes) in `src/BillDrift.Infrastructure/Import/Stripe/StripeMetadataParser.cs` per research R5 and `contracts/stripe-csv-header-map.md`
+- [x] T053 [US4] Integrate metadata parsing into `SubscriptionsCsvParser.cs` and attach full dictionary to parsed rows
+- [x] T054 [US4] Implement metadata gap/inconsistency detection and warning log emission in `StripeBillingCsvIngester.cs` per FR-024/FR-025
+- [x] T055 [US4] Implement Mex/Offer/SKU trim and casing normalization while preserving raw values for traceability in `RawStripeRecordMapper.cs`
+- [x] T056 [US4] Increment `Summary.MetadataWarnings` in result assembly per `data-model.md`
 
 **Checkpoint**: Metadata parser tests pass; SC-006 identifiable from log summaries; no invented mapping keys.
 
@@ -167,18 +167,18 @@
 
 ### Tests for User Story 5
 
-- [ ] T057 [P] [US5] Add column-variant fixture test in `StripeBillingCsvIngesterTests.cs` per `quickstart.md` and `contracts/stripe-csv-header-map.md`
-- [ ] T058 [P] [US5] Add partial-success fixture test expecting `PartialSuccess` and skip log entry in `StripeBillingCsvIngesterTests.cs` per SC-003
-- [ ] T059 [P] [US5] Add determinism re-import test (identical `RawImportId` and bundle output) in `StripeBillingCsvIngesterTests.cs` per SC-004
+- [x] T057 [P] [US5] Add column-variant fixture test in `StripeBillingCsvIngesterTests.cs` per `quickstart.md` and `contracts/stripe-csv-header-map.md`
+- [x] T058 [P] [US5] Add partial-success fixture test expecting `PartialSuccess` and skip log entry in `StripeBillingCsvIngesterTests.cs` per SC-003
+- [x] T059 [P] [US5] Add determinism re-import test (identical `RawImportId` and bundle output) in `StripeBillingCsvIngesterTests.cs` per SC-004
 
 ### Implementation for User Story 5
 
-- [ ] T060 [US5] Implement row-level skip handling (unparseable quantity/amount, missing Stripe IDs) with `IngestionLogEntry` location convention (file kind + row number) in `StripeBillingCsvIngester.cs`
-- [ ] T061 [US5] Implement file-level failure for mandatory header missing and empty data rows in `StripeCsvRowReader.cs` / orchestrator intake
-- [ ] T062 [US5] Implement `CatalogueReferenceUnresolved` warning when bundle includes catalogue files and item references unknown product/price ID in `StripeBillingCsvIngester.cs`
-- [ ] T063 [US5] Suppress catalogue warnings when products/prices files not supplied (subscriptions-only mode) per FR-005
-- [ ] T064 [US5] Implement `IngestionOutcomeStatus` aggregation (Success / PartialSuccess / Failure) and per-file summary in result assembly per `data-model.md`
-- [ ] T065 [US5] Cap log snippets at 200 characters and avoid logging full customer email in `StripeBillingCsvIngester.cs` per security contract
+- [x] T060 [US5] Implement row-level skip handling (unparseable quantity/amount, missing Stripe IDs) with `IngestionLogEntry` location convention (file kind + row number) in `StripeBillingCsvIngester.cs`
+- [x] T061 [US5] Implement file-level failure for mandatory header missing and empty data rows in `StripeCsvRowReader.cs` / orchestrator intake
+- [x] T062 [US5] Implement `CatalogueReferenceUnresolved` warning when bundle includes catalogue files and item references unknown product/price ID in `StripeBillingCsvIngester.cs`
+- [x] T063 [US5] Suppress catalogue warnings when products/prices files not supplied (subscriptions-only mode) per FR-005
+- [x] T064 [US5] Implement `IngestionOutcomeStatus` aggregation (Success / PartialSuccess / Failure) and per-file summary in result assembly per `data-model.md`
+- [x] T065 [US5] Cap log snippets at 200 characters and avoid logging full customer email in `StripeBillingCsvIngester.cs` per security contract
 
 **Checkpoint**: Column-variant and partial-success fixtures pass; determinism test passes; no silent data drops (FR-035).
 
@@ -188,11 +188,11 @@
 
 **Purpose**: DI wiring, performance validation, comment verification, and quickstart sign-off.
 
-- [ ] T066 [P] Register `AddStripeBillingCsvIngestion()` in `src/BillDrift.Api/Program.cs` for future API/upload integration (no endpoint in this feature)
-- [ ] T067 Add required code comments on public interfaces, pipeline orchestrator, metadata parser, and status filter per constitution Principle I
-- [ ] T068 Run `dotnet build BillDrift.sln --configuration Release` and `dotnet test tests/BillDrift.Infrastructure.Tests --filter "FullyQualifiedName~Stripe" --configuration Release --verbosity normal`
-- [ ] T069 Execute all manual validation scenarios in `specs/003-stripe-csv-ingestion/quickstart.md` and record pass/fail notes
-- [ ] T070 [P] Add performance smoke test asserting 1,000-row synthetic bundle completes in <60s in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/StripeBillingCsvIngesterPerformanceTests.cs` per SC-001
+- [x] T066 [P] Register `AddStripeBillingCsvIngestion()` in `src/BillDrift.Api/Program.cs` for future API/upload integration (no endpoint in this feature)
+- [x] T067 Add required code comments on public interfaces, pipeline orchestrator, metadata parser, and status filter per constitution Principle I
+- [x] T068 Run `dotnet build BillDrift.sln --configuration Release` and `dotnet test tests/BillDrift.Infrastructure.Tests --filter "FullyQualifiedName~Stripe" --configuration Release --verbosity normal`
+- [x] T069 Execute all manual validation scenarios in `specs/003-stripe-csv-ingestion/quickstart.md` and record pass/fail notes
+- [x] T070 [P] Add performance smoke test asserting 1,000-row synthetic bundle completes in <60s in `tests/BillDrift.Infrastructure.Tests/Import/Stripe/StripeBillingCsvIngesterPerformanceTests.cs` per SC-001
 
 ---
 

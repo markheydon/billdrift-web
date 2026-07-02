@@ -1,0 +1,36 @@
+{
+  "subscriptionItems": [
+    {
+      "customerId": "cus_A1",
+      "subscriptionId": "sub_001",
+      "subscriptionItemId": "si_001",
+      "productId": "prod_001",
+      "priceId": "price_001",
+      "quantity": 5,
+      "subscriptionStatus": "active",
+      "sourceLineKey": "si_001"
+    },
+    {
+      "customerId": "cus_A1",
+      "subscriptionId": "sub_001",
+      "subscriptionItemId": "si_002",
+      "productId": "prod_002",
+      "priceId": "price_002",
+      "quantity": 2,
+      "subscriptionStatus": "active",
+      "sourceLineKey": "si_002"
+    },
+    {
+      "customerId": "cus_B2",
+      "subscriptionId": "sub_002",
+      "subscriptionItemId": "si_003",
+      "productId": "prod_001",
+      "priceId": "price_001",
+      "quantity": 1,
+      "subscriptionStatus": "trialing",
+      "sourceLineKey": "si_003"
+    }
+  ],
+  "products": [],
+  "prices": []
+}
