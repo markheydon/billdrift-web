@@ -14,7 +14,14 @@ public class WebTests
     {
         var cancellationToken = TestContext.Current.CancellationToken;
 
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.BillDrift_AppHost>(cancellationToken);
+        // The testing builder does not apply launch profiles, so without this the AppHost and its
+        // child projects run as Production. ServiceDefaults only maps /health and /alive in
+        // Development, so the AppHost's WithHttpHealthCheck("/health") probes would 404 forever and
+        // WaitFor(api) would never complete. Running as Development mirrors local `aspire run`.
+        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.BillDrift_AppHost>(
+            [],
+            (_, settings) => settings.EnvironmentName = "Development",
+            cancellationToken);
         appHost.Services.AddLogging(logging =>
         {
             logging.SetMinimumLevel(LogLevel.Debug);

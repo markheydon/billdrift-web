@@ -7,7 +7,7 @@ alwaysApply: true
 
 Before considering any task complete:
 
-- Run `dotnet build`.
+- Run `dotnet build --no-incremental`.
 - Resolve all build errors.
 - Resolve all build warnings.
 - Treat warnings as defects unless explicitly instructed otherwise.
@@ -19,3 +19,16 @@ Additionally, all testing should complete not just recently worked on tasks:
 - Run `dotnet test` with no restrictions on tests.
 - Resolve all failures unless  explicitly instructed otherwise.
 - Aspire AppHosts tests are no exception and should also be testing successfully.
+
+## Final Build
+
+After all tasks are complete, as a final check before ending the coding session, run the following in the solution root:
+
+1. `dotnet clean`
+2. `dotnet restore`
+3. `dotnet build --no-restore`
+4. `dotnet test --no-build`
+
+At this point, all tests should pass and the build should be clean. If any of these steps fail, resolve the issues before considering the work complete. Warning and error messages should be treated as defects unless explicitly instructed otherwise.
+
+As this is a .NET Aspire solution, and there are AppHost related tests, it is important to ensure that the AppHost tests are also passing. If any of the AppHost tests fail, they should be treated as defects and resolved before considering the work complete. If the issue is missing Docker, then also check for Podman as an option before giving up trying to run the AppHost tests. If the issue is not related to missing Docker or Podman, then it should be treated as a defect and resolved before considering the work complete.

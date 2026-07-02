@@ -1,0 +1,20 @@
+@page "/approvals"
+@page "/approvals/{RunId:guid}"
+
+<PageTitle>Approval Queue</PageTitle>
+
+@if (RunId is null)
+{
+    <FluentMessageBar Intent="MessageBarIntent.Info">
+        Enter a reconciliation run ID in the URL, for example <code>/approvals/{guid}</code>.
+    </FluentMessageBar>
+}
+else
+{
+    <ApprovalQueuePage RunId="RunId.Value" />
+}
+
+@code {
+    [Parameter]
+    public Guid? RunId { get; set; }
+}

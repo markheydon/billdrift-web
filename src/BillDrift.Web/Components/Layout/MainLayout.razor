@@ -1,20 +1,32 @@
 ﻿@inherits LayoutComponentBase
+@using Icons = Microsoft.FluentUI.AspNetCore.Components.Icons
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<FluentLayout>
+    <FluentLayoutItem Area="LayoutArea.Header">
+        <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+            <FluentLayoutHamburger />
+            <span style="font-weight: 600; margin-left: 0.5rem;">BillDrift</span>
+        </FluentStack>
+    </FluentLayoutItem>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+    <FluentLayoutItem Area="LayoutArea.Navigation">
+        <FluentNav>
+            <FluentNavItem Href="/" Icon="@(new Icons.Regular.Size20.Home())">
+                Home
+            </FluentNavItem>
+            <FluentNavItem Href="/reconciliation" Icon="@(new Icons.Regular.Size20.ArrowSync())">
+                Reconciliation
+            </FluentNavItem>
+            <FluentNavItem Href="/approvals" Icon="@(new Icons.Regular.Size20.CheckmarkCircle())">
+                Approvals
+            </FluentNavItem>
+        </FluentNav>
+    </FluentLayoutItem>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    <FluentLayoutItem Area="LayoutArea.Content">
+        @Body
+    </FluentLayoutItem>
+</FluentLayout>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

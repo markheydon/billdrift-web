@@ -225,7 +225,7 @@ See [research.md](./research.md) — all technical context items resolved:
 
 ## Phase 2 Status
 
-**Status**: Pending — run `/speckit-tasks` to generate [tasks.md](./tasks.md)
+**Status**: Complete — see [tasks.md](./tasks.md)
 
 ## Deferred (explicitly out of scope)
 

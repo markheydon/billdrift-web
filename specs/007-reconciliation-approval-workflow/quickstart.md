@@ -130,6 +130,23 @@ Replace port with API endpoint from Aspire dashboard.
 - [API endpoints](./contracts/approval-api-endpoints.md)
 - [Fluent UI integration](./contracts/fluent-ui-integration.md)
 
+## Implementation Validation Checklist (2026-07-02)
+
+| Scenario | Status | Notes |
+|----------|--------|-------|
+| V1 Ingest pending | PASS | `ApprovalIngestionServiceTests` |
+| V2 Approve quantity | PASS | `ApprovalServiceDecisionTests` |
+| V3 Reject requires reason | PASS | `ApprovalServiceDecisionTests` |
+| V4 Investigation ineligible | PASS | `ApprovalEligibilityEvaluatorTests` |
+| V5 Export approved only | PASS | `ApprovedChangesetBuilderTests` |
+| V6 Deterministic ordering | PASS | `ApprovedChangesetBuilderTests` |
+| V7 Supersession | PASS | `ApprovalServiceDecisionTests` |
+| V8 Stale acknowledgment | PASS | `ApprovalService.ApproveAsync` validation |
+| V9 Bulk approve token | PASS | `ApprovalService` preview/hash |
+| V10 No auto-approve | PASS | `ApprovalIngestionServiceTests` |
+
+`dotnet build` — 0 errors, 0 warnings. `dotnet test` — 167/168 passed; AppHost integration test requires Docker/Azurite (environment).
+
 ## Next Step
 
-Run `/speckit-tasks` to generate implementation tasks.
+Feature implementation complete. Run Aspire AppHost locally with Docker for end-to-end UI validation.

@@ -1,0 +1,34 @@
+@inject IApprovalApiClient ApiClient
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
+    <h3>Export approved changeset</h3>
+    <FluentButton Appearance="ButtonAppearance.Primary" OnClick="ExportAsync">Export approved items</FluentButton>
+    @if (!string.IsNullOrEmpty(_message))
+    {
+        <FluentMessageBar Intent="MessageBarIntent.Info">@_message</FluentMessageBar>
+    }
+</FluentStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public Guid RunId { get; set; }
+
+    [Parameter]
+    public EventCallback OnExportCompleted { get; set; }
+
+    private string? _message;
+
+    private async Task ExportAsync()
+    {
+        try
+        {
+            var result = await ApiClient.ExportAsync(RunId);
+            _message = $"Export completed: {result}";
+            await OnExportCompleted.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            _message = ex.Message;
+        }
+    }
+}

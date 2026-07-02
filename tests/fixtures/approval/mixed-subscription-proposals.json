@@ -1,0 +1,5 @@
+{
+  "scenario": "mixed-subscription-proposals",
+  "reconciliationFixture": "missing-in-stripe",
+  "description": "Mixed subscription proposals with investigation items for V1 ingest validation"
+}

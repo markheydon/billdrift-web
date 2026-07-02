@@ -10,4 +10,5 @@
   <Project Path="tests/BillDrift.Application.Tests/BillDrift.Application.Tests.csproj" />
   <Project Path="tests/BillDrift.Domain.Tests/BillDrift.Domain.Tests.csproj" />
   <Project Path="tests/BillDrift.Infrastructure.Tests/BillDrift.Infrastructure.Tests.csproj" />
+  <Project Path="tests/BillDrift.Api.Tests/BillDrift.Api.Tests.csproj" />
 </Solution>

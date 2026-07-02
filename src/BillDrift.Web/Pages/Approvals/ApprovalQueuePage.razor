@@ -1,0 +1,158 @@
+@inject IApprovalApiClient ApiClient
+@inject IDialogService DialogService
+
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+        <h1>Approval Queue</h1>
+        <FluentBadge>@RunId</FluentBadge>
+    </FluentStack>
+
+    @if (!string.IsNullOrEmpty(_error))
+    {
+        <FluentMessageBar Intent="MessageBarIntent.Error">@_error</FluentMessageBar>
+    }
+
+    @if (_loading)
+    {
+        <FluentProgressBar />
+    }
+    else if (_queue is null)
+    {
+        <FluentMessageBar Intent="MessageBarIntent.Info">No queue loaded.</FluentMessageBar>
+    }
+    else
+    {
+        <FluentTabs>
+            <FluentTab Id="subscription" Label="@($"Subscription ({_queue.Summary.SubscriptionCount})")">
+                @RenderProposalTable(_queue.CustomerGroups.SelectMany(g => g.SubscriptionProposals))
+            </FluentTab>
+            <FluentTab Id="catalogue" Label="@($"Catalogue ({_queue.Summary.CatalogueCount})")">
+                @RenderProposalTable(_queue.CustomerGroups.SelectMany(g => g.CatalogueProposals))
+            </FluentTab>
+            <FluentTab Id="investigation" Label="@($"Investigation ({_queue.Summary.InvestigationCount})")">
+                @RenderProposalTable(_queue.CustomerGroups.SelectMany(g => g.InvestigationItems))
+            </FluentTab>
+        </FluentTabs>
+
+        <ExportChangesetPanel RunId="RunId" OnExportCompleted="LoadQueueAsync" />
+        <ApprovalAuditPanel RunId="RunId" />
+    }
+</FluentStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public Guid RunId { get; set; }
+
+    private ApprovalQueueViewModel? _queue;
+    private bool _loading = true;
+    private string? _error;
+
+    protected override async Task OnParametersSetAsync() => await LoadQueueAsync();
+
+    private async Task LoadQueueAsync()
+    {
+        _loading = true;
+        _error = null;
+
+        try
+        {
+            _queue = await ApiClient.GetQueueAsync(RunId);
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private RenderFragment RenderProposalTable(IEnumerable<ApprovalProposalViewModel> proposals) => __builder =>
+    {
+        var list = proposals.ToList();
+        if (list.Count == 0)
+        {
+            <FluentMessageBar Intent="MessageBarIntent.Info">No items in this category.</FluentMessageBar>
+            return;
+        }
+
+        <table class="approval-table">
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th>State</th>
+                <th>Prior</th>
+                <th>Proposed</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var proposal in list)
+            {
+                <tr>
+                    <td>@proposal.ProductLabel</td>
+                    <td>@proposal.State</td>
+                    <td>@FormatValues(proposal.PriorValues)</td>
+                    <td>@FormatValues(proposal.ProposedValues)</td>
+                    <td>
+                        <FluentButton Appearance="ButtonAppearance.Primary"
+                                      Disabled="@(!proposal.CanApprove)"
+                                      OnClick="@(() => ApproveAsync(proposal))">
+                            Approve
+                        </FluentButton>
+                        <FluentButton Disabled="@(!proposal.CanReject)"
+                                      OnClick="@(() => RejectAsync(proposal))">
+                            Reject
+                        </FluentButton>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    };
+
+    private static string FormatValues(IReadOnlyDictionary<string, string> values) =>
+        string.Join(", ", values.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+
+    private async Task ApproveAsync(ApprovalProposalViewModel proposal)
+    {
+        try
+        {
+            await ApiClient.ApproveAsync(
+                RunId,
+                proposal.Id.Value,
+                acknowledgeStale: proposal.State == ApprovalDecisionState.Stale);
+            await LoadQueueAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private async Task RejectAsync(ApprovalProposalViewModel proposal)
+    {
+        var options = new DialogOptions
+        {
+            Header = { Title = "Reject proposal" },
+            Modal = true
+        };
+
+        var result = await DialogService.ShowDialogAsync<RejectProposalDialog>(options);
+        if (result.Cancelled || result.Value is not string reason)
+        {
+            return;
+        }
+
+        try
+        {
+            await ApiClient.RejectAsync(RunId, proposal.Id.Value, reason);
+            await LoadQueueAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+    }
+}
