@@ -1,15 +1,16 @@
 <!--
 Sync Impact Report
 ==================
-Version change: 1.0.0 → 1.1.0
+Version change: 1.1.0 → 1.2.0
 Modified principles:
-  - I. Code Quality & Maintainability → expanded with mandatory code commenting rules
-Added sections: None
+  - II. Testing Standards → added anti-mocking-interface guidance
+Added sections:
+  - VI. Pragmatic Simplicity (new core principle)
 Removed sections: None
 Templates requiring updates:
-  - .specify/templates/plan-template.md ✅ no change (Constitution Check filled dynamically)
-  - .specify/templates/spec-template.md ✅ no change (no comment-specific constraints)
-  - .specify/templates/tasks-template.md ✅ updated (Polish phase comment verification)
+  - .specify/templates/plan-template.md ✅ updated (Complexity Tracking references Principle VI)
+  - .specify/templates/spec-template.md ✅ no change (no implementation-specific constraints)
+  - .specify/templates/tasks-template.md ✅ updated (Polish phase simplicity verification)
   - .specify/templates/commands/*.md — N/A (no command files present)
   - README.md ✅ no changes required
 Follow-up TODOs: None
@@ -63,10 +64,13 @@ Billing-critical behavior MUST be proven by automated tests before it ships.
 - Test names and assertions MUST describe business outcomes (e.g., "flags quantity
   mismatch when Giacom seats exceed Stripe subscription quantity"), not implementation
   details.
+- Interfaces SHOULD NOT be created solely to enable mocking; domain logic SHOULD
+  normally be tested through concrete types.
 
 **Rationale**: Incorrect reconciliation directly causes missed revenue or customer
 overbilling. Tests are the primary safety net for a domain where manual spreadsheets
-are the alternative.
+are the alternative. Testing through concrete types keeps designs honest and avoids
+interface proliferation that exists only to satisfy test doubles.
 
 ### III. Consistent User Experience
 
@@ -132,6 +136,28 @@ approval in the current product scope.
 **Rationale**: BillDrift exists to eliminate missed revenue and prevent overbilling
 while removing manual work—not to replace operator judgment with silent automation.
 
+### VI. Pragmatic Simplicity
+
+BillDrift prioritises simple, understandable solutions over architectural purity.
+
+- Implementations MUST begin with the simplest design capable of meeting the current
+  feature specification.
+- Abstractions MUST NOT be introduced solely for anticipated future requirements.
+- Interfaces, providers, factories, strategies, pipelines, mediators, or additional
+  project boundaries require at least one of the following:
+  - More than one active implementation.
+  - A proven testing requirement that cannot reasonably be satisfied through concrete types.
+  - Existing duplication that would otherwise remain.
+  - Isolation of external dependencies.
+- Where multiple designs are possible, the design with the lowest conceptual
+  complexity SHOULD be preferred.
+- Future roadmap items SHOULD be represented in specifications and documentation
+  rather than implementation.
+
+**Rationale**: Over-engineering slows delivery, obscures billing logic, and increases
+the risk of subtle reconciliation errors. Simplicity keeps the codebase approachable
+for contributors and operators who must trust what the tool does.
+
 ## Domain Constraints
 
 - **Primary users**: Microsoft 365 resellers using Giacom, MSPs billing via Stripe,
@@ -147,13 +173,14 @@ while removing manual work—not to replace operator judgment with silent automa
 ## Development Workflow & Quality Gates
 
 - Every feature plan MUST include a Constitution Check gate (pre-research and
-  post-design) verifying compliance with Principles I–V.
+  post-design) verifying compliance with Principles I–VI.
 - Pull requests MUST not merge with failing CI, missing tests for billing-critical
   changes, or unresolved security findings above the project's accepted threshold.
 - Code review MUST explicitly confirm: reconciliation correctness, approval/dry-run
   paths for Stripe writes, secret handling, UX consistency for operator-facing
-  flows, and adequate code comments on new or modified billing-critical logic,
-  public interfaces, and non-obvious implementation choices.
+  flows, adequate code comments on new or modified billing-critical logic,
+  public interfaces, and non-obvious implementation choices, and that abstractions
+  introduced satisfy Principle VI.
 - New ingestion sources or Stripe write capabilities MUST include fixture data,
   contract tests, and operator-facing documentation before release.
 - Runtime development guidance lives in feature `quickstart.md` files and `README.md`;
@@ -179,4 +206,4 @@ clarifications and non-semantic wording.
 **Compliance review**: Feature specs, plans, and tasks generated via Spec Kit MUST be
 reviewed against this constitution before implementation begins and again before merge.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-26 | **Last Amended**: 2026-07-01
+**Version**: 1.2.0 | **Ratified**: 2026-06-26 | **Last Amended**: 2026-07-02
