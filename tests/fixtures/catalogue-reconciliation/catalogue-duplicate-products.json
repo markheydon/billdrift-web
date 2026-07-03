@@ -1,0 +1,1 @@
+{ "scenario": "catalogue-duplicate-products", "description": "Two Stripe products share the same offer/SKU metadata" }

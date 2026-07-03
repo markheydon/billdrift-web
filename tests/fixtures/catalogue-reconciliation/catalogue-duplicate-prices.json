@@ -1,0 +1,1 @@
+{ "scenario": "catalogue-duplicate-prices", "description": "Two active Stripe prices for the same product interval" }

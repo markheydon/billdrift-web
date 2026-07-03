@@ -1,0 +1,1 @@
+{ "scenario": "catalogue-missing-price", "description": "Stripe product exists but required price slot is missing" }
