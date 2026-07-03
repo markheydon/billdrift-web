@@ -372,6 +372,106 @@ public sealed class AzureBlobIngestionArchiveStore : IIngestionBlobStore
         return document?.Records;
     }
 
+    /// <inheritdoc />
+    public async Task<string> PersistSupplierCostLinesAsync(
+        Guid ingestionId,
+        GiacomPdfIngestionResult result,
+        IReadOnlyList<SupplierCostLine> supplierCostLines,
+        string? originalFileName,
+        DateTimeOffset uploadedAt,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureContainerAsync(cancellationToken);
+
+        var sourcePath = GetSourcePath(ingestionId, originalFileName);
+        var rawLinesPath = $"{ingestionId:D}/result/raw-lines.json";
+        var supplierCostPath = $"{ingestionId:D}/result/supplier-cost.json";
+        var manifestPath = $"{ingestionId:D}/result/manifest.json";
+
+        var rawLinesJson = JsonSerializer.Serialize(result.Lines, JsonOptions);
+        await UploadJsonAsync(rawLinesPath, rawLinesJson, cancellationToken);
+
+        var normalizationSkipped = result.Summary.LinesExtracted - supplierCostLines.Count;
+        var supplierDocument = new SupplierCostBlobDocument(supplierCostLines, normalizationSkipped);
+        var supplierJson = JsonSerializer.Serialize(supplierDocument, JsonOptions);
+        await UploadJsonAsync(supplierCostPath, supplierJson, cancellationToken);
+
+        var manifest = new GiacomPdfManifestDocument(
+            ingestionId,
+            ImportSourceKind.GiacomBillingPdf,
+            originalFileName,
+            result.SourceDocumentId,
+            uploadedAt,
+            result.IngestedAt,
+            MapStatus(result.Status),
+            result.Summary,
+            new GiacomPdfManifestBlobs(sourcePath, rawLinesPath, supplierCostPath));
+
+        var manifestJson = JsonSerializer.Serialize(manifest, JsonOptions);
+        await UploadJsonAsync(manifestPath, manifestJson, cancellationToken);
+
+        return manifestPath;
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<SupplierCostLine>?> GetSupplierCostLinesAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureContainerAsync(cancellationToken);
+        var path = $"{ingestionId:D}/result/supplier-cost.json";
+        var document = await TryDownloadJsonAsync<SupplierCostBlobDocument>(path, cancellationToken);
+        return document?.Records;
+    }
+
+    /// <inheritdoc />
+    public async Task<string> PersistStripeBillingItemsAsync(
+        Guid ingestionId,
+        StripeCsvIngestionResult result,
+        IReadOnlyList<StripeBillingItem> billingItems,
+        string? originalFileName,
+        DateTimeOffset uploadedAt,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureContainerAsync(cancellationToken);
+
+        var sourcePath = GetSourcePath(ingestionId, originalFileName);
+        var billingPath = $"{ingestionId:D}/result/stripe-billing.json";
+        var manifestPath = $"{ingestionId:D}/result/manifest.json";
+
+        var normalizationSkipped = Math.Max(0, result.SubscriptionItems.Count - billingItems.Count);
+        var billingDocument = new StripeBillingItemsBlobDocument(billingItems, normalizationSkipped);
+        var billingJson = JsonSerializer.Serialize(billingDocument, JsonOptions);
+        await UploadJsonAsync(billingPath, billingJson, cancellationToken);
+
+        var manifest = new StripeCsvManifestDocument(
+            ingestionId,
+            ImportSourceKind.StripeExport,
+            originalFileName,
+            result.BundleId,
+            uploadedAt,
+            result.IngestedAt,
+            MapStatus(result.Status),
+            result.Summary,
+            new StripeCsvManifestBlobs(sourcePath, billingPath));
+
+        var manifestJson = JsonSerializer.Serialize(manifest, JsonOptions);
+        await UploadJsonAsync(manifestPath, manifestJson, cancellationToken);
+
+        return manifestPath;
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<StripeBillingItem>?> GetStripeBillingItemsAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureContainerAsync(cancellationToken);
+        var path = $"{ingestionId:D}/result/stripe-billing.json";
+        var document = await TryDownloadJsonAsync<StripeBillingItemsBlobDocument>(path, cancellationToken);
+        return document?.Records;
+    }
+
     private async Task<T?> TryDownloadJsonAsync<T>(string path, CancellationToken cancellationToken)
         where T : class
     {

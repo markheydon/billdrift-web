@@ -18,7 +18,7 @@ public static class RetailPricingImportEndpoints
     {
         var group = endpoints.MapGroup("/api/imports/retail-pricing").WithTags("RetailPricingImports");
 
-        group.MapPost("/", UploadAsync);
+        group.MapPost("/", UploadAsync).DisableAntiforgery();
         group.MapGet("/", ListRunsAsync);
         group.MapGet("/{ingestionId:guid}", GetRunDetailAsync);
         group.MapGet("/{ingestionId:guid}/resolved-prices", GetResolvedPricesAsync);

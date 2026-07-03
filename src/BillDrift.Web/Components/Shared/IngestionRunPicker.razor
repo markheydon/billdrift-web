@@ -1,0 +1,37 @@
+@typeparam TRun where TRun : class
+
+<FluentSelect TOption="string" TValue="string" @bind-Value="_selected" Label="@Label" Style="min-width: 280px;">
+    <FluentOption TOption="string" TValue="string" Value="@NoneValue">@(Placeholder ?? "Select a run…")</FluentOption>
+    @foreach (var run in Runs)
+    {
+        <FluentOption TOption="string" TValue="string" Value="@GetId(run).ToString()">@FormatRun(run)</FluentOption>
+    }
+</FluentSelect>
+
+@code {
+    private const string NoneValue = "__none__";
+
+    [Parameter] public string Label { get; set; } = "Ingestion run";
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public IReadOnlyList<TRun> Runs { get; set; } = [];
+    [Parameter] public Func<TRun, Guid> GetId { get; set; } = _ => Guid.Empty;
+    [Parameter] public Func<TRun, string> FormatRun { get; set; } = _ => "Run";
+    [Parameter] public Guid? SelectedId { get; set; }
+    [Parameter] public EventCallback<Guid?> SelectedIdChanged { get; set; }
+
+    private string _selected = NoneValue;
+
+    protected override void OnParametersSet()
+    {
+        _selected = SelectedId?.ToString() ?? NoneValue;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_selected != (SelectedId?.ToString() ?? NoneValue))
+        {
+            SelectedId = _selected == NoneValue || !Guid.TryParse(_selected, out var id) ? null : id;
+            await SelectedIdChanged.InvokeAsync(SelectedId);
+        }
+    }
+}

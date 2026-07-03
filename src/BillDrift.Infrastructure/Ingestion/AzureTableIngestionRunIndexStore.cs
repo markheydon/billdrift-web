@@ -300,4 +300,270 @@ public sealed class AzureTableIngestionRunIndexStore : IIngestionRunIndexStore
             FailureReason = entity.GetString("FailureReason")
         };
     }
+
+    private const string GiacomPdfPartitionKey = "GiacomBillingPdf";
+    private const string StripeCsvPartitionKey = "StripeExport";
+
+    /// <inheritdoc />
+    public async Task CreateGiacomPdfInProgressAsync(GiacomPdfIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        await _tableClient.AddEntityAsync(ToGiacomPdfEntity(run), cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task CompleteGiacomPdfAsync(GiacomPdfIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        await _tableClient.UpsertEntityAsync(ToGiacomPdfEntity(run), TableUpdateMode.Replace, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task FailGiacomPdfAsync(GiacomPdfIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        await _tableClient.UpsertEntityAsync(ToGiacomPdfEntity(run), TableUpdateMode.Replace, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<GiacomPdfIngestionRun?> GetGiacomPdfByIdAsync(Guid ingestionId, CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        var filter = $"PartitionKey eq '{GiacomPdfPartitionKey}' and IngestionId eq '{ingestionId:D}'";
+
+        await foreach (var entity in _tableClient.QueryAsync<TableEntity>(filter, cancellationToken: cancellationToken))
+        {
+            return FromGiacomPdfEntity(entity);
+        }
+
+        return null;
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<GiacomPdfIngestionRun>> ListRecentGiacomPdfAsync(
+        int take = 20,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        var results = new List<GiacomPdfIngestionRun>();
+
+        await foreach (var entity in _tableClient.QueryAsync<TableEntity>(
+                           $"PartitionKey eq '{GiacomPdfPartitionKey}'",
+                           cancellationToken: cancellationToken))
+        {
+            results.Add(FromGiacomPdfEntity(entity));
+            if (results.Count >= take)
+            {
+                break;
+            }
+        }
+
+        return results.OrderByDescending(r => r.UploadedAt).Take(take).ToList();
+    }
+
+    /// <inheritdoc />
+    public async Task CreateStripeCsvInProgressAsync(StripeCsvIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        await _tableClient.AddEntityAsync(ToStripeCsvEntity(run), cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task CompleteStripeCsvAsync(StripeCsvIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        await _tableClient.UpsertEntityAsync(ToStripeCsvEntity(run), TableUpdateMode.Replace, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task FailStripeCsvAsync(StripeCsvIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        await _tableClient.UpsertEntityAsync(ToStripeCsvEntity(run), TableUpdateMode.Replace, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<StripeCsvIngestionRun?> GetStripeCsvByIdAsync(Guid ingestionId, CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        var filter = $"PartitionKey eq '{StripeCsvPartitionKey}' and IngestionId eq '{ingestionId:D}'";
+
+        await foreach (var entity in _tableClient.QueryAsync<TableEntity>(filter, cancellationToken: cancellationToken))
+        {
+            return FromStripeCsvEntity(entity);
+        }
+
+        return null;
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<StripeCsvIngestionRun>> ListRecentStripeCsvAsync(
+        int take = 20,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureTableAsync(cancellationToken);
+        var results = new List<StripeCsvIngestionRun>();
+
+        await foreach (var entity in _tableClient.QueryAsync<TableEntity>(
+                           $"PartitionKey eq '{StripeCsvPartitionKey}'",
+                           cancellationToken: cancellationToken))
+        {
+            results.Add(FromStripeCsvEntity(entity));
+            if (results.Count >= take)
+            {
+                break;
+            }
+        }
+
+        return results.OrderByDescending(r => r.UploadedAt).Take(take).ToList();
+    }
+
+    private static TableEntity ToGiacomPdfEntity(GiacomPdfIngestionRun run)
+    {
+        var entity = new TableEntity(GiacomPdfPartitionKey, EncodeRowKey(run.UploadedAt, run.IngestionId))
+        {
+            ["IngestionId"] = run.IngestionId.ToString("D"),
+            ["SourceKind"] = run.SourceKind.ToString(),
+            ["ContentFingerprint"] = run.ContentFingerprint,
+            ["UploadedAt"] = run.UploadedAt,
+            ["Status"] = run.Status.ToString(),
+            ["SourceBlobPath"] = run.SourceBlobPath
+        };
+
+        if (!string.IsNullOrWhiteSpace(run.OriginalFileName))
+        {
+            entity["OriginalFileName"] = run.OriginalFileName;
+        }
+
+        if (run.CompletedAt is not null)
+        {
+            entity["CompletedAt"] = run.CompletedAt;
+        }
+
+        if (run.Summary is not null)
+        {
+            entity["LinesExtracted"] = run.Summary.LinesExtracted;
+            entity["LinesSkipped"] = run.Summary.LinesSkipped;
+        }
+
+        if (!string.IsNullOrWhiteSpace(run.ResultManifestBlobPath))
+        {
+            entity["ManifestBlobPath"] = run.ResultManifestBlobPath;
+        }
+
+        if (!string.IsNullOrWhiteSpace(run.FailureReason))
+        {
+            entity["FailureReason"] = run.FailureReason;
+        }
+
+        return entity;
+    }
+
+    private static GiacomPdfIngestionRun FromGiacomPdfEntity(TableEntity entity)
+    {
+        var ingestionId = Guid.Parse(entity.GetString("IngestionId")!);
+        Enum.TryParse(entity.GetString("SourceKind"), out ImportSourceKind sourceKind);
+        Enum.TryParse(entity.GetString("Status"), out IngestionRunStatus status);
+
+        GiacomPdfIngestionSummary? summary = null;
+        if (entity.TryGetValue("LinesExtracted", out _))
+        {
+            summary = new GiacomPdfIngestionSummary(
+                entity.GetInt32("LinesExtracted") ?? 0,
+                entity.GetInt32("LinesSkipped") ?? 0,
+                0,
+                0,
+                0);
+        }
+
+        return new GiacomPdfIngestionRun
+        {
+            IngestionId = ingestionId,
+            SourceKind = sourceKind,
+            OriginalFileName = entity.GetString("OriginalFileName"),
+            ContentFingerprint = entity.GetString("ContentFingerprint") ?? string.Empty,
+            UploadedAt = entity.GetDateTimeOffset("UploadedAt") ?? DateTimeOffset.MinValue,
+            CompletedAt = entity.GetDateTimeOffset("CompletedAt"),
+            Status = status,
+            Summary = summary,
+            SourceBlobPath = entity.GetString("SourceBlobPath") ?? string.Empty,
+            ResultManifestBlobPath = entity.GetString("ManifestBlobPath"),
+            FailureReason = entity.GetString("FailureReason")
+        };
+    }
+
+    private static TableEntity ToStripeCsvEntity(StripeCsvIngestionRun run)
+    {
+        var entity = new TableEntity(StripeCsvPartitionKey, EncodeRowKey(run.UploadedAt, run.IngestionId))
+        {
+            ["IngestionId"] = run.IngestionId.ToString("D"),
+            ["SourceKind"] = run.SourceKind.ToString(),
+            ["ContentFingerprint"] = run.ContentFingerprint,
+            ["UploadedAt"] = run.UploadedAt,
+            ["Status"] = run.Status.ToString(),
+            ["SourceBlobPath"] = run.SourceBlobPath
+        };
+
+        if (!string.IsNullOrWhiteSpace(run.OriginalFileName))
+        {
+            entity["OriginalFileName"] = run.OriginalFileName;
+        }
+
+        if (run.CompletedAt is not null)
+        {
+            entity["CompletedAt"] = run.CompletedAt;
+        }
+
+        if (run.Summary is not null)
+        {
+            entity["SubscriptionItemsExtracted"] = run.Summary.SubscriptionItemsExtracted;
+            entity["ProductsExtracted"] = run.Summary.ProductsExtracted;
+            entity["PricesExtracted"] = run.Summary.PricesExtracted;
+        }
+
+        if (!string.IsNullOrWhiteSpace(run.ResultManifestBlobPath))
+        {
+            entity["ManifestBlobPath"] = run.ResultManifestBlobPath;
+        }
+
+        if (!string.IsNullOrWhiteSpace(run.FailureReason))
+        {
+            entity["FailureReason"] = run.FailureReason;
+        }
+
+        return entity;
+    }
+
+    private static StripeCsvIngestionRun FromStripeCsvEntity(TableEntity entity)
+    {
+        var ingestionId = Guid.Parse(entity.GetString("IngestionId")!);
+        Enum.TryParse(entity.GetString("SourceKind"), out ImportSourceKind sourceKind);
+        Enum.TryParse(entity.GetString("Status"), out IngestionRunStatus status);
+
+        StripeCsvIngestionSummary? summary = null;
+        if (entity.TryGetValue("SubscriptionItemsExtracted", out _))
+        {
+            summary = new StripeCsvIngestionSummary
+            {
+                SubscriptionItemsExtracted = entity.GetInt32("SubscriptionItemsExtracted") ?? 0,
+                ProductsExtracted = entity.GetInt32("ProductsExtracted") ?? 0,
+                PricesExtracted = entity.GetInt32("PricesExtracted") ?? 0
+            };
+        }
+
+        return new StripeCsvIngestionRun
+        {
+            IngestionId = ingestionId,
+            SourceKind = sourceKind,
+            OriginalFileName = entity.GetString("OriginalFileName"),
+            ContentFingerprint = entity.GetString("ContentFingerprint") ?? string.Empty,
+            UploadedAt = entity.GetDateTimeOffset("UploadedAt") ?? DateTimeOffset.MinValue,
+            CompletedAt = entity.GetDateTimeOffset("CompletedAt"),
+            Status = status,
+            Summary = summary,
+            SourceBlobPath = entity.GetString("SourceBlobPath") ?? string.Empty,
+            ResultManifestBlobPath = entity.GetString("ManifestBlobPath"),
+            FailureReason = entity.GetString("FailureReason")
+        };
+    }
 }

@@ -1,4 +1,5 @@
 using BillDrift.Application.Import;
+using BillDrift.Application.Normalization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BillDrift.Infrastructure.Import.Stripe;
@@ -17,6 +18,7 @@ public static class StripeImportServiceCollectionExtensions
     public static IServiceCollection AddStripeBillingCsvIngestion(this IServiceCollection services)
     {
         services.AddSingleton<IStripeBillingCsvIngester, StripeBillingCsvIngester>();
+        services.AddSingleton<IStripeBillingNormalizer, StripeBillingNormalizer>();
         return services;
     }
 }

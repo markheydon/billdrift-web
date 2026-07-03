@@ -9,10 +9,14 @@
 <h1>Drift Trends</h1>
 
 <FluentTabs>
-    <FluentTab Label="Recurring Drift">
+    <FluentTab Header="Recurring Drift">
         @if (_driftTrends.Count == 0)
         {
-            <p>No recurring drift trends found.</p>
+            <EmptyStatePanel
+                Title="No recurring drift trends"
+                Message="Trends appear after you complete multiple reconciliation runs with the same mismatches. Run reconciliation across several billing periods to surface recurring issues."
+                ActionHref="/reconciliation"
+                ActionLabel="Go to reconciliation" />
         }
         else
         {
@@ -24,7 +28,7 @@
             </FluentDataGrid>
         }
     </FluentTab>
-    <FluentTab Label="Pricing Drift">
+    <FluentTab Header="Pricing Drift">
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
             <FluentTextArea @bind-Value="_offerId" Label="Offer ID" Rows="1" />
             <FluentTextArea @bind-Value="_skuId" Label="SKU ID" Rows="1" />

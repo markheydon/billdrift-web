@@ -1,0 +1,108 @@
+@page "/catalogue"
+@rendermode InteractiveServer
+@using BillDrift.Application.CatalogueReconciliation
+@using BillDrift.Domain.Mapping
+@inject ICatalogueReconciliationApiClient CatalogueClient
+@inject IIngestionApiClient IngestionClient
+@inject NavigationManager Navigation
+
+<PageTitle>Catalogue reconciliation</PageTitle>
+
+<h1>Catalogue reconciliation</h1>
+
+<p>Compare Stripe catalogue data against retail pricing to find actionable product and price fixes.</p>
+
+@if (_stripeRuns.Count == 0 && _pricingRuns.Count == 0)
+{
+    <EmptyStatePanel
+        Title="No catalogue sources uploaded"
+        Message="Upload a Stripe CSV bundle and a retail pricing CSV on the ingestion page before running catalogue reconciliation."
+        ActionHref="/ingestion"
+        ActionLabel="Go to ingestion" />
+}
+
+<FluentStack VerticalGap="12">
+    <FluentSelect TOption="string" TValue="string" @bind-Value="_stripeRunId" Label="Stripe ingestion run">
+        <FluentOption TOption="string" TValue="string" Value="@NoneValue">None</FluentOption>
+        @foreach (var run in _stripeRuns)
+        {
+            <FluentOption TOption="string" TValue="string" Value="@run.IngestionId.ToString()">@run.UploadedAt:g</FluentOption>
+        }
+    </FluentSelect>
+    <FluentSelect TOption="string" TValue="string" @bind-Value="_pricingRunId" Label="Retail pricing run">
+        <FluentOption TOption="string" TValue="string" Value="@NoneValue">None</FluentOption>
+        @foreach (var run in _pricingRuns)
+        {
+            <FluentOption TOption="string" TValue="string" Value="@run.IngestionId.ToString()">@run.UploadedAt:g</FluentOption>
+        }
+    </FluentSelect>
+    <FluentButton Appearance="ButtonAppearance.Primary" OnClick="StartRunAsync" Disabled="_running">
+        @(_running ? "Running…" : "Start catalogue run")
+    </FluentButton>
+</FluentStack>
+
+@if (_result is null && !_running && (_stripeRuns.Count > 0 || _pricingRuns.Count > 0))
+{
+    <EmptyStatePanel
+        Title="Ready for catalogue reconciliation"
+        Message="Select a Stripe ingestion run and retail pricing run, then start the catalogue run. Actionable fixes can be sent to the approval queue when complete."
+        ActionHref="/mapping"
+        ActionLabel="Configure product mappings" />
+}
+
+@if (_result is not null)
+{
+    <FluentDivider />
+    <h2>Results</h2>
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8">
+        <FluentBadge>Actionable fixes: @_result.Summary.ProposedFixesActionable</FluentBadge>
+        <FluentBadge>Manual only: @_result.Summary.ProposedFixesManualOnly</FluentBadge>
+    </FluentStack>
+    <FluentButton OnClick="IngestFixesAsync">Ingest fixes to approval queue</FluentButton>
+}
+
+@code {
+    private const string NoneValue = "__none__";
+    private string _stripeRunId = NoneValue;
+    private string _pricingRunId = NoneValue;
+    private bool _running;
+    private BillDrift.Domain.CatalogueReconciliation.CatalogueReconciliationRun? _result;
+    private IReadOnlyList<BillDrift.Application.Ingestion.StripeCsvIngestionRun> _stripeRuns = [];
+    private IReadOnlyList<BillDrift.Application.Ingestion.RetailPricingIngestionRun> _pricingRuns = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _stripeRuns = await IngestionClient.ListStripeCsvRunsAsync();
+        _pricingRuns = await IngestionClient.ListRetailPricingRunsAsync();
+    }
+
+    private async Task StartRunAsync()
+    {
+        _running = true;
+        try
+        {
+            _result = await CatalogueClient.StartRunAsync(new CatalogueReconciliationRunRequest(
+                ParseId(_stripeRunId),
+                ParseId(_pricingRunId),
+                ProductMappings: []));
+        }
+        finally
+        {
+            _running = false;
+        }
+    }
+
+    private async Task IngestFixesAsync()
+    {
+        if (_result is null)
+        {
+            return;
+        }
+
+        var ingest = await CatalogueClient.IngestApprovalsAsync(_result.RunId.Value);
+        Navigation.NavigateTo($"/approvals/{ingest.ApprovalRunReference}");
+    }
+
+    private static Guid? ParseId(string value) =>
+        value == NoneValue ? null : Guid.Parse(value);
+}

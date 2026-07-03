@@ -72,6 +72,7 @@ public sealed class SubscriptionManagementIngestionService : ISubscriptionManage
                 uploadedAt,
                 cancellationToken);
 
+            var status = MapStatus(result.Status);
             var completed = new SubscriptionManagementIngestionRun
             {
                 IngestionId = ingestionId,
@@ -79,10 +80,16 @@ public sealed class SubscriptionManagementIngestionService : ISubscriptionManage
                 ContentFingerprint = contentFingerprint,
                 UploadedAt = uploadedAt,
                 CompletedAt = result.IngestedAt,
-                Status = MapStatus(result.Status),
+                Status = status,
                 Summary = result.Summary,
                 SourceBlobPath = sourceBlobPath,
-                ResultManifestBlobPath = manifestPath
+                ResultManifestBlobPath = manifestPath,
+                FailureReason = status == IngestionRunStatus.Failed
+                    ? IngestionFailureReasonBuilder.Build(
+                        result.Status,
+                        result.LogEntries,
+                        "Subscription management CSV ingestion failed.")
+                    : null
             };
 
             await _indexStore.CompleteAsync(completed, cancellationToken);

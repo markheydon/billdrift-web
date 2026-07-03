@@ -8,6 +8,8 @@ public sealed class InMemoryIngestionRunIndexStore : IIngestionRunIndexStore
 {
     private readonly ConcurrentDictionary<Guid, SubscriptionManagementIngestionRun> _runs = new();
     private readonly ConcurrentDictionary<Guid, RetailPricingIngestionRun> _retailRuns = new();
+    private readonly ConcurrentDictionary<Guid, GiacomPdfIngestionRun> _giacomPdfRuns = new();
+    private readonly ConcurrentDictionary<Guid, StripeCsvIngestionRun> _stripeCsvRuns = new();
 
     /// <inheritdoc />
     public Task CreateInProgressAsync(SubscriptionManagementIngestionRun run, CancellationToken cancellationToken = default)
@@ -81,5 +83,79 @@ public sealed class InMemoryIngestionRunIndexStore : IIngestionRunIndexStore
             .Take(take)
             .ToList();
         return Task.FromResult<IReadOnlyList<RetailPricingIngestionRun>>(items);
+    }
+
+    /// <inheritdoc />
+    public Task CreateGiacomPdfInProgressAsync(GiacomPdfIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        _giacomPdfRuns[run.IngestionId] = run;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task CompleteGiacomPdfAsync(GiacomPdfIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        _giacomPdfRuns[run.IngestionId] = run;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task FailGiacomPdfAsync(GiacomPdfIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        _giacomPdfRuns[run.IngestionId] = run;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task<GiacomPdfIngestionRun?> GetGiacomPdfByIdAsync(Guid ingestionId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_giacomPdfRuns.TryGetValue(ingestionId, out var run) ? run : null);
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<GiacomPdfIngestionRun>> ListRecentGiacomPdfAsync(
+        int take = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var items = _giacomPdfRuns.Values
+            .OrderByDescending(r => r.UploadedAt)
+            .Take(take)
+            .ToList();
+        return Task.FromResult<IReadOnlyList<GiacomPdfIngestionRun>>(items);
+    }
+
+    /// <inheritdoc />
+    public Task CreateStripeCsvInProgressAsync(StripeCsvIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        _stripeCsvRuns[run.IngestionId] = run;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task CompleteStripeCsvAsync(StripeCsvIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        _stripeCsvRuns[run.IngestionId] = run;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task FailStripeCsvAsync(StripeCsvIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        _stripeCsvRuns[run.IngestionId] = run;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task<StripeCsvIngestionRun?> GetStripeCsvByIdAsync(Guid ingestionId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_stripeCsvRuns.TryGetValue(ingestionId, out var run) ? run : null);
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<StripeCsvIngestionRun>> ListRecentStripeCsvAsync(
+        int take = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var items = _stripeCsvRuns.Values
+            .OrderByDescending(r => r.UploadedAt)
+            .Take(take)
+            .ToList();
+        return Task.FromResult<IReadOnlyList<StripeCsvIngestionRun>>(items);
     }
 }

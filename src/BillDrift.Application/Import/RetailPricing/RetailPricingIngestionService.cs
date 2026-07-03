@@ -80,6 +80,7 @@ public sealed class RetailPricingIngestionService : IRetailPricingIngestionServi
                 uploadedAt,
                 cancellationToken);
 
+            var status = MapStatus(result.Status);
             var completed = new RetailPricingIngestionRun
             {
                 IngestionId = ingestionId,
@@ -87,10 +88,16 @@ public sealed class RetailPricingIngestionService : IRetailPricingIngestionServi
                 ContentFingerprint = contentFingerprint,
                 UploadedAt = uploadedAt,
                 CompletedAt = result.IngestedAt,
-                Status = MapStatus(result.Status),
+                Status = status,
                 Summary = result.Summary,
                 SourceBlobPath = sourceBlobPath,
-                ResultManifestBlobPath = manifestPath
+                ResultManifestBlobPath = manifestPath,
+                FailureReason = status == IngestionRunStatus.Failed
+                    ? IngestionFailureReasonBuilder.Build(
+                        result.Status,
+                        result.LogEntries,
+                        "Retail pricing CSV ingestion failed.")
+                    : null
             };
 
             await _indexStore.CompleteRetailPricingAsync(completed, cancellationToken);

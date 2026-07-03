@@ -6,11 +6,21 @@ namespace BillDrift.Infrastructure.History;
 public static class RunHistoryStorageExtensions
 {
     /// <summary>Adds Azure table and blob stores for run history.</summary>
-    public static IServiceCollection AddRunHistoryStorage(this IServiceCollection services)
+    public static IServiceCollection AddRunHistoryStorage(this IServiceCollection services, bool useInMemory = false)
     {
         services.Configure<RunHistoryStorageOptions>(_ => { });
-        services.AddScoped<Application.History.IRunHistoryStore, AzureTableRunHistoryStore>();
-        services.AddScoped<Application.History.IRunBlobArchiveStore, AzureBlobRunArchiveStore>();
+
+        if (useInMemory)
+        {
+            services.AddScoped<Application.History.IRunHistoryStore, InMemoryRunHistoryStore>();
+            services.AddScoped<Application.History.IRunBlobArchiveStore, InMemoryRunHistoryStore>();
+        }
+        else
+        {
+            services.AddScoped<Application.History.IRunHistoryStore, AzureTableRunHistoryStore>();
+            services.AddScoped<Application.History.IRunBlobArchiveStore, AzureBlobRunArchiveStore>();
+        }
+
         return services;
     }
 }

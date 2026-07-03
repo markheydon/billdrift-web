@@ -2,7 +2,11 @@
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
     <h3>Export approved changeset</h3>
-    <FluentButton Appearance="ButtonAppearance.Primary" OnClick="ExportAsync">Export approved items</FluentButton>
+    @if (_empty)
+    {
+        <FluentMessageBar Intent="MessageBarIntent.Info">No approved items to export yet.</FluentMessageBar>
+    }
+    <FluentButton Appearance="ButtonAppearance.Primary" OnClick="ExportAsync" Disabled="_empty">Export approved items</FluentButton>
     @if (!string.IsNullOrEmpty(_message))
     {
         <FluentMessageBar Intent="MessageBarIntent.Info">@_message</FluentMessageBar>
@@ -16,7 +20,13 @@
     [Parameter]
     public EventCallback OnExportCompleted { get; set; }
 
+    [Parameter]
+    public bool EmptyQueue { get; set; }
+
     private string? _message;
+    private bool _empty;
+
+    protected override void OnParametersSet() => _empty = EmptyQueue;
 
     private async Task ExportAsync()
     {

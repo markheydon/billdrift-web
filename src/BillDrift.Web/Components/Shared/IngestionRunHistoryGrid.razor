@@ -1,0 +1,38 @@
+@using BillDrift.Application.Ingestion
+
+@if (Rows.Count == 0)
+{
+    <EmptyStatePanel
+        Title="@EmptyTitle"
+        Message="@EmptyMessage"
+        ActionHref="/ingestion"
+        ActionLabel="Upload a file" />
+}
+else
+{
+    <FluentDataGrid Items="@Rows.AsQueryable()" GridTemplateColumns="1.25fr 0.75fr 1.5fr 1.5fr">
+        <PropertyColumn Title="Uploaded" Property="@(r => r.UploadedAt)" Format="g" />
+        <TemplateColumn Title="Status">
+            <FluentBadge>@context.Status</FluentBadge>
+        </TemplateColumn>
+        <PropertyColumn Title="File" Property="@(r => r.FileName)" />
+        <PropertyColumn Title="Details" Property="@(r => r.Details)" />
+    </FluentDataGrid>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public IReadOnlyList<IngestionRunHistoryRow> Rows { get; set; } = [];
+
+    [Parameter]
+    public string EmptyTitle { get; set; } = "No imports yet";
+
+    [Parameter]
+    public string EmptyMessage { get; set; } = "Upload a file to create your first import run.";
+
+    public sealed record IngestionRunHistoryRow(
+        DateTimeOffset UploadedAt,
+        IngestionRunStatus Status,
+        string FileName,
+        string Details);
+}

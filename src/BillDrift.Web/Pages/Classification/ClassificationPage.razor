@@ -1,0 +1,95 @@
+@page "/classification"
+@rendermode InteractiveServer
+@using BillDrift.Domain.Classification
+@inject IClassificationApiClient ApiClient
+
+<PageTitle>Classification</PageTitle>
+
+<h1>Classification configuration</h1>
+
+<p>Manage internal MEX IDs and per-item classification overrides used during reconciliation exception surfacing.</p>
+
+<FluentMessageBar Intent="MessageBarIntent.Info">
+    Internal MEX IDs identify your organisation's accounts. Overrides let you reclassify specific supplier lines when default rules mislabel an item. Changes apply to future reconciliation runs.
+</FluentMessageBar>
+
+@if (_loading)
+{
+    <FluentSpinner />
+}
+else
+{
+    <FluentTabs>
+        <FluentTab Header="Internal MEX IDs" Id="mex">
+            <FluentTextArea @bind-Value="_mexIdsText" Label="One MEX ID per line" Rows="8" />
+            <FluentButton Appearance="ButtonAppearance.Primary" OnClick="SaveMexIdsAsync">Save</FluentButton>
+        </FluentTab>
+        <FluentTab Header="Override lookup" Id="override">
+            <FluentStack VerticalGap="8">
+                <FluentTextArea @bind-Value="_stableKey" Label="Stable key" Rows="1" />
+                <FluentTextArea @bind-Value="_customerMexId" Label="Customer MEX ID" Rows="1" />
+                <FluentSelect TOption="string" TValue="string" @bind-Value="_classification" Label="Classification">
+                    @foreach (var value in Enum.GetNames<ReconciliationItemClassification>())
+                    {
+                        <FluentOption TOption="string" TValue="string" Value="@value">@value</FluentOption>
+                    }
+                </FluentSelect>
+                <FluentButton OnClick="ApplyOverrideAsync">Apply override</FluentButton>
+                <FluentButton OnClick="ClearOverrideAsync">Clear override</FluentButton>
+            </FluentStack>
+        </FluentTab>
+    </FluentTabs>
+
+    @if (!string.IsNullOrEmpty(_message))
+    {
+        <FluentMessageBar Intent="MessageBarIntent.Info">@_message</FluentMessageBar>
+    }
+}
+
+@code {
+    private bool _loading = true;
+    private string _mexIdsText = string.Empty;
+    private string _stableKey = string.Empty;
+    private string _customerMexId = string.Empty;
+    private string _classification = ReconciliationItemClassification.MicrosoftCsp.ToString();
+    private string? _message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var ids = await ApiClient.GetInternalMexIdsAsync();
+        _mexIdsText = string.Join(Environment.NewLine, ids);
+        _loading = false;
+    }
+
+    private async Task SaveMexIdsAsync()
+    {
+        var ids = _mexIdsText
+            .Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        await ApiClient.UpdateInternalMexIdsAsync(ids);
+        _message = "Internal MEX IDs updated.";
+    }
+
+    private async Task ApplyOverrideAsync()
+    {
+        await ApiClient.ApplyOverrideAsync(
+            _stableKey,
+            new ApplyClassificationOverrideRequest(
+                ReconciliationItemKind.SupplierCost,
+                _customerMexId,
+                Enum.Parse<ReconciliationItemClassification>(_classification),
+                "Operator override",
+                "web-operator"));
+        _message = "Override applied.";
+    }
+
+    private async Task ClearOverrideAsync()
+    {
+        await ApiClient.ClearOverrideAsync(
+            _stableKey,
+            new ClearClassificationOverrideRequest(
+                ReconciliationItemKind.SupplierCost,
+                _customerMexId,
+                "web-operator"));
+        _message = "Override cleared.";
+    }
+}

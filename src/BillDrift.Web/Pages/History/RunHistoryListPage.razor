@@ -23,9 +23,11 @@ else if (_error is not null)
 }
 else if (_items.Count == 0)
 {
-    <FluentMessageBar Intent="MessageBarIntent.Info">
-        No reconciliation runs archived yet. Complete a reconciliation to build history.
-    </FluentMessageBar>
+    <EmptyStatePanel
+        Title="No reconciliation runs yet"
+        Message="Complete a reconciliation with persistence enabled to archive runs here. You can then compare periods, review exceptions, and track drift over time."
+        ActionHref="/reconciliation"
+        ActionLabel="Run reconciliation" />
 }
 else
 {
@@ -39,7 +41,7 @@ else
         </TemplateColumn>
         <PropertyColumn Title="Proposals" Property="@(r => r.ProposedChangeCount)" />
         <TemplateColumn Title="Actions">
-            <FluentButton Appearance="ButtonAppearance.Transparent" Href="@($"/history/{context.RunId.Value}")">View</FluentButton>
+            <FluentAnchorButton Appearance="ButtonAppearance.Transparent" Href="@($"/history/{context.RunId.Value}")">View</FluentAnchorButton>
         </TemplateColumn>
     </FluentDataGrid>
 }

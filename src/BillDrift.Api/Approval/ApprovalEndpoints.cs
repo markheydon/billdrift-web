@@ -1,4 +1,7 @@
 using BillDrift.Application.Approval;
+using BillDrift.Application.History;
+using BillDrift.Application.Reconciliation;
+using BillDrift.Application.Reconciliation.ExceptionSurfacing;
 using BillDrift.Domain.Approval;
 using BillDrift.Domain.Reconciliation;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +18,7 @@ public static class ApprovalEndpoints
             .WithTags("Approval");
 
         group.MapPost("/ingest", IngestAsync);
+        group.MapPost("/ingest-from-run", IngestFromRunAsync);
         group.MapGet("/", GetQueueAsync);
         group.MapGet("/{proposalId:guid}", GetProposalAsync);
         group.MapPost("/{proposalId:guid}/approve", ApproveAsync);
@@ -40,6 +44,36 @@ public static class ApprovalEndpoints
         }
 
         var result = await service.IngestAsync(request, cancellationToken);
+        return Results.Ok(result);
+    }
+
+    private static async Task<IResult> IngestFromRunAsync(
+        Guid runId,
+        [FromBody] IngestApprovalsFromRunRequest? request,
+        ApprovalService service,
+        RunHistoryService historyService,
+        ExceptionSurfacingService surfacing,
+        CancellationToken cancellationToken)
+    {
+        var run = await historyService.LoadArchivedReconciliationRunAsync(RunId.FromGuid(runId), cancellationToken);
+        if (run is null)
+        {
+            return Results.NotFound();
+        }
+
+        if (run.ProposedChanges.Count == 0)
+        {
+            return Results.UnprocessableEntity(new { title = "No proposals", detail = "Run has no proposals to ingest." });
+        }
+
+        var exceptions = surfacing.Surface(run);
+        var ingestRequest = new ApprovalIngestionRequest(
+            run,
+            exceptions,
+            Classifications: null,
+            request?.IncludeInvestigationItems ?? true);
+
+        var result = await service.IngestAsync(ingestRequest, cancellationToken);
         return Results.Ok(result);
     }
 

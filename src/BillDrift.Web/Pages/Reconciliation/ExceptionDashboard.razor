@@ -1,0 +1,46 @@
+@using BillDrift.Application.Reconciliation.ExceptionSurfacing
+
+@if (Exceptions is null || !Exceptions.HasExceptions)
+{
+    <FluentMessageBar Intent="MessageBarIntent.Success">No exceptions — clean run.</FluentMessageBar>
+}
+else
+{
+    <FluentSelect TOption="string" TValue="string" @bind-Value="_categoryFilter" Label="Category filter" Style="max-width: 320px;">
+        <FluentOption TOption="string" TValue="string" Value="@AllCategories">All categories</FluentOption>
+        @foreach (var category in Exceptions.Summary.ByCategory.Keys)
+        {
+            <FluentOption TOption="string" TValue="string" Value="@category.ToString()">@category</FluentOption>
+        }
+    </FluentSelect>
+
+    @foreach (var group in Exceptions.CustomerGroups)
+    {
+        <h3>@group.DisplayLabel (@group.Customer.MexId)</h3>
+        @foreach (var ex in group.Exceptions.Where(Filter))
+        {
+            <FluentCard>
+                <strong>@ex.Category</strong> — @ex.Explanation
+                @if (ex.Evidence.Count > 0)
+                {
+                    <ul>
+                        @foreach (var ev in ex.Evidence)
+                        {
+                            <li><strong>@ev.Field:</strong> @ev.Value</li>
+                        }
+                    </ul>
+                }
+            </FluentCard>
+        }
+    }
+}
+
+@code {
+    [Parameter] public ReconciliationExceptionViewModel? Exceptions { get; set; }
+
+    private const string AllCategories = "__all__";
+    private string _categoryFilter = AllCategories;
+
+    private bool Filter(SurfacedException ex) =>
+        _categoryFilter == AllCategories || ex.Category.ToString() == _categoryFilter;
+}

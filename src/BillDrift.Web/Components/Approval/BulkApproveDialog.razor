@@ -1,5 +1,5 @@
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-    <p>Approve @Count eligible proposal(s)?</p>
+    <p>Approve eligible proposal(s)?</p>
     <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8">
         <FluentButton Appearance="ButtonAppearance.Primary" OnClick="ConfirmAsync">Confirm</FluentButton>
         <FluentButton OnClick="CancelAsync">Cancel</FluentButton>
@@ -7,9 +7,6 @@
 </FluentStack>
 
 @code {
-    [Parameter]
-    public int Count { get; set; }
-
     [CascadingParameter]
     public IDialogInstance Dialog { get; set; } = default!;
 

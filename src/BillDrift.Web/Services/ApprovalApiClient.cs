@@ -17,6 +17,21 @@ public interface IApprovalApiClient
     Task<object> ExportAsync(Guid runId, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<ApprovalAuditEvent>> GetAuditAsync(Guid runId, CancellationToken cancellationToken = default);
+
+    Task<ApprovalIngestionResult> IngestFromRunAsync(Guid runId, bool includeInvestigationItems = true, CancellationToken cancellationToken = default);
+
+    Task<BulkApprovePreview> PreviewBulkApproveAsync(
+        Guid runId,
+        string customerMexId,
+        IReadOnlyList<Guid> proposalIds,
+        CancellationToken cancellationToken = default);
+
+    Task<BulkApproveResult> BulkApproveAsync(
+        Guid runId,
+        string confirmationToken,
+        string customerMexId,
+        IReadOnlyList<Guid> proposalIds,
+        CancellationToken cancellationToken = default);
 }
 
 /// <inheritdoc />
@@ -120,4 +135,78 @@ public sealed class ApprovalApiClient(HttpClient httpClient) : IApprovalApiClien
         response.EnsureSuccessStatusCode();
         return (await response.Content.ReadFromJsonAsync<List<ApprovalAuditEvent>>(cancellationToken))!;
     }
+
+    /// <inheritdoc />
+    public async Task<ApprovalIngestionResult> IngestFromRunAsync(
+        Guid runId,
+        bool includeInvestigationItems = true,
+        CancellationToken cancellationToken = default)
+    {
+        using var message = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"api/reconciliation/{runId}/approvals/ingest-from-run")
+        {
+            Content = JsonContent.Create(new { includeInvestigationItems })
+        };
+
+        message.Headers.Add(OperatorHeader, "web-operator");
+        var response = await httpClient.SendAsync(message, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<ApprovalIngestionResult>(cancellationToken))!;
+    }
+
+    /// <inheritdoc />
+    public async Task<BulkApprovePreview> PreviewBulkApproveAsync(
+        Guid runId,
+        string customerMexId,
+        IReadOnlyList<Guid> proposalIds,
+        CancellationToken cancellationToken = default)
+    {
+        using var message = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"api/reconciliation/{runId}/approvals/bulk-approve/preview")
+        {
+            Content = JsonContent.Create(new { customerMexId, proposalIds })
+        };
+
+        message.Headers.Add(OperatorHeader, "web-operator");
+        var response = await httpClient.SendAsync(message, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var payload = await response.Content.ReadFromJsonAsync<BulkApprovePreviewResponse>(cancellationToken);
+        return new BulkApprovePreview(
+            payload!.ConfirmationToken,
+            payload.Summary.Count,
+            payload.Summary.SubscriptionActions,
+            payload.Summary.CatalogueActions);
+    }
+
+    /// <inheritdoc />
+    public async Task<BulkApproveResult> BulkApproveAsync(
+        Guid runId,
+        string confirmationToken,
+        string customerMexId,
+        IReadOnlyList<Guid> proposalIds,
+        CancellationToken cancellationToken = default)
+    {
+        using var message = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"api/reconciliation/{runId}/approvals/bulk-approve")
+        {
+            Content = JsonContent.Create(new { confirmationToken, customerMexId, proposalIds })
+        };
+
+        message.Headers.Add(OperatorHeader, "web-operator");
+        var response = await httpClient.SendAsync(message, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<BulkApproveResult>(cancellationToken))!;
+    }
+
+    private sealed record BulkApprovePreviewResponse(
+        string ConfirmationToken,
+        BulkApprovePreviewSummary Summary);
+
+    private sealed record BulkApprovePreviewSummary(
+        int Count,
+        int SubscriptionActions,
+        int CatalogueActions);
 }

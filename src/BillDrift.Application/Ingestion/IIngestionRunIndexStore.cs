@@ -38,4 +38,38 @@ public interface IIngestionRunIndexStore
     Task<IReadOnlyList<RetailPricingIngestionRun>> ListRecentRetailPricingAsync(
         int take = 20,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Inserts an in-progress Giacom PDF ingestion run.</summary>
+    Task CreateGiacomPdfInProgressAsync(GiacomPdfIngestionRun run, CancellationToken cancellationToken = default);
+
+    /// <summary>Updates a Giacom PDF run to a terminal status.</summary>
+    Task CompleteGiacomPdfAsync(GiacomPdfIngestionRun run, CancellationToken cancellationToken = default);
+
+    /// <summary>Marks a Giacom PDF run as failed.</summary>
+    Task FailGiacomPdfAsync(GiacomPdfIngestionRun run, CancellationToken cancellationToken = default);
+
+    /// <summary>Loads a single Giacom PDF ingestion run by ID.</summary>
+    Task<GiacomPdfIngestionRun?> GetGiacomPdfByIdAsync(Guid ingestionId, CancellationToken cancellationToken = default);
+
+    /// <summary>Lists recent Giacom PDF ingestion runs.</summary>
+    Task<IReadOnlyList<GiacomPdfIngestionRun>> ListRecentGiacomPdfAsync(
+        int take = 20,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Inserts an in-progress Stripe CSV ingestion run.</summary>
+    Task CreateStripeCsvInProgressAsync(StripeCsvIngestionRun run, CancellationToken cancellationToken = default);
+
+    /// <summary>Updates a Stripe CSV run to a terminal status.</summary>
+    Task CompleteStripeCsvAsync(StripeCsvIngestionRun run, CancellationToken cancellationToken = default);
+
+    /// <summary>Marks a Stripe CSV run as failed.</summary>
+    Task FailStripeCsvAsync(StripeCsvIngestionRun run, CancellationToken cancellationToken = default);
+
+    /// <summary>Loads a single Stripe CSV ingestion run by ID.</summary>
+    Task<StripeCsvIngestionRun?> GetStripeCsvByIdAsync(Guid ingestionId, CancellationToken cancellationToken = default);
+
+    /// <summary>Lists recent Stripe CSV ingestion runs.</summary>
+    Task<IReadOnlyList<StripeCsvIngestionRun>> ListRecentStripeCsvAsync(
+        int take = 20,
+        CancellationToken cancellationToken = default);
 }

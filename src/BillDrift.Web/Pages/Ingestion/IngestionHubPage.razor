@@ -1,0 +1,307 @@
+@page "/ingestion"
+@rendermode InteractiveServer
+@using BillDrift.Application.Ingestion
+@using BillDrift.Web.Components.Shared
+@inject IIngestionApiClient ApiClient
+
+<PageTitle>Ingestion</PageTitle>
+
+<h1>Data ingestion</h1>
+
+<p>Upload source files for each billing data type. Completed imports are available when running reconciliation.</p>
+
+@if (_error is not null)
+{
+    <FluentMessageBar Intent="MessageBarIntent.Error">@_error</FluentMessageBar>
+}
+@if (_uploading)
+{
+    <FluentSpinner Label="Uploading…" />
+}
+
+<FluentTabs @bind-ActiveTabId="_activeTab">
+    <FluentTab Header="Subscription CSV" Id="subscription">
+        <IngestionUploadZone InputId="subscription-upload"
+                             Accept=".csv"
+                             Hint="CSV only, max 25 MB"
+                             Disabled="@_uploading"
+                             OnUploadAsync="@UploadSubscriptionAsync"
+                             OnErrorAsync="@SetUploadErrorAsync" />
+        @if (_lastSubscriptionRun is not null) { <ImportResultBanner Run="_lastSubscriptionRun" /> }
+        <h3>Import history</h3>
+        <IngestionRunHistoryGrid Rows="@_subscriptionHistory"
+                                 EmptyTitle="No subscription imports"
+                                 EmptyMessage="Upload a subscription management CSV export from Giacom to begin." />
+    </FluentTab>
+
+    <FluentTab Header="Retail pricing" Id="retail">
+        <IngestionUploadZone InputId="retail-upload"
+                             Accept=".csv"
+                             Hint="Catalogue CSV only, max 25 MB"
+                             Disabled="@_uploading"
+                             OnUploadAsync="@UploadRetailAsync"
+                             OnErrorAsync="@SetUploadErrorAsync" />
+        @if (_lastRetailRun is not null) { <ImportResultBanner Run="_lastRetailRun" /> }
+        <h3>Import history</h3>
+        <IngestionRunHistoryGrid Rows="@_retailHistory"
+                                 EmptyTitle="No retail pricing imports"
+                                 EmptyMessage="Upload a retail pricing catalogue CSV to compare against Stripe and supplier costs." />
+    </FluentTab>
+
+    <FluentTab Header="Giacom PDF" Id="pdf">
+        <IngestionUploadZone InputId="pdf-upload"
+                             Accept=".pdf"
+                             Hint="PDF only, max 25 MB"
+                             Disabled="@_uploading"
+                             OnUploadAsync="@UploadPdfAsync"
+                             OnErrorAsync="@SetUploadErrorAsync" />
+        @if (_lastPdfRun is not null) { <ImportResultBanner Run="_lastPdfRun" /> }
+        <h3>Import history</h3>
+        <IngestionRunHistoryGrid Rows="@_pdfHistory"
+                                 EmptyTitle="No PDF imports"
+                                 EmptyMessage="Upload a Giacom billing PDF invoice to extract supplier cost lines." />
+    </FluentTab>
+
+    <FluentTab Header="Stripe CSV" Id="stripe">
+        <p>Upload a Stripe export bundle. Subscriptions CSV is required; products and prices are optional but improve catalogue matching.</p>
+
+        <FluentStack VerticalGap="12">
+            <div>
+                <FluentLabel Weight="LabelWeight.Semibold">Subscriptions (required)</FluentLabel>
+                <StripeFilePicker InputId="stripe-subscriptions"
+                                  Accept=".csv"
+                                  Hint="subscriptions.csv — required"
+                                  SelectedFileName="@_stripeSubscriptionsName"
+                                  OnFileSelected="@OnStripeSubscriptionsSelected" />
+            </div>
+            <div>
+                <FluentLabel Weight="LabelWeight.Semibold">Products (optional)</FluentLabel>
+                <StripeFilePicker InputId="stripe-products"
+                                  Accept=".csv"
+                                  Hint="products.csv — optional"
+                                  SelectedFileName="@_stripeProductsName"
+                                  OnFileSelected="@OnStripeProductsSelected" />
+            </div>
+            <div>
+                <FluentLabel Weight="LabelWeight.Semibold">Prices (optional)</FluentLabel>
+                <StripeFilePicker InputId="stripe-prices"
+                                  Accept=".csv"
+                                  Hint="prices.csv — optional"
+                                  SelectedFileName="@_stripePricesName"
+                                  OnFileSelected="@OnStripePricesSelected" />
+            </div>
+            <FluentButton Appearance="ButtonAppearance.Primary"
+                          OnClick="UploadStripeBundleAsync"
+                          Disabled="@(_uploading || _stripeSubscriptionsBuffer is null)">
+                Upload Stripe bundle
+            </FluentButton>
+        </FluentStack>
+
+        @if (_lastStripeRun is not null) { <ImportResultBanner Run="_lastStripeRun" /> }
+        <h3>Import history</h3>
+        <IngestionRunHistoryGrid Rows="@_stripeHistory"
+                                 EmptyTitle="No Stripe imports"
+                                 EmptyMessage="Select a subscriptions CSV (and optional products/prices), then upload the bundle." />
+    </FluentTab>
+</FluentTabs>
+
+@code {
+    private const long MaxFileSize = 25 * 1024 * 1024;
+
+    private string _activeTab = "subscription";
+    private bool _uploading;
+    private string? _error;
+
+    private SubscriptionManagementIngestionRun? _lastSubscriptionRun;
+    private RetailPricingIngestionRun? _lastRetailRun;
+    private GiacomPdfIngestionRun? _lastPdfRun;
+    private StripeCsvIngestionRun? _lastStripeRun;
+
+    private List<SubscriptionManagementIngestionRun> _subscriptionRuns = [];
+    private List<RetailPricingIngestionRun> _retailRuns = [];
+    private List<GiacomPdfIngestionRun> _pdfRuns = [];
+    private List<StripeCsvIngestionRun> _stripeRuns = [];
+
+    private byte[]? _stripeSubscriptionsBuffer;
+    private string? _stripeSubscriptionsName;
+    private byte[]? _stripeProductsBuffer;
+    private string? _stripeProductsName;
+    private byte[]? _stripePricesBuffer;
+    private string? _stripePricesName;
+
+    private IReadOnlyList<IngestionRunHistoryGrid.IngestionRunHistoryRow> _subscriptionHistory => MapSubscriptionRuns(_subscriptionRuns);
+    private IReadOnlyList<IngestionRunHistoryGrid.IngestionRunHistoryRow> _retailHistory => MapRetailRuns(_retailRuns);
+    private IReadOnlyList<IngestionRunHistoryGrid.IngestionRunHistoryRow> _pdfHistory => MapPdfRuns(_pdfRuns);
+    private IReadOnlyList<IngestionRunHistoryGrid.IngestionRunHistoryRow> _stripeHistory => MapStripeRuns(_stripeRuns);
+
+    protected override async Task OnInitializedAsync() => await RefreshAllAsync();
+
+    private Task SetUploadErrorAsync(string message)
+    {
+        _error = message;
+        return Task.CompletedTask;
+    }
+
+    private async Task UploadSubscriptionAsync((Stream Stream, string FileName) file) =>
+        await UploadAsync(file.Stream, file.FileName, async (s, n) => _lastSubscriptionRun = await ApiClient.UploadSubscriptionManagementAsync(s, n));
+
+    private async Task UploadRetailAsync((Stream Stream, string FileName) file) =>
+        await UploadAsync(file.Stream, file.FileName, async (s, n) => _lastRetailRun = await ApiClient.UploadRetailPricingAsync(s, n));
+
+    private async Task UploadPdfAsync((Stream Stream, string FileName) file) =>
+        await UploadAsync(file.Stream, file.FileName, async (s, n) => _lastPdfRun = await ApiClient.UploadGiacomPdfAsync(s, n));
+
+    private Task OnStripeSubscriptionsSelected((byte[] Buffer, string FileName)? file)
+    {
+        _stripeSubscriptionsBuffer = file?.Buffer;
+        _stripeSubscriptionsName = file?.FileName;
+        return Task.CompletedTask;
+    }
+
+    private Task OnStripeProductsSelected((byte[] Buffer, string FileName)? file)
+    {
+        _stripeProductsBuffer = file?.Buffer;
+        _stripeProductsName = file?.FileName;
+        return Task.CompletedTask;
+    }
+
+    private Task OnStripePricesSelected((byte[] Buffer, string FileName)? file)
+    {
+        _stripePricesBuffer = file?.Buffer;
+        _stripePricesName = file?.FileName;
+        return Task.CompletedTask;
+    }
+
+    private async Task UploadStripeBundleAsync()
+    {
+        if (_stripeSubscriptionsBuffer is null || _stripeSubscriptionsName is null)
+        {
+            _error = "Subscriptions CSV is required.";
+            return;
+        }
+
+        _uploading = true;
+        _error = null;
+
+        try
+        {
+            await using var subscriptions = new MemoryStream(_stripeSubscriptionsBuffer);
+            MemoryStream? products = _stripeProductsBuffer is not null ? new MemoryStream(_stripeProductsBuffer) : null;
+            MemoryStream? prices = _stripePricesBuffer is not null ? new MemoryStream(_stripePricesBuffer) : null;
+
+            try
+            {
+                _lastStripeRun = await ApiClient.UploadStripeCsvAsync(
+                    subscriptions,
+                    _stripeSubscriptionsName,
+                    products,
+                    _stripeProductsName,
+                    prices,
+                    _stripePricesName);
+            }
+            finally
+            {
+                if (products is not null)
+                {
+                    await products.DisposeAsync();
+                }
+
+                if (prices is not null)
+                {
+                    await prices.DisposeAsync();
+                }
+            }
+
+            ClearStripeSelection();
+            await RefreshAllAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _uploading = false;
+        }
+    }
+
+    private void ClearStripeSelection()
+    {
+        _stripeSubscriptionsBuffer = null;
+        _stripeSubscriptionsName = null;
+        _stripeProductsBuffer = null;
+        _stripeProductsName = null;
+        _stripePricesBuffer = null;
+        _stripePricesName = null;
+    }
+
+    private async Task UploadAsync(Stream stream, string fileName, Func<Stream, string, Task> upload)
+    {
+        _uploading = true;
+        _error = null;
+
+        try
+        {
+            await upload(stream, fileName);
+            await RefreshAllAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _uploading = false;
+        }
+    }
+
+    private async Task RefreshAllAsync()
+    {
+        _subscriptionRuns = (await ApiClient.ListSubscriptionManagementRunsAsync()).ToList();
+        _retailRuns = (await ApiClient.ListRetailPricingRunsAsync()).ToList();
+        _pdfRuns = (await ApiClient.ListGiacomPdfRunsAsync()).ToList();
+        _stripeRuns = (await ApiClient.ListStripeCsvRunsAsync()).ToList();
+    }
+
+    private static IReadOnlyList<IngestionRunHistoryGrid.IngestionRunHistoryRow> MapSubscriptionRuns(
+        IEnumerable<SubscriptionManagementIngestionRun> runs) =>
+        runs.Select(r => new IngestionRunHistoryGrid.IngestionRunHistoryRow(
+            r.UploadedAt,
+            r.Status,
+            r.OriginalFileName ?? "—",
+            FormatDetails(r.Summary?.RowsEmitted, r.FailureReason))).ToList();
+
+    private static IReadOnlyList<IngestionRunHistoryGrid.IngestionRunHistoryRow> MapRetailRuns(
+        IEnumerable<RetailPricingIngestionRun> runs) =>
+        runs.Select(r => new IngestionRunHistoryGrid.IngestionRunHistoryRow(
+            r.UploadedAt,
+            r.Status,
+            r.OriginalFileName ?? "—",
+            FormatDetails(r.Summary?.CatalogueRowsEmitted, r.FailureReason))).ToList();
+
+    private static IReadOnlyList<IngestionRunHistoryGrid.IngestionRunHistoryRow> MapPdfRuns(
+        IEnumerable<GiacomPdfIngestionRun> runs) =>
+        runs.Select(r => new IngestionRunHistoryGrid.IngestionRunHistoryRow(
+            r.UploadedAt,
+            r.Status,
+            r.OriginalFileName ?? "—",
+            FormatDetails(r.Summary?.LinesExtracted, r.FailureReason))).ToList();
+
+    private static IReadOnlyList<IngestionRunHistoryGrid.IngestionRunHistoryRow> MapStripeRuns(
+        IEnumerable<StripeCsvIngestionRun> runs) =>
+        runs.Select(r => new IngestionRunHistoryGrid.IngestionRunHistoryRow(
+            r.UploadedAt,
+            r.Status,
+            r.OriginalFileName ?? "—",
+            FormatDetails(r.Summary?.SubscriptionItemsExtracted, r.FailureReason))).ToList();
+
+    private static string FormatDetails(int? recordCount, string? failureReason)
+    {
+        if (!string.IsNullOrWhiteSpace(failureReason))
+        {
+            return failureReason;
+        }
+
+        return recordCount is null ? "—" : $"{recordCount:N0} records";
+    }
+}

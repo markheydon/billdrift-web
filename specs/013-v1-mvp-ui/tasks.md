@@ -27,9 +27,9 @@
 
 **Purpose**: Verify project structure and shared scaffolding
 
-- [ ] T001 Verify `tests/BillDrift.Api.Tests/BillDrift.Api.Tests.csproj` references `BillDrift.Api` and has WebApplicationFactory test infrastructure
-- [ ] T002 [P] Create shared UI folder `src/BillDrift.Web/Components/Shared/` and add `_Imports.razor` usings if needed
-- [ ] T003 [P] Add ingestion run DTO records (`GiacomPdfIngestionRun`, `StripeCsvIngestionRun`, summaries) in `src/BillDrift.Application/Import/` per data-model.md
+- [X] T001 Verify `tests/BillDrift.Api.Tests/BillDrift.Api.Tests.csproj` references `BillDrift.Api` and has WebApplicationFactory test infrastructure
+- [X] T002 [P] Create shared UI folder `src/BillDrift.Web/Components/Shared/` and add `_Imports.razor` usings if needed
+- [X] T003 [P] Add ingestion run DTO records (`GiacomPdfIngestionRun`, `StripeCsvIngestionRun`, summaries) in `src/BillDrift.Application/Import/` per data-model.md
 
 ---
 
@@ -39,20 +39,20 @@
 
 **⚠️ Application-layer freeze**: New Application code MUST be orchestration-only (ingest → normalize → persist → call existing service). No domain rule changes.
 
-- [ ] T004 Extend `IIngestionBlobStore` with supplier-cost persist/load methods in `src/BillDrift.Application/Ingestion/IIngestionBlobStore.cs`
-- [ ] T005 Implement supplier-cost blob methods in `src/BillDrift.Infrastructure/Ingestion/AzureBlobIngestionArchiveStore.cs` and `InMemoryIngestionBlobStore.cs`
-- [ ] T006 [P] Create `IGiacomPdfIngestionService` and `GiacomPdfIngestionService` in `src/BillDrift.Application/Import/Giacom/` mirroring `SubscriptionManagementIngestionService`
-- [ ] T007 [P] Create `IStripeCsvIngestionService` and `StripeCsvIngestionService` in `src/BillDrift.Application/Import/Stripe/` including `PersistStripeCatalogueAsync` call
-- [ ] T008 Create `ReconciliationOrchestrationService` in `src/BillDrift.Application/Reconciliation/ReconciliationOrchestrationService.cs` per contracts/reconciliation-orchestration-api-endpoints.md
-- [ ] T009 [P] Create `GiacomPdfImportEndpoints` in `src/BillDrift.Api/Imports/GiacomPdfImportEndpoints.cs` per contracts/giacom-pdf-import-api-endpoints.md
-- [ ] T010 [P] Create `StripeCsvImportEndpoints` in `src/BillDrift.Api/Imports/StripeCsvImportEndpoints.cs` per contracts/stripe-csv-import-api-endpoints.md
-- [ ] T011 Create `ReconciliationEndpoints` in `src/BillDrift.Api/Reconciliation/ReconciliationEndpoints.cs` per contracts/reconciliation-orchestration-api-endpoints.md
-- [ ] T012 Add `POST .../approvals/ingest-from-run` to `src/BillDrift.Api/Approval/ApprovalEndpoints.cs` per contracts/approval-ingest-convenience.md
-- [ ] T013 Register new ingestion services, orchestration service, and map all new endpoints in `src/BillDrift.Api/Program.cs`
-- [ ] T014 [P] Add contract tests for Giacom PDF import in `tests/BillDrift.Api.Tests/Imports/GiacomPdfImportEndpointsTests.cs`
-- [ ] T015 [P] Add contract tests for Stripe CSV import in `tests/BillDrift.Api.Tests/Imports/StripeCsvImportEndpointsTests.cs`
-- [ ] T016 [P] Add contract tests for reconciliation orchestration in `tests/BillDrift.Api.Tests/Reconciliation/ReconciliationEndpointsTests.cs`
-- [ ] T017 [P] Add contract test for approval ingest-from-run in `tests/BillDrift.Api.Tests/Approval/ApprovalIngestFromRunTests.cs`
+- [X] T004 Extend `IIngestionBlobStore` with supplier-cost persist/load methods in `src/BillDrift.Application/Ingestion/IIngestionBlobStore.cs`
+- [X] T005 Implement supplier-cost blob methods in `src/BillDrift.Infrastructure/Ingestion/AzureBlobIngestionArchiveStore.cs` and `InMemoryIngestionBlobStore.cs`
+- [X] T006 [P] Create `IGiacomPdfIngestionService` and `GiacomPdfIngestionService` in `src/BillDrift.Application/Import/Giacom/` mirroring `SubscriptionManagementIngestionService`
+- [X] T007 [P] Create `IStripeCsvIngestionService` and `StripeCsvIngestionService` in `src/BillDrift.Application/Import/Stripe/` including `PersistStripeCatalogueAsync` call
+- [X] T008 Create `ReconciliationOrchestrationService` in `src/BillDrift.Application/Reconciliation/ReconciliationOrchestrationService.cs` per contracts/reconciliation-orchestration-api-endpoints.md
+- [X] T009 [P] Create `GiacomPdfImportEndpoints` in `src/BillDrift.Api/Imports/GiacomPdfImportEndpoints.cs` per contracts/giacom-pdf-import-api-endpoints.md
+- [X] T010 [P] Create `StripeCsvImportEndpoints` in `src/BillDrift.Api/Imports/StripeCsvImportEndpoints.cs` per contracts/stripe-csv-import-api-endpoints.md
+- [X] T011 Create `ReconciliationEndpoints` in `src/BillDrift.Api/Reconciliation/ReconciliationEndpoints.cs` per contracts/reconciliation-orchestration-api-endpoints.md
+- [X] T012 Add `POST .../approvals/ingest-from-run` to `src/BillDrift.Api/Approval/ApprovalEndpoints.cs` per contracts/approval-ingest-convenience.md
+- [X] T013 Register new ingestion services, orchestration service, and map all new endpoints in `src/BillDrift.Api/Program.cs`
+- [X] T014 [P] Add contract tests for Giacom PDF import in `tests/BillDrift.Api.Tests/Imports/GiacomPdfImportEndpointsTests.cs`
+- [X] T015 [P] Add contract tests for Stripe CSV import in `tests/BillDrift.Api.Tests/Imports/StripeCsvImportEndpointsTests.cs`
+- [X] T016 [P] Add contract tests for reconciliation orchestration in `tests/BillDrift.Api.Tests/Reconciliation/ReconciliationEndpointsTests.cs`
+- [X] T017 [P] Add contract test for approval ingest-from-run in `tests/BillDrift.Api.Tests/Approval/ApprovalIngestFromRunTests.cs`
 
 **Checkpoint**: All new API endpoints pass contract tests; quickstart Phase A scenarios (A1–A6) succeed via HTTP
 
@@ -66,17 +66,17 @@
 
 ### Implementation for User Story 1
 
-- [ ] T018 [P] [US1] Create `IIngestionApiClient` interface in `src/BillDrift.Web/Services/IIngestionApiClient.cs`
-- [ ] T019 [US1] Implement `IngestionApiClient` covering subscription, retail, PDF, and Stripe endpoints in `src/BillDrift.Web/Services/IngestionApiClient.cs`
-- [ ] T020 [P] [US1] Create `ImportResultBanner.razor` in `src/BillDrift.Web/Components/Shared/ImportResultBanner.razor`
-- [ ] T021 [P] [US1] Create `IngestionRunPicker.razor` in `src/BillDrift.Web/Components/Shared/IngestionRunPicker.razor`
-- [ ] T022 [US1] Create `IngestionHubPage.razor` with Fluent tabs shell in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
-- [ ] T023 [P] [US1] Implement Subscription Management CSV upload tab in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
-- [ ] T024 [P] [US1] Implement Retail Pricing CSV upload tab in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
-- [ ] T025 [P] [US1] Implement Giacom PDF upload tab in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
-- [ ] T026 [P] [US1] Implement Stripe CSV multipart upload tab in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
-- [ ] T027 [US1] Add import history grids per source type with status/timestamp/record counts in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
-- [ ] T028 [US1] Register `IngestionApiClient` in `src/BillDrift.Web/Program.cs` and add `/ingestion` nav item in `src/BillDrift.Web/Components/Layout/MainLayout.razor`
+- [X] T018 [P] [US1] Create `IIngestionApiClient` interface in `src/BillDrift.Web/Services/IIngestionApiClient.cs`
+- [X] T019 [US1] Implement `IngestionApiClient` covering subscription, retail, PDF, and Stripe endpoints in `src/BillDrift.Web/Services/IngestionApiClient.cs`
+- [X] T020 [P] [US1] Create `ImportResultBanner.razor` in `src/BillDrift.Web/Components/Shared/ImportResultBanner.razor`
+- [X] T021 [P] [US1] Create `IngestionRunPicker.razor` in `src/BillDrift.Web/Components/Shared/IngestionRunPicker.razor`
+- [X] T022 [US1] Create `IngestionHubPage.razor` with Fluent tabs shell in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
+- [X] T023 [P] [US1] Implement Subscription Management CSV upload tab in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
+- [X] T024 [P] [US1] Implement Retail Pricing CSV upload tab in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
+- [X] T025 [P] [US1] Implement Giacom PDF upload tab in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
+- [X] T026 [P] [US1] Implement Stripe CSV multipart upload tab in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
+- [X] T027 [US1] Add import history grids per source type with status/timestamp/record counts in `src/BillDrift.Web/Pages/Ingestion/IngestionHubPage.razor`
+- [X] T028 [US1] Register `IngestionApiClient` in `src/BillDrift.Web/Program.cs` and add `/ingestion` nav item in `src/BillDrift.Web/Components/Layout/MainLayout.razor`
 
 **Checkpoint**: quickstart B1–B2 pass; SC-001 satisfied
 
@@ -90,16 +90,16 @@
 
 ### Implementation for User Story 2
 
-- [ ] T029 [P] [US2] Create `IReconciliationApiClient` in `src/BillDrift.Web/Services/IReconciliationApiClient.cs`
-- [ ] T030 [US2] Implement `ReconciliationApiClient` in `src/BillDrift.Web/Services/ReconciliationApiClient.cs`
-- [ ] T031 [P] [US2] Create `ExceptionCategoryBadge.razor` in `src/BillDrift.Web/Components/Shared/ExceptionCategoryBadge.razor`
-- [ ] T032 [US2] Create `ReconciliationPage.razor` with input selection form in `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor`
+- [X] T029 [P] [US2] Create `IReconciliationApiClient` in `src/BillDrift.Web/Services/IReconciliationApiClient.cs`
+- [X] T030 [US2] Implement `ReconciliationApiClient` in `src/BillDrift.Web/Services/ReconciliationApiClient.cs`
+- [X] T031 [P] [US2] Create `ExceptionCategoryBadge.razor` in `src/BillDrift.Web/Components/Shared/ExceptionCategoryBadge.razor`
+- [X] T032 [US2] Create `ReconciliationPage.razor` with input selection form in `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor`
 - [ ] T033 [US2] Add billing period picker and inline product mapping editor (session state) to `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor`
-- [ ] T034 [US2] Implement start-run action with progress and summary badges in `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor`
-- [ ] T035 [US2] Create `ExceptionDashboard.razor` with category filter in `src/BillDrift.Web/Pages/Reconciliation/ExceptionDashboard.razor`
-- [ ] T036 [US2] Add exception detail panel (expected vs actual, rule reference) to `src/BillDrift.Web/Pages/Reconciliation/ExceptionDashboard.razor`
-- [ ] T037 [US2] Add clean-run indication and link to run history in `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor`
-- [ ] T038 [US2] Register `ReconciliationApiClient` and `/reconciliation` route in `src/BillDrift.Web/Program.cs` and `MainLayout.razor` (replace dead link)
+- [X] T034 [US2] Implement start-run action with progress and summary badges in `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor`
+- [X] T035 [US2] Create `ExceptionDashboard.razor` with category filter in `src/BillDrift.Web/Pages/Reconciliation/ExceptionDashboard.razor`
+- [X] T036 [US2] Add exception detail panel (expected vs actual, rule reference) to `src/BillDrift.Web/Pages/Reconciliation/ExceptionDashboard.razor`
+- [X] T037 [US2] Add clean-run indication and link to run history in `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor`
+- [X] T038 [US2] Register `ReconciliationApiClient` and `/reconciliation` route in `src/BillDrift.Web/Program.cs` and `MainLayout.razor` (replace dead link)
 
 **Checkpoint**: quickstart C1–C3 pass; SC-004, SC-005 satisfied
 
@@ -113,9 +113,9 @@
 
 ### Implementation for User Story 7
 
-- [ ] T039 [P] [US7] Create `MarginSeverityBadge.razor` in `src/BillDrift.Web/Components/Shared/MarginSeverityBadge.razor`
-- [ ] T040 [US7] Create `MarginView.razor` grid in `src/BillDrift.Web/Pages/Reconciliation/MarginView.razor`
-- [ ] T041 [US7] Integrate margin tab into `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor` using reconciliation API margin endpoint
+- [X] T039 [P] [US7] Create `MarginSeverityBadge.razor` in `src/BillDrift.Web/Components/Shared/MarginSeverityBadge.razor`
+- [X] T040 [US7] Create `MarginView.razor` grid in `src/BillDrift.Web/Pages/Reconciliation/MarginView.razor`
+- [X] T041 [US7] Integrate margin tab into `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor` using reconciliation API margin endpoint
 
 **Checkpoint**: quickstart C4 pass; SC-009 satisfied
 
@@ -129,12 +129,12 @@
 
 ### Implementation for User Story 4
 
-- [ ] T042 [P] [US4] Extend `IApprovalApiClient` with bulk approve and ingest-from-run methods in `src/BillDrift.Web/Services/IApprovalApiClient.cs`
-- [ ] T043 [US4] Implement bulk approve preview/confirm and ingest-from-run in `src/BillDrift.Web/Services/ApprovalApiClient.cs`
-- [ ] T044 [US4] Create `ApprovalRunPickerPage.razor` at `/approvals` in `src/BillDrift.Web/Pages/Approvals/ApprovalRunPickerPage.razor`
-- [ ] T045 [US4] Wire `BulkApproveDialog.razor` into `src/BillDrift.Web/Pages/Approvals/ApprovalQueuePage.razor`
-- [ ] T046 [US4] Add "Send to approval queue" action on `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor` calling ingest-from-run
-- [ ] T047 [US4] Add ingest button on run detail proposals tab in `src/BillDrift.Web/Pages/History/RunDetailPage.razor` when queue empty
+- [X] T042 [P] [US4] Extend `IApprovalApiClient` with bulk approve and ingest-from-run methods in `src/BillDrift.Web/Services/IApprovalApiClient.cs`
+- [X] T043 [US4] Implement bulk approve preview/confirm and ingest-from-run in `src/BillDrift.Web/Services/ApprovalApiClient.cs`
+- [X] T044 [US4] Create `ApprovalRunPickerPage.razor` at `/approvals` in `src/BillDrift.Web/Pages/Approvals/ApprovalRunPickerPage.razor`
+- [X] T045 [US4] Wire `BulkApproveDialog.razor` into `src/BillDrift.Web/Pages/Approvals/ApprovalQueuePage.razor`
+- [X] T046 [US4] Add "Send to approval queue" action on `src/BillDrift.Web/Pages/Reconciliation/ReconciliationPage.razor` calling ingest-from-run
+- [X] T047 [US4] Add ingest button on run detail proposals tab in `src/BillDrift.Web/Pages/History/RunDetailPage.razor` when queue empty
 
 **Checkpoint**: quickstart D1–D2 pass; SC-006 satisfied
 
@@ -148,7 +148,7 @@
 
 ### Implementation for User Story 5
 
-- [ ] T048 [US5] Verify and polish `ExportChangesetPanel.razor` empty state and error handling in `src/BillDrift.Web/Components/Approval/ExportChangesetPanel.razor`
+- [X] T048 [US5] Verify and polish `ExportChangesetPanel.razor` empty state and error handling in `src/BillDrift.Web/Components/Approval/ExportChangesetPanel.razor`
 - [ ] T049 [US5] Ensure export panel visible from both `ApprovalQueuePage.razor` and post-approval summary in `ReconciliationPage.razor`
 
 **Checkpoint**: quickstart D1 export step pass; SC-007 satisfied
@@ -163,12 +163,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T050 [P] [US3] Create `IClassificationApiClient` in `src/BillDrift.Web/Services/IClassificationApiClient.cs`
-- [ ] T051 [US3] Implement `ClassificationApiClient` in `src/BillDrift.Web/Services/ClassificationApiClient.cs`
-- [ ] T052 [US3] Create `MappingPage.razor` with session `ProductMapping[]` grid and JSON import/export in `src/BillDrift.Web/Pages/Mapping/MappingPage.razor`
-- [ ] T053 [US3] Add deferred-persistence banner on `src/BillDrift.Web/Pages/Mapping/MappingPage.razor` per Application-Layer Capability Notes
-- [ ] T054 [US3] Create `ClassificationPage.razor` for overrides and config in `src/BillDrift.Web/Pages/Classification/ClassificationPage.razor`
-- [ ] T055 [US3] Register clients and add Mapping/Classification nav items in `src/BillDrift.Web/Program.cs` and `MainLayout.razor`
+- [X] T050 [P] [US3] Create `IClassificationApiClient` in `src/BillDrift.Web/Services/IClassificationApiClient.cs`
+- [X] T051 [US3] Implement `ClassificationApiClient` in `src/BillDrift.Web/Services/ClassificationApiClient.cs`
+- [X] T052 [US3] Create `MappingPage.razor` with session `ProductMapping[]` grid and JSON import/export in `src/BillDrift.Web/Pages/Mapping/MappingPage.razor`
+- [X] T053 [US3] Add deferred-persistence banner on `src/BillDrift.Web/Pages/Mapping/MappingPage.razor` per Application-Layer Capability Notes
+- [X] T054 [US3] Create `ClassificationPage.razor` for overrides and config in `src/BillDrift.Web/Pages/Classification/ClassificationPage.razor`
+- [X] T055 [US3] Register clients and add Mapping/Classification nav items in `src/BillDrift.Web/Program.cs` and `MainLayout.razor`
 
 **Checkpoint**: quickstart E4–E5 pass
 
@@ -182,11 +182,11 @@
 
 ### Implementation for User Story 6
 
-- [ ] T056 [P] [US6] Create `ICatalogueReconciliationApiClient` in `src/BillDrift.Web/Services/ICatalogueReconciliationApiClient.cs`
-- [ ] T057 [US6] Implement `CatalogueReconciliationApiClient` in `src/BillDrift.Web/Services/CatalogueReconciliationApiClient.cs`
-- [ ] T058 [US6] Create `CatalogueReconciliationPage.razor` with run form and results grid in `src/BillDrift.Web/Pages/Catalogue/CatalogueReconciliationPage.razor`
-- [ ] T059 [US6] Add ingest-fixes-to-approval action on `src/BillDrift.Web/Pages/Catalogue/CatalogueReconciliationPage.razor`
-- [ ] T060 [US6] Register client and `/catalogue` nav item in `src/BillDrift.Web/Program.cs` and `MainLayout.razor`
+- [X] T056 [P] [US6] Create `ICatalogueReconciliationApiClient` in `src/BillDrift.Web/Services/ICatalogueReconciliationApiClient.cs`
+- [X] T057 [US6] Implement `CatalogueReconciliationApiClient` in `src/BillDrift.Web/Services/CatalogueReconciliationApiClient.cs`
+- [X] T058 [US6] Create `CatalogueReconciliationPage.razor` with run form and results grid in `src/BillDrift.Web/Pages/Catalogue/CatalogueReconciliationPage.razor`
+- [X] T059 [US6] Add ingest-fixes-to-approval action on `src/BillDrift.Web/Pages/Catalogue/CatalogueReconciliationPage.razor`
+- [X] T060 [US6] Register client and `/catalogue` nav item in `src/BillDrift.Web/Program.cs` and `MainLayout.razor`
 
 **Checkpoint**: quickstart E3 pass
 
@@ -204,8 +204,8 @@
 - [ ] T062 [US8] Implement extended methods in `src/BillDrift.Web/Services/RunHistoryApiClient.cs`
 - [ ] T063 [US8] Add billing period, date range, and input-presence badges to `src/BillDrift.Web/Pages/History/RunHistoryListPage.razor`
 - [ ] T064 [US8] Polish Summary/Inputs/Exceptions/Proposals/Audit tabs in `src/BillDrift.Web/Pages/History/RunDetailPage.razor`
-- [ ] T065 [US8] Replace GUID text fields with run dropdowns on `src/BillDrift.Web/Pages/History/RunComparisonPage.razor`
-- [ ] T066 [US8] Add Compare and Trends links to nav in `src/BillDrift.Web/Components/Layout/MainLayout.razor`
+- [X] T065 [US8] Replace GUID text fields with run dropdowns on `src/BillDrift.Web/Pages/History/RunComparisonPage.razor`
+- [X] T066 [US8] Add Compare and Trends links to nav in `src/BillDrift.Web/Components/Layout/MainLayout.razor`
 
 **Checkpoint**: quickstart D3–D4 pass; SC-008 satisfied
 
@@ -219,11 +219,11 @@
 
 ### Implementation for User Story 9
 
-- [ ] T067 [P] [US9] Create `WorkflowStepIndicator.razor` in `src/BillDrift.Web/Components/Shared/WorkflowStepIndicator.razor`
-- [ ] T068 [P] [US9] Create `EmptyStatePanel.razor` in `src/BillDrift.Web/Components/Shared/EmptyStatePanel.razor`
-- [ ] T069 [US9] Replace template `Home.razor` with `WorkflowHomePage.razor` in `src/BillDrift.Web/Pages/Home/WorkflowHomePage.razor`
+- [X] T067 [P] [US9] Create `WorkflowStepIndicator.razor` in `src/BillDrift.Web/Components/Shared/WorkflowStepIndicator.razor`
+- [X] T068 [P] [US9] Create `EmptyStatePanel.razor` in `src/BillDrift.Web/Components/Shared/EmptyStatePanel.razor`
+- [X] T069 [US9] Replace template `Home.razor` with `WorkflowHomePage.razor` in `src/BillDrift.Web/Pages/Home/WorkflowHomePage.razor`
 - [ ] T070 [US9] Add latest import status, pending approval count, and quick links on `WorkflowHomePage.razor`
-- [ ] T071 [US9] Audit and fix all nav routes in `src/BillDrift.Web/Components/Layout/MainLayout.razor`; remove or redirect template pages (`Counter.razor`)
+- [X] T071 [US9] Audit and fix all nav routes in `src/BillDrift.Web/Components/Layout/MainLayout.razor`; remove or redirect template pages (`Counter.razor`)
 
 **Checkpoint**: quickstart E1–E2 pass; SC-003, SC-010 satisfied
 
@@ -238,7 +238,7 @@
 - [ ] T074 Verify error/empty/loading states on all primary workflows per FR-038 and constitution III
 - [ ] T075 Run Application-Layer Freeze Checklist from plan.md against all new Application code
 - [ ] T076 Run full quickstart.md validation (Phases A–E) via Aspire AppHost
-- [ ] T077 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build` from solution root
+- [X] T077 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build` from solution root
 
 ---
 

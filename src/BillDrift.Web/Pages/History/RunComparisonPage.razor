@@ -1,4 +1,5 @@
 @page "/history/compare"
+@rendermode InteractiveServer
 @using BillDrift.Application.History
 @using BillDrift.Domain.History
 @using BillDrift.Domain.Reconciliation
@@ -9,8 +10,20 @@
 <h1>Compare Runs</h1>
 
 <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
-    <FluentTextArea @bind-Value="_earlierRunIdText" Label="Earlier Run ID" Rows="1" />
-    <FluentTextArea @bind-Value="_laterRunIdText" Label="Later Run ID" Rows="1" />
+    <FluentSelect TOption="string" TValue="string" @bind-Value="_earlierRunId" Label="Earlier run">
+        <FluentOption TOption="string" TValue="string" Value="@NoneValue">Select run</FluentOption>
+        @foreach (var run in _runs)
+        {
+            <FluentOption TOption="string" TValue="string" Value="@run.RunId.Value.ToString()">@run.CompletedAt:g — @run.RunId.Value</FluentOption>
+        }
+    </FluentSelect>
+    <FluentSelect TOption="string" TValue="string" @bind-Value="_laterRunId" Label="Later run">
+        <FluentOption TOption="string" TValue="string" Value="@NoneValue">Select run</FluentOption>
+        @foreach (var run in _runs)
+        {
+            <FluentOption TOption="string" TValue="string" Value="@run.RunId.Value.ToString()">@run.CompletedAt:g — @run.RunId.Value</FluentOption>
+        }
+    </FluentSelect>
     <FluentButton Appearance="ButtonAppearance.Primary" OnClick="CompareAsync">Compare</FluentButton>
 </FluentStack>
 
@@ -35,19 +48,27 @@
 }
 
 @code {
-    private string _earlierRunIdText = string.Empty;
-    private string _laterRunIdText = string.Empty;
+    private const string NoneValue = "__none__";
+    private string _earlierRunId = NoneValue;
+    private string _laterRunId = NoneValue;
     private RunComparisonReport? _report;
+    private IReadOnlyList<RunHistoryListItem> _runs = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await ApiClient.ListRunsAsync(new RunHistoryListFilter(IncludeArchived: true));
+        _runs = response.Items;
+    }
 
     private async Task CompareAsync()
     {
-        if (!Guid.TryParse(_earlierRunIdText, out var earlier) || !Guid.TryParse(_laterRunIdText, out var later))
+        if (_earlierRunId == NoneValue || _laterRunId == NoneValue)
         {
             return;
         }
 
         _report = await ApiClient.CompareRunsAsync(new CompareRunsRequest(
-            RunId.FromGuid(earlier),
-            RunId.FromGuid(later)));
+            RunId.FromGuid(Guid.Parse(_earlierRunId)),
+            RunId.FromGuid(Guid.Parse(_laterRunId))));
     }
 }

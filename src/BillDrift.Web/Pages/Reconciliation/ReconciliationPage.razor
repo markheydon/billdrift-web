@@ -1,0 +1,188 @@
+@page "/reconciliation"
+@rendermode InteractiveServer
+@using BillDrift.Application.Ingestion
+@using BillDrift.Application.Reconciliation
+@using BillDrift.Domain.Common
+@using BillDrift.Domain.Mapping
+@inject IReconciliationApiClient ReconciliationClient
+@inject IIngestionApiClient IngestionClient
+@inject IApprovalApiClient ApprovalClient
+@inject NavigationManager Navigation
+
+<PageTitle>Reconciliation</PageTitle>
+
+<h1>Reconciliation</h1>
+
+<p>Select completed import runs and a billing period, then start reconciliation to surface exceptions and margin impact.</p>
+
+@if (_pdfRuns.Count == 0 && _subscriptionRuns.Count == 0 && _retailRuns.Count == 0 && _stripeRuns.Count == 0)
+{
+    <EmptyStatePanel
+        Title="No imports available"
+        Message="Upload subscription CSV, retail pricing, Giacom PDF, and/or Stripe files before running reconciliation. At least one completed import is required."
+        ActionHref="/ingestion"
+        ActionLabel="Go to ingestion" />
+}
+
+@if (_error is not null)
+{
+    <FluentMessageBar Intent="MessageBarIntent.Error">@_error</FluentMessageBar>
+}
+
+<FluentStack VerticalGap="16">
+    <FluentStack Orientation="Orientation.Horizontal" VerticalGap="8">
+        <FluentLabel>Period start (yyyy-MM-dd)</FluentLabel>
+        <input class="fluent-input" @bind="_periodStart" />
+        <FluentLabel>Period end</FluentLabel>
+        <input class="fluent-input" @bind="_periodEnd" />
+    </FluentStack>
+
+    <FluentStack Orientation="Orientation.Horizontal" VerticalGap="8">
+        <FluentSelect TOption="string" TValue="string" @bind-Value="_supplierRunId" Label="Supplier PDF run" Style="min-width: 240px;">
+            <FluentOption TOption="string" TValue="string" Value="@NoneValue">None</FluentOption>
+            @foreach (var run in _pdfRuns)
+            {
+                <FluentOption TOption="string" TValue="string" Value="@run.IngestionId.ToString()">@run.UploadedAt:g</FluentOption>
+            }
+        </FluentSelect>
+        <FluentSelect TOption="string" TValue="string" @bind-Value="_subscriptionRunId" Label="Subscription CSV run" Style="min-width: 240px;">
+            <FluentOption TOption="string" TValue="string" Value="@NoneValue">None</FluentOption>
+            @foreach (var run in _subscriptionRuns)
+            {
+                <FluentOption TOption="string" TValue="string" Value="@run.IngestionId.ToString()">@run.UploadedAt:g</FluentOption>
+            }
+        </FluentSelect>
+        <FluentSelect TOption="string" TValue="string" @bind-Value="_pricingRunId" Label="Retail pricing run" Style="min-width: 240px;">
+            <FluentOption TOption="string" TValue="string" Value="@NoneValue">None</FluentOption>
+            @foreach (var run in _retailRuns)
+            {
+                <FluentOption TOption="string" TValue="string" Value="@run.IngestionId.ToString()">@run.UploadedAt:g</FluentOption>
+            }
+        </FluentSelect>
+        <FluentSelect TOption="string" TValue="string" @bind-Value="_stripeRunId" Label="Stripe CSV run" Style="min-width: 240px;">
+            <FluentOption TOption="string" TValue="string" Value="@NoneValue">None</FluentOption>
+            @foreach (var run in _stripeRuns)
+            {
+                <FluentOption TOption="string" TValue="string" Value="@run.IngestionId.ToString()">@run.UploadedAt:g</FluentOption>
+            }
+        </FluentSelect>
+    </FluentStack>
+
+    <FluentButton Appearance="ButtonAppearance.Primary" OnClick="StartRunAsync" Disabled="_running">
+        @(_running ? "Running…" : "Start reconciliation")
+    </FluentButton>
+</FluentStack>
+
+@if (_result is null && !_running && (_pdfRuns.Count > 0 || _subscriptionRuns.Count > 0 || _retailRuns.Count > 0 || _stripeRuns.Count > 0))
+{
+    <EmptyStatePanel
+        Title="Ready to reconcile"
+        Message="Choose a billing period and select which import runs to compare. After the run completes, review exceptions and margin lines, then send proposals to the approval queue."
+        ActionHref="/mapping"
+        ActionLabel="Configure product mappings" />
+}
+
+@if (_result is not null)
+{
+    <FluentDivider />
+    <h2>Run @(_result.RunId)</h2>
+    <FluentStack Orientation="Orientation.Horizontal" VerticalGap="8">
+        <FluentBadge>@_result.Summary.MismatchCount mismatches</FluentBadge>
+        <FluentBadge>@_result.Summary.ProposedChangeCount proposals</FluentBadge>
+        @if (_result.Summary.CleanRun)
+        {
+            <FluentBadge>Clean run</FluentBadge>
+        }
+    </FluentStack>
+
+  <FluentTabs>
+        <FluentTab Header="Exceptions" Id="exceptions">
+            <ExceptionDashboard Exceptions="_result.Exceptions" />
+        </FluentTab>
+        <FluentTab Header="Margin" Id="margin">
+            <MarginView Lines="_result.MarginLines" />
+        </FluentTab>
+    </FluentTabs>
+
+    <FluentStack Orientation="Orientation.Horizontal" VerticalGap="8">
+        <FluentButton OnClick="SendToApprovalAsync">Send to approval queue</FluentButton>
+        <FluentAnchorButton Appearance="ButtonAppearance.Transparent" Href="@($"/history/{_result.RunId}")">View in history</FluentAnchorButton>
+    </FluentStack>
+}
+
+@code {
+    private const string NoneValue = "__none__";
+    private string _periodStart = DateTime.UtcNow.AddMonths(-1).ToString("yyyy-MM-dd");
+    private string _periodEnd = DateTime.UtcNow.ToString("yyyy-MM-dd");
+    private string _supplierRunId = NoneValue;
+    private string _subscriptionRunId = NoneValue;
+    private string _pricingRunId = NoneValue;
+    private string _stripeRunId = NoneValue;
+    private bool _running;
+    private string? _error;
+    private ReconciliationRunResponse? _result;
+
+    private List<GiacomPdfIngestionRun> _pdfRuns = [];
+    private List<SubscriptionManagementIngestionRun> _subscriptionRuns = [];
+    private List<RetailPricingIngestionRun> _retailRuns = [];
+    private List<StripeCsvIngestionRun> _stripeRuns = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _pdfRuns = (await IngestionClient.ListGiacomPdfRunsAsync()).ToList();
+        _subscriptionRuns = (await IngestionClient.ListSubscriptionManagementRunsAsync()).ToList();
+        _retailRuns = (await IngestionClient.ListRetailPricingRunsAsync()).ToList();
+        _stripeRuns = (await IngestionClient.ListStripeCsvRunsAsync()).ToList();
+    }
+
+    private async Task StartRunAsync()
+    {
+        _running = true;
+        _error = null;
+
+        try
+        {
+            var request = new StartReconciliationRunRequest(
+                new BillingPeriod(DateOnly.Parse(_periodStart), DateOnly.Parse(_periodEnd)),
+                ParseGuid(_supplierRunId),
+                ParseGuid(_subscriptionRunId),
+                ParseGuid(_pricingRunId),
+                ParseGuid(_stripeRunId),
+                Array.Empty<ProductMapping>(),
+                new ReconciliationOptions(),
+                PersistRun: true,
+                InitiatorId: "web-operator");
+
+            _result = await ReconciliationClient.StartRunAsync(request);
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _running = false;
+        }
+    }
+
+    private async Task SendToApprovalAsync()
+    {
+        if (_result is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await ApprovalClient.IngestFromRunAsync(_result.RunId);
+            Navigation.NavigateTo($"/approvals/{_result.RunId}");
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private static Guid? ParseGuid(string value) =>
+        value == "__none__" || !Guid.TryParse(value, out var id) ? null : id;
+}

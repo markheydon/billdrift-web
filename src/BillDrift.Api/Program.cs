@@ -3,6 +3,7 @@ using BillDrift.Api.CatalogueReconciliation;
 using BillDrift.Api.Classification;
 using BillDrift.Api.History;
 using BillDrift.Api.Imports;
+using BillDrift.Api.Reconciliation;
 using BillDrift.Application.Approval;
 using BillDrift.Application.Classification;
 using BillDrift.Application.History;
@@ -17,9 +18,15 @@ using BillDrift.Infrastructure.Ingestion;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var useInMemoryStorage = builder.Environment.IsEnvironment("Testing");
+
 builder.AddServiceDefaults();
-builder.AddAzureTableServiceClient("tables");
-builder.AddAzureBlobServiceClient("blobs");
+if (!useInMemoryStorage)
+{
+    builder.AddAzureTableServiceClient("tables");
+    builder.AddAzureBlobServiceClient("blobs");
+}
+
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddHttpContextAccessor();
@@ -30,16 +37,16 @@ builder.Services.AddGiacomBillingPdfIngestion();
 builder.Services.AddGiacomSubscriptionManagementCsvIngestion();
 builder.Services.AddGiacomRetailPricingCsvIngestion();
 builder.Services.AddStripeBillingCsvIngestion();
-builder.Services.AddIngestionStorage();
+builder.Services.AddIngestionStorage(useInMemoryStorage);
 builder.Services.AddReconciliationEngine();
 builder.Services.AddClassification();
-builder.Services.AddClassificationStorage();
+builder.Services.AddClassificationStorage(useInMemoryStorage);
 builder.Services.AddApproval();
-builder.Services.AddApprovalStorage();
+builder.Services.AddApprovalStorage(useInMemoryStorage);
 builder.Services.AddRunHistory();
-builder.Services.AddRunHistoryStorage();
+builder.Services.AddRunHistoryStorage(useInMemoryStorage);
 builder.Services.AddCatalogueReconciliation();
-builder.Services.AddCatalogueReconciliationStorage();
+builder.Services.AddCatalogueReconciliationStorage(useInMemoryStorage);
 
 var app = builder.Build();
 
@@ -58,6 +65,12 @@ app.MapApprovalEndpoints();
 app.MapRunHistoryEndpoints();
 app.MapSubscriptionManagementImportEndpoints();
 app.MapRetailPricingImportEndpoints();
+app.MapGiacomPdfImportEndpoints();
+app.MapStripeCsvImportEndpoints();
+app.MapReconciliationEndpoints();
 app.MapCatalogueReconciliationEndpoints();
 
 app.Run();
+
+/// <summary>Marker type for WebApplicationFactory integration tests.</summary>
+public partial class Program;
