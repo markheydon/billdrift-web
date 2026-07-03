@@ -26,6 +26,7 @@ builder.Services.AddScoped<IOperatorContext>(sp => OperatorContextResolver.Resol
     sp.GetRequiredService<IHostEnvironment>()));
 builder.Services.AddGiacomBillingPdfIngestion();
 builder.Services.AddGiacomSubscriptionManagementCsvIngestion();
+builder.Services.AddGiacomRetailPricingCsvIngestion();
 builder.Services.AddStripeBillingCsvIngestion();
 builder.Services.AddIngestionStorage();
 builder.Services.AddReconciliationEngine();
@@ -52,5 +53,6 @@ app.MapClassificationEndpoints();
 app.MapApprovalEndpoints();
 app.MapRunHistoryEndpoints();
 app.MapSubscriptionManagementImportEndpoints();
+app.MapRetailPricingImportEndpoints();
 
 app.Run();

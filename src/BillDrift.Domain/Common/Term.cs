@@ -12,6 +12,9 @@ public enum Term
     /// <summary>Annual contract term.</summary>
     Annual,
 
+    /// <summary>Three-year contract term.</summary>
+    Triennial,
+
     /// <summary>ISO 8601 one-month period identifier from source systems.</summary>
     P1M,
 

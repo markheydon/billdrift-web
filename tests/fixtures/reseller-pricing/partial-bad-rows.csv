@@ -1,0 +1,6 @@
+Offer ID,SKU ID,Term,Frequency,Wholesale,RRP,Status
+OFFER-GOOD-01,SKU-GOOD-01,Annual,Monthly,5.00,8.00,Active
+OFFER-GOOD-02,SKU-GOOD-02,P1Y,Annual,10.00,15.00,Active
+OFFER-GOOD-03,SKU-GOOD-03,P1M,Monthly,2.00,3.50,Active
+,SKU-BAD-01,Annual,Monthly,5.00,8.00,Active
+OFFER-BAD-02,SKU-BAD-02,Annual,Monthly,not-a-price,8.00,Active

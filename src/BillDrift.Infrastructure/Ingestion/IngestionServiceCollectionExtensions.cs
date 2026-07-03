@@ -1,4 +1,5 @@
 using BillDrift.Application.Import.SubscriptionManagement;
+using BillDrift.Application.Import.RetailPricing;
 using BillDrift.Application.Ingestion;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +25,7 @@ public static class IngestionServiceCollectionExtensions
         }
 
         services.AddSingleton<ISubscriptionManagementIngestionService, SubscriptionManagementIngestionService>();
+        services.AddSingleton<IRetailPricingIngestionService, RetailPricingIngestionService>();
         return services;
     }
 }

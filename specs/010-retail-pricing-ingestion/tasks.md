@@ -23,10 +23,10 @@
 
 **Purpose**: Fixture layout and verify shared dependencies.
 
-- [ ] T001 Verify `CsvHelper` package reference exists in `src/BillDrift.Infrastructure/BillDrift.Infrastructure.csproj` (reuse from 003/009; no duplicate add)
-- [ ] T002 [P] Create `tests/fixtures/reseller-pricing/` and `tests/fixtures/reseller-pricing/expected/` directory structure
-- [ ] T003 [P] Add `tests/fixtures/reseller-pricing/README.md` documenting required fixtures per `quickstart.md` and commit policy for sanitized CSV exports
-- [ ] T004 Obtain and place sanitized CSV fixtures (minimum: `reseller-pricing-sample-a.csv`, `column-variant.csv`, `partial-bad-rows.csv`, `duplicate-keys.csv`, `end-of-sale.csv`) under `tests/fixtures/reseller-pricing/`
+- [X] T001 Verify `CsvHelper` package reference exists in `src/BillDrift.Infrastructure/BillDrift.Infrastructure.csproj` (reuse from 003/009; no duplicate add)
+- [X] T002 [P] Create `tests/fixtures/reseller-pricing/` and `tests/fixtures/reseller-pricing/expected/` directory structure
+- [X] T003 [P] Add `tests/fixtures/reseller-pricing/README.md` documenting required fixtures per `quickstart.md` and commit policy for sanitized CSV exports
+- [X] T004 Obtain and place sanitized CSV fixtures (minimum: `reseller-pricing-sample-a.csv`, `column-variant.csv`, `partial-bad-rows.csv`, `duplicate-keys.csv`, `end-of-sale.csv`) under `tests/fixtures/reseller-pricing/`
 
 **Checkpoint**: Fixture directories ready; CsvHelper available; production CSVs may arrive in parallel with parser work.
 
@@ -38,30 +38,30 @@
 
 **⚠️ CRITICAL**: No user story work until this phase is complete.
 
-- [ ] T005 Extend `IngestionFailureReason` enum with retail-pricing codes (`TermUnparseable`, `FrequencyUnparseable`, `WholesaleUnparseable`, `RrpUnparseable`, `MissingCommercialKey`, `DuplicateCommercialKey`, `UnsupportedCurrency`, `ManualOverrideValidationFailed`, `PlatformUnrecognised`) in `src/BillDrift.Application/Import/IngestionEnums.cs` per `data-model.md`
-- [ ] T006 [P] Add `Triennial` value to `Term` enum in `src/BillDrift.Domain/Common/Term.cs` per research R4
-- [ ] T007 [P] Implement `PricingPlatform` enum in `src/BillDrift.Domain/Common/PricingPlatform.cs` per `data-model.md`
-- [ ] T008 Extend `RawPriceListRow` with `PlatformRaw` and `CurrencyRaw` in `src/BillDrift.Domain/Import/RawPriceListRow.cs` per `data-model.md`
-- [ ] T009 Extend `IntendedPrice` with `Platform` and `Classification` parameters in `src/BillDrift.Domain/Billing/IntendedPrice.cs` per `data-model.md`
-- [ ] T010 [P] Implement `RetailPricingCsvIngestionOptions` record in `src/BillDrift.Application/Import/RetailPricingCsvIngestionOptions.cs` per `data-model.md`
-- [ ] T011 [P] Implement `ManualPriceOverrideRequest` record in `src/BillDrift.Application/Import/ManualPriceOverrideRequest.cs` per `data-model.md`
-- [ ] T012 [P] Implement `RetailPricingCsvIngestionRequest` record in `src/BillDrift.Application/Import/RetailPricingCsvIngestionRequest.cs`
-- [ ] T013 [P] Implement `RetailPricingCsvIngestionSummary` record in `src/BillDrift.Application/Import/RetailPricingCsvIngestionSummary.cs`
-- [ ] T014 [P] Implement `PricingResolutionDetail` record in `src/BillDrift.Application/Import/PricingResolutionDetail.cs`
-- [ ] T015 Implement `RetailPricingCsvIngestionResult` record in `src/BillDrift.Application/Import/RetailPricingCsvIngestionResult.cs` per `data-model.md`
-- [ ] T016 Implement `IResellerPricingCsvIngester` interface in `src/BillDrift.Application/Import/IResellerPricingCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
-- [ ] T017 [P] Implement `RetailPricingIngestionRun` record in `src/BillDrift.Application/Ingestion/RetailPricingIngestionRun.cs` per `data-model.md`
-- [ ] T018 Extend `IIngestionBlobStore` with retail-pricing persist/load methods in `src/BillDrift.Application/Ingestion/IIngestionBlobStore.cs` per `contracts/azure-blob-ingestion-archive.md`
-- [ ] T019 Extend `IIngestionRunIndexStore` with retail-pricing index methods in `src/BillDrift.Application/Ingestion/IIngestionRunIndexStore.cs` per `contracts/azure-table-ingestion-index.md`
-- [ ] T020 [P] Define `IRetailPricingIngestionService` interface in `src/BillDrift.Application/Import/RetailPricing/IRetailPricingIngestionService.cs` per `contracts/csv-ingestion-pipeline.md`
-- [ ] T021 [P] Implement `ParsedResellerPricingRow` in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/Internal/ParsedResellerPricingRow.cs`
-- [ ] T022 Implement SHA-256 file hash helper in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/RetailPricingFileIdentity.cs` per research R2
-- [ ] T023 Implement intake limits (`MaxFileSizeBytes` default 10 MB) in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/RetailPricingIngestionLimits.cs`
-- [ ] T024 Implement `ResellerPricingCsvHeaderMap` column alias registry in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/ResellerPricingCsvHeaderMap.cs` per `contracts/reseller-pricing-header-map.md`
-- [ ] T025 Implement `ResellerPricingCsvRowReader` CsvHelper wrapper in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/ResellerPricingCsvRowReader.cs`
-- [ ] T026 [P] Implement bounded stream reader in `src/BillDrift.Application/Import/RetailPricingCsvContentReader.cs` (mirror `SubscriptionManagementCsvContentReader`)
-- [ ] T027 Extend `GiacomImportServiceCollectionExtensions` skeleton for retail pricing ingester in `src/BillDrift.Infrastructure/Import/Giacom/GiacomImportServiceCollectionExtensions.cs`
-- [ ] T028 Reuse or reference shared `GoldenFileComparer` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/RetailPricing/GoldenFileComparer.cs` (from Giacom/Stripe tests)
+- [X] T005 Extend `IngestionFailureReason` enum with retail-pricing codes (`TermUnparseable`, `FrequencyUnparseable`, `WholesaleUnparseable`, `RrpUnparseable`, `MissingCommercialKey`, `DuplicateCommercialKey`, `UnsupportedCurrency`, `ManualOverrideValidationFailed`, `PlatformUnrecognised`) in `src/BillDrift.Application/Import/IngestionEnums.cs` per `data-model.md`
+- [X] T006 [P] Add `Triennial` value to `Term` enum in `src/BillDrift.Domain/Common/Term.cs` per research R4
+- [X] T007 [P] Implement `PricingPlatform` enum in `src/BillDrift.Domain/Common/PricingPlatform.cs` per `data-model.md`
+- [X] T008 Extend `RawPriceListRow` with `PlatformRaw` and `CurrencyRaw` in `src/BillDrift.Domain/Import/RawPriceListRow.cs` per `data-model.md`
+- [X] T009 Extend `IntendedPrice` with `Platform` and `Classification` parameters in `src/BillDrift.Domain/Billing/IntendedPrice.cs` per `data-model.md`
+- [X] T010 [P] Implement `RetailPricingCsvIngestionOptions` record in `src/BillDrift.Application/Import/RetailPricingCsvIngestionOptions.cs` per `data-model.md`
+- [X] T011 [P] Implement `ManualPriceOverrideRequest` record in `src/BillDrift.Application/Import/ManualPriceOverrideRequest.cs` per `data-model.md`
+- [X] T012 [P] Implement `RetailPricingCsvIngestionRequest` record in `src/BillDrift.Application/Import/RetailPricingCsvIngestionRequest.cs`
+- [X] T013 [P] Implement `RetailPricingCsvIngestionSummary` record in `src/BillDrift.Application/Import/RetailPricingCsvIngestionSummary.cs`
+- [X] T014 [P] Implement `PricingResolutionDetail` record in `src/BillDrift.Application/Import/PricingResolutionDetail.cs`
+- [X] T015 Implement `RetailPricingCsvIngestionResult` record in `src/BillDrift.Application/Import/RetailPricingCsvIngestionResult.cs` per `data-model.md`
+- [X] T016 Implement `IResellerPricingCsvIngester` interface in `src/BillDrift.Application/Import/IResellerPricingCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
+- [X] T017 [P] Implement `RetailPricingIngestionRun` record in `src/BillDrift.Application/Ingestion/RetailPricingIngestionRun.cs` per `data-model.md`
+- [X] T018 Extend `IIngestionBlobStore` with retail-pricing persist/load methods in `src/BillDrift.Application/Ingestion/IIngestionBlobStore.cs` per `contracts/azure-blob-ingestion-archive.md`
+- [X] T019 Extend `IIngestionRunIndexStore` with retail-pricing index methods in `src/BillDrift.Application/Ingestion/IIngestionRunIndexStore.cs` per `contracts/azure-table-ingestion-index.md`
+- [X] T020 [P] Define `IRetailPricingIngestionService` interface in `src/BillDrift.Application/Import/RetailPricing/IRetailPricingIngestionService.cs` per `contracts/csv-ingestion-pipeline.md`
+- [X] T021 [P] Implement `ParsedResellerPricingRow` in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/Internal/ParsedResellerPricingRow.cs`
+- [X] T022 Implement SHA-256 file hash helper in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/RetailPricingFileIdentity.cs` per research R2
+- [X] T023 Implement intake limits (`MaxFileSizeBytes` default 10 MB) in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/RetailPricingIngestionLimits.cs`
+- [X] T024 Implement `ResellerPricingCsvHeaderMap` column alias registry in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/ResellerPricingCsvHeaderMap.cs` per `contracts/reseller-pricing-header-map.md`
+- [X] T025 Implement `ResellerPricingCsvRowReader` CsvHelper wrapper in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/ResellerPricingCsvRowReader.cs`
+- [X] T026 [P] Implement bounded stream reader in `src/BillDrift.Application/Import/RetailPricingCsvContentReader.cs` (mirror `SubscriptionManagementCsvContentReader`)
+- [X] T027 Extend `GiacomImportServiceCollectionExtensions` skeleton for retail pricing ingester in `src/BillDrift.Infrastructure/Import/Giacom/GiacomImportServiceCollectionExtensions.cs`
+- [X] T028 Reuse or reference shared `GoldenFileComparer` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/RetailPricing/GoldenFileComparer.cs` (from Giacom/Stripe tests)
 
 **Checkpoint**: Application contract compiles; domain types extended; header map and row reader available.
 
@@ -77,22 +77,22 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T029 [P] [US1] Create integration test skeleton in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/RetailPricing/ResellerPricingCsvIngesterTests.cs`
-- [ ] T030 [P] [US1] Add multi-key catalogue extraction assertion test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 2
+- [X] T029 [P] [US1] Create integration test skeleton in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/RetailPricing/ResellerPricingCsvIngesterTests.cs`
+- [X] T030 [P] [US1] Add multi-key catalogue extraction assertion test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 2
 
 ### Implementation for User Story 1
 
-- [ ] T031 [US1] Implement `RawPriceListRowMapper` core field mapping in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/RawPriceListRowMapper.cs`
-- [ ] T032 [US1] Implement `RawImportId.Create(ImportSourceKind.GiacomPriceList, sourceDocumentId, lineKey)` assignment in `RawPriceListRowMapper.cs` per research R2
-- [ ] T033 [US1] Implement mandatory field validation (offer ID or SKU ID, term, frequency, wholesale, RRP) in `RawPriceListRowMapper.cs`
-- [ ] T034 [US1] Implement `ResellerPricingCsvIngester` orchestrator skeleton in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/ResellerPricingCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
-- [ ] T035 [US1] Complete intake, header detection, row parsing, and raw mapping stages in `ResellerPricingCsvIngester.cs`
-- [ ] T036 [US1] Wire basic normalization pass-through so `CataloguePrices` populated for happy path in `ResellerPricingCsvIngester.cs`
-- [ ] T037 [US1] Complete result assembly with `IngestionOutcomeStatus`, summary counts, and `IngestionLogEntry` list in `ResellerPricingCsvIngester.cs`
-- [ ] T038 [US1] Register `AddGiacomRetailPricingCsvIngestion` (`Singleton<IResellerPricingCsvIngester>`) in `GiacomImportServiceCollectionExtensions.cs`
-- [ ] T039 [US1] Register ingester in `src/BillDrift.Api/Program.cs` via Giacom import extension
-- [ ] T040 [US1] Generate golden JSON `tests/fixtures/reseller-pricing/expected/sample-a.json` from validated output
-- [ ] T041 [US1] Complete golden-file assertions in `ResellerPricingCsvIngesterTests.cs` per `quickstart.md` Scenario 1
+- [X] T031 [US1] Implement `RawPriceListRowMapper` core field mapping in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/RawPriceListRowMapper.cs`
+- [X] T032 [US1] Implement `RawImportId.Create(ImportSourceKind.GiacomPriceList, sourceDocumentId, lineKey)` assignment in `RawPriceListRowMapper.cs` per research R2
+- [X] T033 [US1] Implement mandatory field validation (offer ID or SKU ID, term, frequency, wholesale, RRP) in `RawPriceListRowMapper.cs`
+- [X] T034 [US1] Implement `ResellerPricingCsvIngester` orchestrator skeleton in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/ResellerPricingCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
+- [X] T035 [US1] Complete intake, header detection, row parsing, and raw mapping stages in `ResellerPricingCsvIngester.cs`
+- [X] T036 [US1] Wire basic normalization pass-through so `CataloguePrices` populated for happy path in `ResellerPricingCsvIngester.cs`
+- [X] T037 [US1] Complete result assembly with `IngestionOutcomeStatus`, summary counts, and `IngestionLogEntry` list in `ResellerPricingCsvIngester.cs`
+- [X] T038 [US1] Register `AddGiacomRetailPricingCsvIngestion` (`Singleton<IResellerPricingCsvIngester>`) in `GiacomImportServiceCollectionExtensions.cs`
+- [X] T039 [US1] Register ingester in `src/BillDrift.Api/Program.cs` via Giacom import extension
+- [X] T040 [US1] Generate golden JSON `tests/fixtures/reseller-pricing/expected/sample-a.json` from validated output
+- [X] T041 [US1] Complete golden-file assertions in `ResellerPricingCsvIngesterTests.cs` per `quickstart.md` Scenario 1
 
 **Checkpoint**: MVP ingests sample CSV independently; golden test passes; mandatory catalogue fields captured.
 
@@ -106,17 +106,17 @@
 
 ### Tests for User Story 2
 
-- [ ] T042 [P] [US2] Add catalogue-only RRP strategy test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 1
-- [ ] T043 [P] [US2] Add end-of-sale RRP retention test using `end-of-sale.csv` in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 3
+- [X] T042 [P] [US2] Add catalogue-only RRP strategy test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 1
+- [X] T043 [P] [US2] Add end-of-sale RRP retention test using `end-of-sale.csv` in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 3
 
 ### Implementation for User Story 2
 
-- [ ] T044 [US2] Implement `PriceListNormalizer` for catalogue rows implementing `IPriceListNormalizer` in `src/BillDrift.Application/Normalization/PriceListNormalizer.cs` per `contracts/pricing-strategy-rules.md`
-- [ ] T045 [US2] Map catalogue rows to `PriceSource.Catalogue` and `ProductClassification.Csp` in `PriceListNormalizer.cs`
-- [ ] T046 [US2] Integrate pricing resolution stage using existing `IntendedPriceResolver` in `ResellerPricingCsvIngester.cs` per research R8
-- [ ] T047 [US2] Populate `ResolvedPrices` and `PricingResolutionDetail` with `WinningSource = Catalogue` for catalogue-only keys in `ResellerPricingCsvIngester.cs`
-- [ ] T048 [US2] Update `RetailPricingCsvIngestionSummary.CatalogueOnlyCount` rollup in `ResellerPricingCsvIngester.cs`
-- [ ] T049 [US2] Replace ingester inline normalization with `PriceListNormalizer` in `ResellerPricingCsvIngester.cs`
+- [X] T044 [US2] Implement `PriceListNormalizer` for catalogue rows implementing `IPriceListNormalizer` in `src/BillDrift.Application/Normalization/PriceListNormalizer.cs` per `contracts/pricing-strategy-rules.md`
+- [X] T045 [US2] Map catalogue rows to `PriceSource.Catalogue` and `ProductClassification.Csp` in `PriceListNormalizer.cs`
+- [X] T046 [US2] Integrate pricing resolution stage using existing `IntendedPriceResolver` in `ResellerPricingCsvIngester.cs` per research R8
+- [X] T047 [US2] Populate `ResolvedPrices` and `PricingResolutionDetail` with `WinningSource = Catalogue` for catalogue-only keys in `ResellerPricingCsvIngester.cs`
+- [X] T048 [US2] Update `RetailPricingCsvIngestionSummary.CatalogueOnlyCount` rollup in `ResellerPricingCsvIngester.cs`
+- [X] T049 [US2] Replace ingester inline normalization with `PriceListNormalizer` in `ResellerPricingCsvIngester.cs`
 
 **Checkpoint**: Default charge-RRP strategy verified; end-of-sale rows keep RRP; SC-002 path for catalogue-only runs.
 
@@ -130,18 +130,18 @@
 
 ### Tests for User Story 3
 
-- [ ] T050 [P] [US3] Add override-only bespoke product test in `ResellerPricingCsvIngesterTests.cs` per `quickstart.md` Scenario 3
-- [ ] T051 [P] [US3] Add override-wins-over-catalogue precedence test in `ResellerPricingCsvIngesterTests.cs` per SC-003 and `quickstart.md` Scenario 4
+- [X] T050 [P] [US3] Add override-only bespoke product test in `ResellerPricingCsvIngesterTests.cs` per `quickstart.md` Scenario 3
+- [X] T051 [P] [US3] Add override-wins-over-catalogue precedence test in `ResellerPricingCsvIngesterTests.cs` per SC-003 and `quickstart.md` Scenario 4
 
 ### Implementation for User Story 3
 
-- [ ] T052 [US3] Implement manual override request validation in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/ManualOverrideValidator.cs` per `contracts/pricing-strategy-rules.md`
-- [ ] T053 [US3] Map accepted overrides to `RawManualPriceEntry` with `ImportSourceKind.ManualPriceEntry` in `ResellerPricingCsvIngester.cs`
-- [ ] T054 [US3] Extend `PriceListNormalizer` with `Normalize(RawManualPriceEntry)` mapping to `PriceSource.ManualOverride` and `ProductClassification.NonCsp` in `PriceListNormalizer.cs`
-- [ ] T055 [US3] Integrate manual override parse stage into `ResellerPricingCsvIngester.cs` per pipeline contract stage 6–7
-- [ ] T056 [US3] Apply `IntendedPriceResolver` precedence so manual beats catalogue in `ResellerPricingCsvIngester.cs` per FR-015
-- [ ] T057 [US3] Populate `OverrideWinsCount` and resolution details when both sources exist in `ResellerPricingCsvIngester.cs`
-- [ ] T058 [US3] Preserve `Reason` and `EffectiveDate` on manual source references in `PriceListNormalizer.cs`
+- [X] T052 [US3] Implement manual override request validation in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/ManualOverrideValidator.cs` per `contracts/pricing-strategy-rules.md`
+- [X] T053 [US3] Map accepted overrides to `RawManualPriceEntry` with `ImportSourceKind.ManualPriceEntry` in `ResellerPricingCsvIngester.cs`
+- [X] T054 [US3] Extend `PriceListNormalizer` with `Normalize(RawManualPriceEntry)` mapping to `PriceSource.ManualOverride` and `ProductClassification.NonCsp` in `PriceListNormalizer.cs`
+- [X] T055 [US3] Integrate manual override parse stage into `ResellerPricingCsvIngester.cs` per pipeline contract stage 6–7
+- [X] T056 [US3] Apply `IntendedPriceResolver` precedence so manual beats catalogue in `ResellerPricingCsvIngester.cs` per FR-015
+- [X] T057 [US3] Populate `OverrideWinsCount` and resolution details when both sources exist in `ResellerPricingCsvIngester.cs`
+- [X] T058 [US3] Preserve `Reason` and `EffectiveDate` on manual source references in `PriceListNormalizer.cs`
 
 **Checkpoint**: Manual overrides work standalone and on conflict; bespoke classification applied; SC-003 test passes.
 
@@ -155,17 +155,17 @@
 
 ### Tests for User Story 4
 
-- [ ] T059 [P] [US4] Create `TermFrequencyParserTests` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/RetailPricing/TermFrequencyParserTests.cs`
-- [ ] T060 [P] [US4] Create `PriceListNormalizerTests` commercial-key tests in `tests/BillDrift.Application.Tests/Normalization/PriceListNormalizerTests.cs` per spec acceptance scenario 1–2
-- [ ] T061 [P] [US4] Add missing commercial key skip test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 3
+- [X] T059 [P] [US4] Create `TermFrequencyParserTests` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/RetailPricing/TermFrequencyParserTests.cs`
+- [X] T060 [P] [US4] Create `PriceListNormalizerTests` commercial-key tests in `tests/BillDrift.Application.Tests/Normalization/PriceListNormalizerTests.cs` per spec acceptance scenario 1–2
+- [X] T061 [P] [US4] Add missing commercial key skip test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 3
 
 ### Implementation for User Story 4
 
-- [ ] T062 [P] [US4] Implement `TermFrequencyParser` in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/TermFrequencyParser.cs` per research R4
-- [ ] T063 [US4] Implement Offer ID + SKU ID trim normalisation into `CommercialKey` in `PriceListNormalizer.cs` per research R6
-- [ ] T064 [US4] Map `Term.Triennial` and billing frequency enums in `PriceListNormalizer.cs`
-- [ ] T065 [US4] Emit `MissingCommercialKey` log and skip row when both IDs absent in `ResellerPricingCsvIngester.cs` per FR-021
-- [ ] T066 [US4] Retain raw identifier values in `SourceReference` for traceability in `PriceListNormalizer.cs`
+- [X] T062 [P] [US4] Implement `TermFrequencyParser` in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/TermFrequencyParser.cs` per research R4
+- [X] T063 [US4] Implement Offer ID + SKU ID trim normalisation into `CommercialKey` in `PriceListNormalizer.cs` per research R6
+- [X] T064 [US4] Map `Term.Triennial` and billing frequency enums in `PriceListNormalizer.cs`
+- [X] T065 [US4] Emit `MissingCommercialKey` log and skip row when both IDs absent in `ResellerPricingCsvIngester.cs` per FR-021
+- [X] T066 [US4] Retain raw identifier values in `SourceReference` for traceability in `PriceListNormalizer.cs`
 
 **Checkpoint**: Commercial keys align with subscription truth and Stripe matching conventions; normalizer tests pass.
 
@@ -179,18 +179,18 @@
 
 ### Tests for User Story 5
 
-- [ ] T067 [P] [US5] Create `PlatformClassifierTests` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/RetailPricing/PlatformClassifierTests.cs` per research R5
-- [ ] T068 [P] [US5] Add margin field capture integration test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 2
-- [ ] T069 [P] [US5] Add blank-margin-not-invented test in `PriceListNormalizerTests.cs` per spec acceptance scenario 3
+- [X] T067 [P] [US5] Create `PlatformClassifierTests` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/RetailPricing/PlatformClassifierTests.cs` per research R5
+- [X] T068 [P] [US5] Add margin field capture integration test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 2
+- [X] T069 [P] [US5] Add blank-margin-not-invented test in `PriceListNormalizerTests.cs` per spec acceptance scenario 3
 
 ### Implementation for User Story 5
 
-- [ ] T070 [P] [US5] Implement `PlatformClassifier` in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/PlatformClassifier.cs` per research R5
-- [ ] T071 [US5] Extend `RawPriceListRowMapper` to map platform and currency optional columns in `RawPriceListRowMapper.cs`
-- [ ] T072 [US5] Implement GBP `Money` parsing for wholesale, RRP, and margin in `PriceListNormalizer.cs` per research R7
-- [ ] T073 [US5] Map `Margin` and `MarginPercent` when present; leave absent when blank in `PriceListNormalizer.cs`
-- [ ] T074 [US5] Map `PricingPlatform` on `IntendedPrice` in `PriceListNormalizer.cs`
-- [ ] T075 [US5] Implement `UnsupportedCurrency` row skip when non-GBP currency column present in `ResellerPricingCsvIngester.cs`
+- [X] T070 [P] [US5] Implement `PlatformClassifier` in `src/BillDrift.Infrastructure/Import/Giacom/RetailPricing/PlatformClassifier.cs` per research R5
+- [X] T071 [US5] Extend `RawPriceListRowMapper` to map platform and currency optional columns in `RawPriceListRowMapper.cs`
+- [X] T072 [US5] Implement GBP `Money` parsing for wholesale, RRP, and margin in `PriceListNormalizer.cs` per research R7
+- [X] T073 [US5] Map `Margin` and `MarginPercent` when present; leave absent when blank in `PriceListNormalizer.cs`
+- [X] T074 [US5] Map `PricingPlatform` on `IntendedPrice` in `PriceListNormalizer.cs`
+- [X] T075 [US5] Implement `UnsupportedCurrency` row skip when non-GBP currency column present in `ResellerPricingCsvIngester.cs`
 
 **Checkpoint**: Margin and platform fields ready for reconciliation and catalogue validation; SC-004/SC-005 consumer smoke path unblocked.
 
@@ -204,18 +204,18 @@
 
 ### Tests for User Story 6
 
-- [ ] T076 [P] [US6] Add partial-success fixture test in `ResellerPricingCsvIngesterTests.cs` per SC-006
-- [ ] T077 [P] [US6] Add column-variant header reorder test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 2
-- [ ] T078 [P] [US6] Add duplicate commercial key last-wins warning test using `duplicate-keys.csv` in `ResellerPricingCsvIngesterTests.cs`
-- [ ] T079 [P] [US6] Add determinism re-parse test (identical bytes → identical `RawImportId` keys) in `ResellerPricingCsvIngesterTests.cs`
+- [X] T076 [P] [US6] Add partial-success fixture test in `ResellerPricingCsvIngesterTests.cs` per SC-006
+- [X] T077 [P] [US6] Add column-variant header reorder test in `ResellerPricingCsvIngesterTests.cs` per spec acceptance scenario 2
+- [X] T078 [P] [US6] Add duplicate commercial key last-wins warning test using `duplicate-keys.csv` in `ResellerPricingCsvIngesterTests.cs`
+- [X] T079 [P] [US6] Add determinism re-parse test (identical bytes → identical `RawImportId` keys) in `ResellerPricingCsvIngesterTests.cs`
 
 ### Implementation for User Story 6
 
-- [ ] T080 [US6] Implement row skip for unparseable wholesale/RRP (`WholesaleUnparseable`, `RrpUnparseable`) in `ResellerPricingCsvIngester.cs`
-- [ ] T081 [US6] Implement duplicate key detection with last-row-wins and `DuplicateCommercialKey` warning in `ResellerPricingCsvIngester.cs` per research R12
-- [ ] T082 [US6] Implement file-level fail for missing mandatory headers (`MissingMandatoryHeader`) in `ResellerPricingCsvIngester.cs` per FR-029
-- [ ] T083 [US6] Implement `PartialSuccess` vs `Success` vs `Failure` outcome resolution in `ResellerPricingCsvIngester.cs` per pipeline contract
-- [ ] T084 [US6] Validate header alias coverage against `column-variant.csv` and extend `ResellerPricingCsvHeaderMap.cs` as needed
+- [X] T080 [US6] Implement row skip for unparseable wholesale/RRP (`WholesaleUnparseable`, `RrpUnparseable`) in `ResellerPricingCsvIngester.cs`
+- [X] T081 [US6] Implement duplicate key detection with last-row-wins and `DuplicateCommercialKey` warning in `ResellerPricingCsvIngester.cs` per research R12
+- [X] T082 [US6] Implement file-level fail for missing mandatory headers (`MissingMandatoryHeader`) in `ResellerPricingCsvIngester.cs` per FR-029
+- [X] T083 [US6] Implement `PartialSuccess` vs `Success` vs `Failure` outcome resolution in `ResellerPricingCsvIngester.cs` per pipeline contract
+- [X] T084 [US6] Validate header alias coverage against `column-variant.csv` and extend `ResellerPricingCsvHeaderMap.cs` as needed
 
 **Checkpoint**: Partial success and format tolerance verified; SC-001/SC-006 scenarios pass.
 
@@ -229,21 +229,21 @@
 
 ### Tests for Azure Persistence
 
-- [ ] T085 [P] Extend `InMemoryIngestionBlobStore` with retail-pricing methods in `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionBlobStore.cs`
-- [ ] T086 [P] Extend `InMemoryIngestionRunIndexStore` with retail-pricing methods in `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionRunIndexStore.cs`
-- [ ] T087 [P] Add retail-pricing round-trip tests to `tests/BillDrift.Infrastructure.Tests/Ingestion/AzureBlobIngestionArchiveStoreTests.cs` (Azurite when available)
-- [ ] T088 [P] Add retail-pricing index tests to `tests/BillDrift.Infrastructure.Tests/Ingestion/AzureTableIngestionRunIndexStoreTests.cs` (Azurite when available)
+- [X] T085 [P] Extend `InMemoryIngestionBlobStore` with retail-pricing methods in `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionBlobStore.cs`
+- [X] T086 [P] Extend `InMemoryIngestionRunIndexStore` with retail-pricing methods in `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionRunIndexStore.cs`
+- [X] T087 [P] Add retail-pricing round-trip tests to `tests/BillDrift.Infrastructure.Tests/Ingestion/AzureBlobIngestionArchiveStoreTests.cs` (Azurite when available)
+- [X] T088 [P] Add retail-pricing index tests to `tests/BillDrift.Infrastructure.Tests/Ingestion/AzureTableIngestionRunIndexStoreTests.cs` (Azurite when available)
 
 ### Implementation for Azure Persistence
 
-- [ ] T089 Extend `AzureBlobIngestionArchiveStore` with `PersistRetailPricingResultAsync` using constructor `(BlobServiceClient, IOptions<IngestionStorageOptions>)` in `src/BillDrift.Infrastructure/Ingestion/AzureBlobIngestionArchiveStore.cs` per `contracts/azure-blob-ingestion-archive.md`
-- [ ] T090 Extend `AzureTableIngestionRunIndexStore` with retail-pricing partition `GiacomPriceList` using constructor `(TableServiceClient, IOptions<IngestionStorageOptions>)` in `src/BillDrift.Infrastructure/Ingestion/AzureTableIngestionRunIndexStore.cs` per `contracts/azure-table-ingestion-index.md`
-- [ ] T091 Extend `IngestionJsonSerializerContext` with `IntendedPrice`, `RawPriceListRow`, and retail-pricing result types in `src/BillDrift.Infrastructure/Ingestion/IngestionJsonSerializerContext.cs`
-- [ ] T092 Register `IRetailPricingIngestionService` in `src/BillDrift.Infrastructure/Ingestion/IngestionServiceCollectionExtensions.cs`
-- [ ] T093 Implement `RetailPricingIngestionService` orchestrating blob upload → ingest → resolve → persist → table index in `src/BillDrift.Application/Import/RetailPricing/RetailPricingIngestionService.cs`
-- [ ] T094 Implement `RetailPricingImportEndpoints` (`POST`, `GET` list, `GET` detail, `GET` resolved-prices) in `src/BillDrift.Api/Imports/RetailPricingImportEndpoints.cs` per `contracts/azure-table-ingestion-index.md`
-- [ ] T095 Register retail pricing import endpoints in `src/BillDrift.Api/Program.cs` (Aspire `BlobServiceClient`/`TableServiceClient` already registered)
-- [ ] T096 Add API integration test for multipart upload with optional manual-overrides JSON in `tests/BillDrift.Infrastructure.Tests/Ingestion/RetailPricingImportApiTests.cs`
+- [X] T089 Extend `AzureBlobIngestionArchiveStore` with `PersistRetailPricingResultAsync` using constructor `(BlobServiceClient, IOptions<IngestionStorageOptions>)` in `src/BillDrift.Infrastructure/Ingestion/AzureBlobIngestionArchiveStore.cs` per `contracts/azure-blob-ingestion-archive.md`
+- [X] T090 Extend `AzureTableIngestionRunIndexStore` with retail-pricing partition `GiacomPriceList` using constructor `(TableServiceClient, IOptions<IngestionStorageOptions>)` in `src/BillDrift.Infrastructure/Ingestion/AzureTableIngestionRunIndexStore.cs` per `contracts/azure-table-ingestion-index.md`
+- [X] T091 Extend `IngestionJsonSerializerContext` with `IntendedPrice`, `RawPriceListRow`, and retail-pricing result types in `src/BillDrift.Infrastructure/Ingestion/IngestionJsonSerializerContext.cs`
+- [X] T092 Register `IRetailPricingIngestionService` in `src/BillDrift.Infrastructure/Ingestion/IngestionServiceCollectionExtensions.cs`
+- [X] T093 Implement `RetailPricingIngestionService` orchestrating blob upload → ingest → resolve → persist → table index in `src/BillDrift.Application/Import/RetailPricing/RetailPricingIngestionService.cs`
+- [X] T094 Implement `RetailPricingImportEndpoints` (`POST`, `GET` list, `GET` detail, `GET` resolved-prices) in `src/BillDrift.Api/Imports/RetailPricingImportEndpoints.cs` per `contracts/azure-table-ingestion-index.md`
+- [X] T095 Register retail pricing import endpoints in `src/BillDrift.Api/Program.cs` (Aspire `BlobServiceClient`/`TableServiceClient` already registered)
+- [X] T096 Add API integration test for multipart upload with optional manual-overrides JSON in `tests/BillDrift.Infrastructure.Tests/Ingestion/RetailPricingImportApiTests.cs`
 
 **Checkpoint**: Upload API persists to blob + table; manifest-last write protocol; `resolved-prices.json` primary payload; no SQL introduced.
 
@@ -253,13 +253,13 @@
 
 **Purpose**: Run-history integration, reconciliation smoke path, validation, and final quality gates.
 
-- [ ] T097 [P] Ensure `RetailPricingIngestionRun` exposes `ContentFingerprint` and blob paths consumable by `InputSnapshotMetadata` for `InputDomainType.IntendedPricing` (feature 008)
-- [ ] T098 [P] Add XML doc comments on public retail-pricing interfaces and `PriceListNormalizer` per constitution Principle I
-- [ ] T099 Add reconciliation consumer smoke test loading resolved prices into price-mismatch fixture in `tests/BillDrift.Application.Tests/Reconciliation/RetailPricingConsumerTests.cs` per `quickstart.md` Scenario 9
-- [ ] T100 Run full `quickstart.md` validation scenarios (1–10) and document pass/fail in `specs/010-retail-pricing-ingestion/quickstart.md` checklist section
-- [ ] T101 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build` from solution root per workspace build-quality rules
-- [ ] T102 Verify no `new BlobServiceClient(connectionString)` or `new TableServiceClient(connectionString)` introduced — Aspire DI only (grep audit)
-- [ ] T103 Verify no SQL database dependencies introduced for retail pricing ingestion (grep audit for EF Core / SqlClient in new code paths)
+- [X] T097 [P] Ensure `RetailPricingIngestionRun` exposes `ContentFingerprint` and blob paths consumable by `InputSnapshotMetadata` for `InputDomainType.IntendedPricing` (feature 008)
+- [X] T098 [P] Add XML doc comments on public retail-pricing interfaces and `PriceListNormalizer` per constitution Principle I
+- [X] T099 Add reconciliation consumer smoke test loading resolved prices into price-mismatch fixture in `tests/BillDrift.Application.Tests/Reconciliation/RetailPricingConsumerTests.cs` per `quickstart.md` Scenario 9
+- [X] T100 Run full `quickstart.md` validation scenarios (1–10) and document pass/fail in `specs/010-retail-pricing-ingestion/quickstart.md` checklist section
+- [X] T101 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build` from solution root per workspace build-quality rules
+- [X] T102 Verify no `new BlobServiceClient(connectionString)` or `new TableServiceClient(connectionString)` introduced — Aspire DI only (grep audit)
+- [X] T103 Verify no SQL database dependencies introduced for retail pricing ingestion (grep audit for EF Core / SqlClient in new code paths)
 
 **Checkpoint**: All tests pass; quickstart validated; storage constraints verified; fourth reconciliation domain ingestion complete.
 

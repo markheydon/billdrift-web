@@ -21,4 +21,21 @@ public interface IIngestionRunIndexStore
     Task<IReadOnlyList<SubscriptionManagementIngestionRun>> ListRecentAsync(
         int take = 20,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Inserts an in-progress retail pricing ingestion run.</summary>
+    Task CreateRetailPricingInProgressAsync(RetailPricingIngestionRun run, CancellationToken cancellationToken = default);
+
+    /// <summary>Updates a retail pricing run to a terminal status.</summary>
+    Task CompleteRetailPricingAsync(RetailPricingIngestionRun run, CancellationToken cancellationToken = default);
+
+    /// <summary>Marks a retail pricing run as failed.</summary>
+    Task FailRetailPricingAsync(RetailPricingIngestionRun run, CancellationToken cancellationToken = default);
+
+    /// <summary>Loads a single retail pricing ingestion run by ID.</summary>
+    Task<RetailPricingIngestionRun?> GetRetailPricingByIdAsync(Guid ingestionId, CancellationToken cancellationToken = default);
+
+    /// <summary>Lists recent retail pricing ingestion runs.</summary>
+    Task<IReadOnlyList<RetailPricingIngestionRun>> ListRecentRetailPricingAsync(
+        int take = 20,
+        CancellationToken cancellationToken = default);
 }
