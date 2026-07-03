@@ -1,9 +1,9 @@
-using Azure.Storage.Blobs;
 using BillDrift.Application.Approval;
 using BillDrift.Domain.Approval;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
 using BillDrift.Infrastructure.Approval;
+using BillDrift.Infrastructure.Tests.Storage;
 using Microsoft.Extensions.Options;
 
 namespace BillDrift.Infrastructure.Tests.Approval;
@@ -11,49 +11,42 @@ namespace BillDrift.Infrastructure.Tests.Approval;
 public sealed class AzureBlobChangesetExporterTests
 {
     [Fact]
+    [Trait("Category", AzureStorageTestSupport.IntegrationTrait)]
     public async Task Blob_round_trip_against_azurite_when_available()
     {
+        AzureStorageTestSupport.EnsureAvailableOrSkip();
+
         var cancellationToken = TestContext.Current.CancellationToken;
-        var connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING")
-            ?? "UseDevelopmentStorage=true";
+        var blobClient = AzureStorageTestSupport.CreateBlobServiceClient(AzureStorageTestSupport.GetConnectionString());
+        var store = new InMemoryApprovalStoreForInfrastructureTests();
+        var exporter = new AzureBlobChangesetExporter(
+            blobClient,
+            Options.Create(new ApprovalStorageOptions { ChangesetContainerName = $"changesets{Guid.NewGuid():N}" }),
+            store);
 
-        try
-        {
-            var blobClient = new BlobServiceClient(connectionString);
-            var store = new InMemoryApprovalStoreForInfrastructureTests();
-            var exporter = new AzureBlobChangesetExporter(
-                blobClient,
-                Options.Create(new ApprovalStorageOptions { ChangesetContainerName = $"changesets{Guid.NewGuid():N}" }),
-                store);
+        var runId = RunId.New();
+        var changeset = new ApprovedChangeset(
+            Guid.NewGuid(),
+            runId,
+            DateTimeOffset.UtcNow,
+            "operator",
+            [
+                new ApprovedChangesetEntry(
+                    ApprovalProposalId.New(),
+                    IdempotencyKey.Create(runId, MismatchId.New(), ProposedActionType.UpdateQuantity),
+                    ProposedActionType.UpdateQuantity,
+                    MexId.Create("MEX-001"),
+                    "Product",
+                    new Dictionary<string, string> { ["quantity"] = "5" },
+                    new Dictionary<string, string> { ["quantity"] = "10" },
+                    DateTimeOffset.UtcNow,
+                    "operator",
+                    100)
+            ],
+            null);
 
-            var runId = RunId.New();
-            var changeset = new ApprovedChangeset(
-                Guid.NewGuid(),
-                runId,
-                DateTimeOffset.UtcNow,
-                "operator",
-                [
-                    new ApprovedChangesetEntry(
-                        ApprovalProposalId.New(),
-                        IdempotencyKey.Create(runId, MismatchId.New(), ProposedActionType.UpdateQuantity),
-                        ProposedActionType.UpdateQuantity,
-                        MexId.Create("MEX-001"),
-                        "Product",
-                        new Dictionary<string, string> { ["quantity"] = "5" },
-                        new Dictionary<string, string> { ["quantity"] = "10" },
-                        DateTimeOffset.UtcNow,
-                        "operator",
-                        100)
-                ],
-                null);
-
-            var exported = await exporter.ExportAsync(changeset, cancellationToken);
-            exported.BlobUri.Should().NotBeNullOrEmpty();
-        }
-        catch (Exception ex) when (ex.Message.Contains("connection", StringComparison.OrdinalIgnoreCase))
-        {
-            // Azurite not available — skip gracefully.
-        }
+        var exported = await exporter.ExportAsync(changeset, cancellationToken);
+        exported.BlobUri.Should().NotBeNullOrEmpty();
     }
 
     private sealed class InMemoryApprovalStoreForInfrastructureTests : IApprovalStore

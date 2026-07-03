@@ -1,0 +1,4 @@
+Mex ID,Customer,Offer ID,SKU ID,Licences,Status,Service,Product
+MEX001,Contoso Ltd,OFFER-001,SKU-001,25,Active,Microsoft 365,Microsoft 365 Business Standard
+,Missing Mex ID,OFFER-002,SKU-002,10,Active,Microsoft 365,Microsoft 365 E3
+MEX003,Bad Licences,OFFER-003,SKU-003,abc,Active,Microsoft 365,Exchange Online

@@ -1,0 +1,3 @@
+Sub Account,Account Name,OfferId,SKU,Qty,Subscription Status,Service Name,Subscription,Type
+MEX001,Contoso Ltd,OFFER-001,SKU-001,25,Active,Microsoft 365,Microsoft 365 Business Standard,CSP
+MEX002,Fabrikam Inc,OFFER-002,SKU-002,10,Active,Microsoft 365,Microsoft 365 E3,NCE

@@ -20,7 +20,9 @@ dotnet test tests/BillDrift.Application.Tests --filter "FullyQualifiedName~Class
 dotnet test tests/BillDrift.Application.Tests --filter "FullyQualifiedName~ClassificationIntegration"
 
 # Infrastructure table store tests (Azurite / emulator)
-dotnet test tests/BillDrift.Infrastructure.Tests --filter "FullyQualifiedName~ClassificationStorage"
+# Default dotnet test skips these in <1s when Azurite is not running.
+# With Azurite up, run explicitly:
+dotnet test tests/BillDrift.Infrastructure.Tests --filter "Category=Integration&FullyQualifiedName~Classification"
 ```
 
 ## Validation Scenarios

@@ -19,6 +19,17 @@ namespace BillDrift.Domain.Import;
 /// <param name="SupplierSubscriptionIdRaw">Giacom subscription ID text, if present.</param>
 /// <param name="SourceDocumentId">Identifier of the source export file.</param>
 /// <param name="RowNumber">1-based row number within the export for traceability.</param>
+/// <param name="ServiceRaw">Service or product family label as exported.</param>
+/// <param name="ProductNameRaw">Product name as exported, distinct from implicit product in 001 stub.</param>
+/// <param name="ProductTypeRaw">Product type label (CSP, NCE, etc.) as written.</param>
+/// <param name="IsNceRaw">NCE flag text as exported.</param>
+/// <param name="IsTrialRaw">Trial flag text as exported.</param>
+/// <param name="PriceRaw">Wholesale or sell price column text.</param>
+/// <param name="ErpRaw">ERP or list price column text when present.</param>
+/// <param name="EndOfTermActionRaw">End-of-term action text.</param>
+/// <param name="CancellableUntilRaw">Cancellable-until date text.</param>
+/// <param name="MigrationToNceRaw">NCE migration indicator text.</param>
+/// <param name="AssignedLicencesRaw">Assigned seat count text.</param>
 public sealed record RawSubscriptionManagementRow(
     RawImportId Id,
     string CustomerNameRaw,
@@ -33,4 +44,15 @@ public sealed record RawSubscriptionManagementRow(
     string StatusRaw,
     string? SupplierSubscriptionIdRaw,
     string SourceDocumentId,
-    int RowNumber);
+    int RowNumber,
+    string? ServiceRaw = null,
+    string? ProductNameRaw = null,
+    string? ProductTypeRaw = null,
+    string? IsNceRaw = null,
+    string? IsTrialRaw = null,
+    string? PriceRaw = null,
+    string? ErpRaw = null,
+    string? EndOfTermActionRaw = null,
+    string? CancellableUntilRaw = null,
+    string? MigrationToNceRaw = null,
+    string? AssignedLicencesRaw = null);

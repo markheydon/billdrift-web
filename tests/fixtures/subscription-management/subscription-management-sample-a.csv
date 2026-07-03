@@ -1,0 +1,4 @@
+Mex ID,Customer,Offer ID,SKU ID,Licences,Status,Service,Product,Product Type,Term,Billing Frequency,Renewal Date,Subscription ID,Tenant ID
+MEX001,Contoso Ltd,OFFER-001,SKU-001,25,Active,Microsoft 365,Microsoft 365 Business Standard,CSP,Annual,Monthly,01/04/2026,SUB-001,TENANT-001
+mex002,Fabrikam Inc,OFFER-002,SKU-002,10,Active,Microsoft 365,Microsoft 365 E3,NCE,P1Y,Annual,15/06/2026,SUB-002,TENANT-002
+MEX003,Northwind Traders,OFFER-003,SKU-003,5,Active,Microsoft 365,Exchange Online,CSP,P1M,Monthly,20/01/2026,SUB-003,TENANT-003

@@ -1,0 +1,29 @@
+using BillDrift.Application.Import.SubscriptionManagement;
+using BillDrift.Application.Ingestion;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace BillDrift.Infrastructure.Ingestion;
+
+/// <summary>Registers Azure and in-memory ingestion persistence stores.</summary>
+public static class IngestionServiceCollectionExtensions
+{
+    /// <summary>Adds ingestion blob and table index stores.</summary>
+    public static IServiceCollection AddIngestionStorage(this IServiceCollection services, bool useInMemory = false)
+    {
+        services.Configure<IngestionStorageOptions>(_ => { });
+
+        if (useInMemory)
+        {
+            services.AddSingleton<IIngestionBlobStore, InMemoryIngestionBlobStore>();
+            services.AddSingleton<IIngestionRunIndexStore, InMemoryIngestionRunIndexStore>();
+        }
+        else
+        {
+            services.AddSingleton<IIngestionBlobStore, AzureBlobIngestionArchiveStore>();
+            services.AddSingleton<IIngestionRunIndexStore, AzureTableIngestionRunIndexStore>();
+        }
+
+        services.AddSingleton<ISubscriptionManagementIngestionService, SubscriptionManagementIngestionService>();
+        return services;
+    }
+}

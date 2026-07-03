@@ -16,6 +16,8 @@ namespace BillDrift.Domain.Billing;
 /// <param name="Status">Subscription lifecycle status from the source export.</param>
 /// <param name="SupplierSubscriptionId">Giacom-side subscription identifier for correlation.</param>
 /// <param name="Source">Traceability link back to the raw subscription management import.</param>
+/// <param name="ProductDisplay">Product names as written; not used for matching.</param>
+/// <param name="Lifecycle">Optional lifecycle and pricing context when source columns are present.</param>
 public sealed record MicrosoftSubscriptionLine(
     MicrosoftSubscriptionLineId Id,
     CustomerIdentity Customer,
@@ -26,4 +28,6 @@ public sealed record MicrosoftSubscriptionLine(
     DateOnly? RenewalDate,
     SubscriptionStatus Status,
     SupplierSubscriptionId? SupplierSubscriptionId,
-    SourceReference Source);
+    SourceReference Source,
+    ProductDisplayFacts? ProductDisplay = null,
+    SubscriptionLifecycleFacts? Lifecycle = null);
