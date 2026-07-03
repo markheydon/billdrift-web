@@ -1,0 +1,74 @@
+@page "/history/trends"
+@using BillDrift.Application.History
+@using BillDrift.Domain.History
+@using BillDrift.Domain.Common
+@inject IRunHistoryApiClient ApiClient
+
+<PageTitle>Drift Trends</PageTitle>
+
+<h1>Drift Trends</h1>
+
+<FluentTabs>
+    <FluentTab Label="Recurring Drift">
+        @if (_driftTrends.Count == 0)
+        {
+            <p>No recurring drift trends found.</p>
+        }
+        else
+        {
+            <FluentDataGrid Items="@_driftTrends.AsQueryable()" GridTemplateColumns="2fr 1fr 1fr 1fr">
+                <PropertyColumn Title="Key" Property="@(e => e.StableKey)" />
+                <PropertyColumn Title="Type" Property="@(e => e.MismatchType)" />
+                <PropertyColumn Title="Occurrences" Property="@(e => e.OccurrenceCount)" />
+                <PropertyColumn Title="Last Seen" Property="@(e => e.LastSeenAt)" Format="d" />
+            </FluentDataGrid>
+        }
+    </FluentTab>
+    <FluentTab Label="Pricing Drift">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="8">
+            <FluentTextArea @bind-Value="_offerId" Label="Offer ID" Rows="1" />
+            <FluentTextArea @bind-Value="_skuId" Label="SKU ID" Rows="1" />
+            <FluentButton OnClick="LoadPricingAsync">Load Timeline</FluentButton>
+        </FluentStack>
+        @if (_pricingEntries.Count > 0)
+        {
+            <FluentDataGrid Items="@_pricingEntries.AsQueryable()" GridTemplateColumns="1fr 1fr 1fr 1fr">
+                <PropertyColumn Title="Run Date" Property="@(e => e.RunDate)" Format="d" />
+                <PropertyColumn Title="Event" Property="@(e => e.EventType)" />
+                <PropertyColumn Title="Intended" Property="@(e => e.IntendedAmount)" />
+                <PropertyColumn Title="Stripe" Property="@(e => e.StripeCatalogueAmount)" />
+            </FluentDataGrid>
+        }
+    </FluentTab>
+</FluentTabs>
+
+@code {
+    private readonly List<DriftTrendEntry> _driftTrends = [];
+    private readonly List<PricingDriftTimelineEntry> _pricingEntries = [];
+    private string _offerId = string.Empty;
+    private string _skuId = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var to = DateTimeOffset.UtcNow;
+        var from = to.AddMonths(-6);
+        var response = await ApiClient.GetDriftTrendsAsync(from, to, minOccurrences: 2);
+        _driftTrends.Clear();
+        _driftTrends.AddRange(response.Entries);
+    }
+
+    private async Task LoadPricingAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_offerId) || string.IsNullOrWhiteSpace(_skuId))
+        {
+            return;
+        }
+
+        var to = DateTimeOffset.UtcNow;
+        var from = to.AddMonths(-6);
+        var key = CommercialKey.Create(OfferId.Create(_offerId), SkuId.Create(_skuId), Term.P1Y, BillingFrequency.Annual);
+        var response = await ApiClient.GetPricingDriftTimelineAsync(key, from, to);
+        _pricingEntries.Clear();
+        _pricingEntries.AddRange(response.Entries);
+    }
+}

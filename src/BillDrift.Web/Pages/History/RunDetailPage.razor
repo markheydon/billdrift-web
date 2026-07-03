@@ -1,0 +1,116 @@
+@page "/history/{RunId:guid}"
+@using BillDrift.Application.History
+@using BillDrift.Domain.History
+@inject IRunHistoryApiClient ApiClient
+@inject NavigationManager Navigation
+
+<PageTitle>Run Detail</PageTitle>
+
+@if (_loading)
+{
+    <FluentSpinner />
+}
+else if (_error is not null)
+{
+    <FluentMessageBar Intent="MessageBarIntent.Error">@_error</FluentMessageBar>
+}
+else if (_detail is not null)
+{
+    <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+        <FluentButton Appearance="ButtonAppearance.Transparent" OnClick="@(() => Navigation.NavigateTo("/history"))">
+            Back to list
+        </FluentButton>
+        <h2>Run @RunId</h2>
+        <FluentBadge>@_detail.Status</FluentBadge>
+    </FluentStack>
+
+    <FluentTabs>
+        <FluentTab Label="Summary">
+            <p>Billing period: @_detail.BillingPeriod.Start – @_detail.BillingPeriod.End</p>
+            <p>Match groups: @_detail.SummaryMetrics.MatchGroupCount</p>
+            <p>Mismatches: @_detail.SummaryMetrics.MismatchCount</p>
+            <p>Mapping version: @_detail.MappingVersion.VersionId</p>
+        </FluentTab>
+        <FluentTab Label="Inputs">
+            <FluentDataGrid Items="@_detail.InputSnapshots.AsQueryable()" GridTemplateColumns="1fr 1fr 1fr 1fr">
+                <PropertyColumn Title="Domain" Property="@(i => i.Domain)" />
+                <PropertyColumn Title="Present" Property="@(i => i.IsPresent)" />
+                <PropertyColumn Title="File" Property="@(i => i.SourceFileName)" />
+                <PropertyColumn Title="Records" Property="@(i => i.RecordCount)" />
+            </FluentDataGrid>
+        </FluentTab>
+        <FluentTab Label="Proposals">
+            @if (_detail.ProposalStatusLinks.Count == 0)
+            {
+                <p>No proposals linked.</p>
+            }
+            else
+            {
+                <FluentButton Appearance="ButtonAppearance.Transparent" Href="@($"/approvals/{RunId}")">Open approval queue</FluentButton>
+                <FluentDataGrid Items="@_detail.ProposalStatusLinks.AsQueryable()" GridTemplateColumns="1fr 1fr">
+                    <PropertyColumn Title="Proposal" Property="@(p => p.ProposedChangeId)" />
+                    <PropertyColumn Title="Status" Property="@(p => p.DecisionState)" />
+                </FluentDataGrid>
+            }
+        </FluentTab>
+        <FluentTab Label="Exceptions">
+            @if (_detail.Results?.Mismatches.Count > 0)
+            {
+                <FluentDataGrid Items="@_detail.Results.Mismatches.AsQueryable()" GridTemplateColumns="1fr 1fr 2fr">
+                    <PropertyColumn Title="Type" Property="@(m => m.Type)" />
+                    <PropertyColumn Title="Severity" Property="@(m => m.Severity)" />
+                    <PropertyColumn Title="Description" Property="@(m => m.Description)" />
+                </FluentDataGrid>
+            }
+            else
+            {
+                <p>No exceptions loaded.</p>
+            }
+        </FluentTab>
+        <FluentTab Label="Audit">
+            @if (_auditEvents.Count == 0)
+            {
+                <p>No audit events.</p>
+            }
+            else
+            {
+                <FluentDataGrid Items="@_auditEvents.AsQueryable()" GridTemplateColumns="1fr 2fr">
+                    <PropertyColumn Title="Time" Property="@(e => e.Timestamp)" Format="g" />
+                    <PropertyColumn Title="Summary" Property="@(e => e.Summary)" />
+                </FluentDataGrid>
+            }
+        </FluentTab>
+    </FluentTabs>
+}
+
+@code {
+    [Parameter] public Guid RunId { get; set; }
+
+    private RunDetailViewModel? _detail;
+    private IReadOnlyList<RunHistoryAuditEvent> _auditEvents = [];
+    private bool _loading = true;
+    private string? _error;
+
+    protected override async Task OnParametersSetAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+
+        try
+        {
+            _detail = await ApiClient.GetRunDetailAsync(RunId, includeResults: true);
+            var audit = await ApiClient.GetAuditEventsAsync(RunId);
+            _auditEvents = audit.Events;
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

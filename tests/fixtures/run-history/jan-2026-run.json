@@ -1,0 +1,22 @@
+{
+  "description": "January 2026 reconciliation run fixture for quickstart V1",
+  "billingPeriod": { "start": "2026-01-01", "end": "2026-01-31" },
+  "mappingVersion": {
+    "versionId": "2026-01-15",
+    "contentHash": "sha256:jan-mapping-hash",
+    "effectiveDate": "2026-01-15"
+  },
+  "inputMetadata": {
+    "supplierCost": { "isPresent": true, "sourceFileName": "giacom-jan-2026.pdf", "recordCount": 120 },
+    "subscriptionTruth": { "isPresent": true, "sourceFileName": "subscriptions-jan-2026.csv", "recordCount": 95 },
+    "intendedPricing": { "isPresent": true, "sourceFileName": "pricing-jan-2026.csv", "recordCount": 450 },
+    "stripeBilling": { "isPresent": true, "sourceFileName": "stripe-jan-2026.csv", "recordCount": 88 },
+    "productMappings": { "isPresent": true, "recordCount": 320 }
+  },
+  "summaryMetrics": {
+    "matchGroupCount": 85,
+    "mismatchCount": 12,
+    "proposedChangeCount": 8,
+    "cleanRun": false
+  }
+}

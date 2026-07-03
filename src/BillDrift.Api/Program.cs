@@ -1,10 +1,13 @@
 using BillDrift.Api.Approval;
 using BillDrift.Api.Classification;
+using BillDrift.Api.History;
 using BillDrift.Application.Approval;
 using BillDrift.Application.Classification;
+using BillDrift.Application.History;
 using BillDrift.Application.Reconciliation;
 using BillDrift.Infrastructure.Approval;
 using BillDrift.Infrastructure.Classification;
+using BillDrift.Infrastructure.History;
 using BillDrift.Infrastructure.Import.Giacom;
 using BillDrift.Infrastructure.Import.Stripe;
 
@@ -26,6 +29,8 @@ builder.Services.AddClassification();
 builder.Services.AddClassificationStorage();
 builder.Services.AddApproval();
 builder.Services.AddApprovalStorage();
+builder.Services.AddRunHistory();
+builder.Services.AddRunHistoryStorage();
 
 var app = builder.Build();
 
@@ -41,5 +46,6 @@ app.MapGet("/", () => "BillDrift API is running.");
 app.MapDefaultEndpoints();
 app.MapClassificationEndpoints();
 app.MapApprovalEndpoints();
+app.MapRunHistoryEndpoints();
 
 app.Run();

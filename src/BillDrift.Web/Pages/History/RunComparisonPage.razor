@@ -1,0 +1,53 @@
+@page "/history/compare"
+@using BillDrift.Application.History
+@using BillDrift.Domain.History
+@using BillDrift.Domain.Reconciliation
+@inject IRunHistoryApiClient ApiClient
+
+<PageTitle>Compare Runs</PageTitle>
+
+<h1>Compare Runs</h1>
+
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+    <FluentTextArea @bind-Value="_earlierRunIdText" Label="Earlier Run ID" Rows="1" />
+    <FluentTextArea @bind-Value="_laterRunIdText" Label="Later Run ID" Rows="1" />
+    <FluentButton Appearance="ButtonAppearance.Primary" OnClick="CompareAsync">Compare</FluentButton>
+</FluentStack>
+
+@if (_report is not null)
+{
+  @if (_report.MappingVersionChanged)
+  {
+    <FluentMessageBar Intent="MessageBarIntent.Warning">Mapping version changed between runs.</FluentMessageBar>
+  }
+
+  <FluentAccordion>
+    <FluentAccordionItem Heading="New Exceptions" Expanded="true">
+      <p>@_report.ExceptionDeltas.NewExceptions.Count new exception(s)</p>
+    </FluentAccordionItem>
+    <FluentAccordionItem Heading="Resolved Exceptions">
+      <p>@_report.ExceptionDeltas.ResolvedExceptions.Count resolved exception(s)</p>
+    </FluentAccordionItem>
+    <FluentAccordionItem Heading="Persisting Exceptions">
+      <p>@_report.ExceptionDeltas.PersistingExceptions.Count persisting exception(s)</p>
+    </FluentAccordionItem>
+  </FluentAccordion>
+}
+
+@code {
+    private string _earlierRunIdText = string.Empty;
+    private string _laterRunIdText = string.Empty;
+    private RunComparisonReport? _report;
+
+    private async Task CompareAsync()
+    {
+        if (!Guid.TryParse(_earlierRunIdText, out var earlier) || !Guid.TryParse(_laterRunIdText, out var later))
+        {
+            return;
+        }
+
+        _report = await ApiClient.CompareRunsAsync(new CompareRunsRequest(
+            RunId.FromGuid(earlier),
+            RunId.FromGuid(later)));
+    }
+}
