@@ -16,6 +16,11 @@ builder.Services.AddHttpClient<BillDrift.Web.Services.IApprovalApiClient, BillDr
     client.BaseAddress = new Uri("https+http://api");
 });
 
+builder.Services.AddHttpClient<BillDrift.Web.Services.IRunHistoryApiClient, BillDrift.Web.Services.RunHistoryApiClient>(client =>
+{
+    client.BaseAddress = new Uri("https+http://api");
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

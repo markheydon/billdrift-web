@@ -221,7 +221,7 @@ Consistent with 007 approval endpoints:
 {
   "title": "Run already archived",
   "status": 409,
-  "detail": "Run {runId} has status Completed and cannot be re-persisted."
+  "detail": "Run {runId} already has an archived record and cannot be re-persisted. Retry with a new run."
 }
 ```
 

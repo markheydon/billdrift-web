@@ -295,7 +295,7 @@ stateDiagram-v2
     [*] --> InProgress: Persist started
     InProgress --> Completed: All blobs + index written
     InProgress --> Failed: Error during persist
-    Failed --> InProgress: Retry persist (same RunId)
+    Failed --> [*]: Immutable (retry requires new RunId)
     Completed --> [*]: Immutable
 ```
 

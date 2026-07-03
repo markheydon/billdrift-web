@@ -153,3 +153,20 @@ curl -X POST -H "Content-Type: application/json" -H "X-Operator-Id: dev@local" `
 ```
 
 Use Azure Storage Explorer or `az storage` CLI against Azurite connection string from Aspire dashboard.
+
+## Implementation Validation Checklist (2026-07-02)
+
+| Scenario | Status | Evidence |
+|----------|--------|----------|
+| V1 Persist creates immutable run record | PASS | `RunArchiveServiceTests.Persist_creates_immutable_run_record` |
+| V2 All input domains present/absent | PASS | `RunArchiveServiceTests.Persist_marks_all_input_domains_present_or_absent` |
+| V3 Re-persist completed rejected | PASS | `RunArchiveServiceTests.Re_persist_completed_run_is_rejected` |
+| V4 List runs by billing period | PASS | `RunHistoryServiceTests.ListRuns_filters_by_billing_period` |
+| V5 Approval status links on detail | PASS | `RunHistoryServiceTests.GetRunDetail_includes_approval_status_links` |
+| V6 Month-to-month comparison | PASS | `RunComparisonServiceTests.Compare_classifies_new_resolved_and_persisting_exceptions` |
+| V7 Mapping version change flagged | PASS | `RunComparisonServiceTests.Compare_flags_mapping_version_change` |
+| V8 Recurring drift trend | PASS | `DriftTrendAnalyzerTests.Analyze_surfaces_recurring_drift_with_minimum_occurrences` |
+| V9 Pricing drift timeline | PASS | `PricingDriftAnalyzerTests` (unit coverage) |
+| V10 Failed run retained | PASS | `RunArchiveServiceTests.Failed_run_is_retained_with_failure_reason` |
+| V11 Blob integrity check | PASS | `AzureBlobRunArchiveStoreTests` (Azurite when available) |
+| V12 Audit events recorded | PASS | `AzureTableRunHistoryStoreTests.Audit_events_append_on_persist_operations` |

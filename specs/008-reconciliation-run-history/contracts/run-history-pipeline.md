@@ -55,7 +55,7 @@ Task<ReconciliationRunRecord> PersistAsync(
 
 **On failure**: Set status `Failed` with `FailureReason`; retain partial blobs for diagnosis.
 
-**Idempotency**: Same `RunId` + `Status=InProgress|Failed` allows retry overwrite. `Status=Completed` rejects re-persist (HTTP 409 from API).
+**Immutability**: Any existing record for a `RunId` (regardless of status — `InProgress`, `Failed`, or `Completed`) rejects re-persist (HTTP 409 from API). Each run attempt is a durable, immutable historical record; retries must be performed as a new run with a new `RunId`.
 
 ---
 

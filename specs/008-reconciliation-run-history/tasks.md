@@ -19,15 +19,15 @@
 
 **Purpose**: Folder structure, fixture layout, and verify existing Aspire storage wiring. No SQL; reuse existing `TableServiceClient` / `BlobServiceClient` registration from feature 007.
 
-- [ ] T001 [P] Create `src/BillDrift.Domain/History/` folder structure per `plan.md`
-- [ ] T002 [P] Create `src/BillDrift.Application/History/` folder structure per `plan.md`
-- [ ] T003 [P] Create `src/BillDrift.Infrastructure/History/` folder structure per `plan.md`
-- [ ] T004 [P] Create `src/BillDrift.Api/History/` folder for REST endpoints
-- [ ] T005 [P] Create `tests/BillDrift.Application.Tests/History/` test folder
-- [ ] T006 [P] Create `tests/BillDrift.Infrastructure.Tests/History/` test folder
-- [ ] T007 [P] Create `tests/BillDrift.Api.Tests/History/` test folder
-- [ ] T008 [P] Create `tests/fixtures/run-history/` directory and `tests/fixtures/run-history/README.md` mapping fixtures to `quickstart.md` scenarios
-- [ ] T009 Verify existing `AddAzureTableServiceClient("tables")` and `AddAzureBlobServiceClient("blobs")` in `src/BillDrift.Api/Program.cs` (no new manual connection string wiring)
+- [X] T001 [P] Create `src/BillDrift.Domain/History/` folder structure per `plan.md`
+- [X] T002 [P] Create `src/BillDrift.Application/History/` folder structure per `plan.md`
+- [X] T003 [P] Create `src/BillDrift.Infrastructure/History/` folder structure per `plan.md`
+- [X] T004 [P] Create `src/BillDrift.Api/History/` folder for REST endpoints
+- [X] T005 [P] Create `tests/BillDrift.Application.Tests/History/` test folder
+- [X] T006 [P] Create `tests/BillDrift.Infrastructure.Tests/History/` test folder
+- [X] T007 [P] Create `tests/BillDrift.Api.Tests/History/` test folder
+- [X] T008 [P] Create `tests/fixtures/run-history/` directory and `tests/fixtures/run-history/README.md` mapping fixtures to `quickstart.md` scenarios
+- [X] T009 Verify existing `AddAzureTableServiceClient("tables")` and `AddAzureBlobServiceClient("blobs")` in `src/BillDrift.Api/Program.cs` (no new manual connection string wiring)
 
 **Checkpoint**: Solution builds; folder layout matches plan; storage clients already registered.
 
@@ -39,23 +39,23 @@
 
 **⚠️ CRITICAL**: No user story work until this phase is complete.
 
-- [ ] T010 [P] Implement `RunArchiveStatus`, `InputDomainType`, `PricingDriftEventType`, and `ExecutionOutcomeStatus` enums in `src/BillDrift.Domain/History/RunHistoryEnums.cs` per `data-model.md`
-- [ ] T011 [P] Implement `StableMismatchKey` readonly record struct in `src/BillDrift.Domain/History/StableMismatchKey.cs`
-- [ ] T012 [P] Implement `InputSnapshotMetadata` and `MappingVersionReference` records in `src/BillDrift.Domain/History/InputSnapshotMetadata.cs`
-- [ ] T013 [P] Implement `RunSummaryMetrics` and `ReconciliationRunRecord` records in `src/BillDrift.Domain/History/ReconciliationRunRecord.cs`
-- [ ] T014 [P] Implement `RunResultsSnapshot` record in `src/BillDrift.Domain/History/RunResultsSnapshot.cs`
-- [ ] T015 [P] Implement `RunComparisonReport`, `InputChangeSummary`, `ExceptionDeltaReport`, `ComparedMismatch`, and `PersistingMismatch` records in `src/BillDrift.Domain/History/RunComparisonReport.cs`
-- [ ] T016 [P] Implement `DriftTrendEntry` record in `src/BillDrift.Domain/History/DriftTrendEntry.cs`
-- [ ] T017 [P] Implement `PricingDriftTimelineEntry` record in `src/BillDrift.Domain/History/PricingDriftTimelineEntry.cs`
-- [ ] T018 [P] Implement `ProposalStatusLink` and `ExecutionOutcome` records in `src/BillDrift.Domain/History/ExecutionOutcome.cs`
-- [ ] T019 [P] Add domain construction and validation tests in `tests/BillDrift.Domain.Tests/History/RunHistoryTypesTests.cs`
-- [ ] T020 Implement `IRunHistoryStore` interface in `src/BillDrift.Application/History/IRunHistoryStore.cs` per `data-model.md`
-- [ ] T021 Implement `InMemoryRunHistoryStore` in `tests/BillDrift.Application.Tests/History/InMemoryRunHistoryStore.cs` for unit and service tests
-- [ ] T022 [P] Implement `RunHistoryStorageOptions` in `src/BillDrift.Infrastructure/History/RunHistoryStorageOptions.cs`
-- [ ] T023 [P] Implement `RunHistoryJsonSerializerContext` source-gen context in `src/BillDrift.Infrastructure/History/RunHistoryJsonSerializerContext.cs`
-- [ ] T024 [P] Implement `RunArchiveContext`, `PersistRunRequest`, and `RunHistoryListFilter` in `src/BillDrift.Application/History/RunHistoryViewModels.cs`
-- [ ] T025 [P] Implement `RunHistoryServiceCollectionExtensions` stub in `src/BillDrift.Application/History/RunHistoryServiceCollectionExtensions.cs`
-- [ ] T026 [P] Implement `RunHistoryStorageExtensions` stub in `src/BillDrift.Infrastructure/History/RunHistoryStorageExtensions.cs`
+- [X] T010 [P] Implement `RunArchiveStatus`, `InputDomainType`, `PricingDriftEventType`, and `ExecutionOutcomeStatus` enums in `src/BillDrift.Domain/History/RunHistoryEnums.cs` per `data-model.md`
+- [X] T011 [P] Implement `StableMismatchKey` readonly record struct in `src/BillDrift.Domain/History/StableMismatchKey.cs`
+- [X] T012 [P] Implement `InputSnapshotMetadata` and `MappingVersionReference` records in `src/BillDrift.Domain/History/InputSnapshotMetadata.cs`
+- [X] T013 [P] Implement `RunSummaryMetrics` and `ReconciliationRunRecord` records in `src/BillDrift.Domain/History/ReconciliationRunRecord.cs`
+- [X] T014 [P] Implement `RunResultsSnapshot` record in `src/BillDrift.Domain/History/RunResultsSnapshot.cs`
+- [X] T015 [P] Implement `RunComparisonReport`, `InputChangeSummary`, `ExceptionDeltaReport`, `ComparedMismatch`, and `PersistingMismatch` records in `src/BillDrift.Domain/History/RunComparisonReport.cs`
+- [X] T016 [P] Implement `DriftTrendEntry` record in `src/BillDrift.Domain/History/DriftTrendEntry.cs`
+- [X] T017 [P] Implement `PricingDriftTimelineEntry` record in `src/BillDrift.Domain/History/PricingDriftTimelineEntry.cs`
+- [X] T018 [P] Implement `ProposalStatusLink` and `ExecutionOutcome` records in `src/BillDrift.Domain/History/ExecutionOutcome.cs`
+- [X] T019 [P] Add domain construction and validation tests in `tests/BillDrift.Domain.Tests/History/RunHistoryTypesTests.cs`
+- [X] T020 Implement `IRunHistoryStore` interface in `src/BillDrift.Application/History/IRunHistoryStore.cs` per `data-model.md`
+- [X] T021 Implement `InMemoryRunHistoryStore` in `tests/BillDrift.Application.Tests/History/InMemoryRunHistoryStore.cs` for unit and service tests
+- [X] T022 [P] Implement `RunHistoryStorageOptions` in `src/BillDrift.Infrastructure/History/RunHistoryStorageOptions.cs`
+- [X] T023 [P] Implement `RunHistoryJsonSerializerContext` source-gen context in `src/BillDrift.Infrastructure/History/RunHistoryJsonSerializerContext.cs`
+- [X] T024 [P] Implement `RunArchiveContext`, `PersistRunRequest`, and `RunHistoryListFilter` in `src/BillDrift.Application/History/RunHistoryViewModels.cs`
+- [X] T025 [P] Implement `RunHistoryServiceCollectionExtensions` stub in `src/BillDrift.Application/History/RunHistoryServiceCollectionExtensions.cs`
+- [X] T026 [P] Implement `RunHistoryStorageExtensions` stub in `src/BillDrift.Infrastructure/History/RunHistoryStorageExtensions.cs`
 
 **Checkpoint**: Domain compiles; in-memory store usable; service/storage extension stubs registered; no SQL introduced.
 
@@ -71,31 +71,31 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T027 [P] [US1] Add `RunArchiveServiceTests` skeleton in `tests/BillDrift.Application.Tests/History/RunArchiveServiceTests.cs`
-- [ ] T028 [P] [US1] Add `AzureBlobRunArchiveStoreTests` skeleton in `tests/BillDrift.Infrastructure.Tests/History/AzureBlobRunArchiveStoreTests.cs`
-- [ ] T029 [P] [US1] Add `AzureTableRunHistoryStoreTests` skeleton in `tests/BillDrift.Infrastructure.Tests/History/AzureTableRunHistoryStoreTests.cs`
-- [ ] T030 [P] [US1] Create `tests/fixtures/run-history/jan-2026-run.json` per `quickstart.md` V1
+- [X] T027 [P] [US1] Add `RunArchiveServiceTests` skeleton in `tests/BillDrift.Application.Tests/History/RunArchiveServiceTests.cs`
+- [X] T028 [P] [US1] Add `AzureBlobRunArchiveStoreTests` skeleton in `tests/BillDrift.Infrastructure.Tests/History/AzureBlobRunArchiveStoreTests.cs`
+- [X] T029 [P] [US1] Add `AzureTableRunHistoryStoreTests` skeleton in `tests/BillDrift.Infrastructure.Tests/History/AzureTableRunHistoryStoreTests.cs`
+- [X] T030 [P] [US1] Create `tests/fixtures/run-history/jan-2026-run.json` per `quickstart.md` V1
 
 ### Implementation for User Story 1
 
-- [ ] T031 [US1] Implement `RunHistoryTableEntities` mapping in `src/BillDrift.Infrastructure/History/RunHistoryTableEntities.cs` per `contracts/azure-table-schema.md`
-- [ ] T032 [US1] Implement `AzureBlobRunArchiveStore` using DI-injected `BlobServiceClient` in `src/BillDrift.Infrastructure/History/AzureBlobRunArchiveStore.cs` per `contracts/azure-blob-run-archive.md` (no manual connection strings)
-- [ ] T033 [US1] Implement blob write protocol (inputs, results, manifest last) with SHA-256 content hashes in `AzureBlobRunArchiveStore.cs`
-- [ ] T034 [US1] Implement `AzureTableRunHistoryStore` using DI-injected `TableServiceClient` in `src/BillDrift.Infrastructure/History/AzureTableRunHistoryStore.cs`
-- [ ] T035 [US1] Implement run index, input metadata, and drift index row upserts in `AzureTableRunHistoryStore.cs`
-- [ ] T036 [US1] Implement `StableMismatchKeyFactory` in `src/BillDrift.Application/History/StableMismatchKeyFactory.cs` per `contracts/mismatch-comparison-rules.md`
-- [ ] T037 [US1] Implement `RunArchiveService.PersistAsync` orchestration in `src/BillDrift.Application/History/RunArchiveService.cs` per `contracts/run-history-pipeline.md`
-- [ ] T038 [US1] Implement failed-run persist with partial state and `FailureReason` in `RunArchiveService.cs`
-- [ ] T039 [US1] Implement idempotent re-persist rejection for `Completed` runs (409) in `RunArchiveService.cs`
-- [ ] T040 [US1] Implement append-only run audit events (`RunArchiveStarted`, `RunArchived`, `RunArchiveFailed`) in `AzureTableRunHistoryStore.cs`
-- [ ] T041 [US1] Complete `RunHistoryStorageExtensions` registering Azure stores in `src/BillDrift.Infrastructure/History/RunHistoryStorageExtensions.cs`
-- [ ] T042 [US1] Implement `POST /api/run-history` persist endpoint in `src/BillDrift.Api/History/RunHistoryEndpoints.cs` per `contracts/run-history-api-endpoints.md`
-- [ ] T043 [US1] Wire persist call from reconciliation orchestration in `src/BillDrift.Api/Program.cs` or reconciliation endpoint (post-engine hook)
-- [ ] T044 [US1] Add persist creates immutable run record test in `RunArchiveServiceTests.cs` per `quickstart.md` V1
-- [ ] T045 [US1] Add all input domains marked present or absent test in `RunArchiveServiceTests.cs` per `quickstart.md` V2
-- [ ] T046 [US1] Add re-persist completed run rejected test in `RunArchiveServiceTests.cs` per `quickstart.md` V3
-- [ ] T047 [US1] Add blob round-trip and manifest hash test in `AzureBlobRunArchiveStoreTests.cs` (Azurite)
-- [ ] T048 [US1] Add table run index round-trip test in `AzureTableRunHistoryStoreTests.cs` (Azurite)
+- [X] T031 [US1] Implement `RunHistoryTableEntities` mapping in `src/BillDrift.Infrastructure/History/RunHistoryTableEntities.cs` per `contracts/azure-table-schema.md`
+- [X] T032 [US1] Implement `AzureBlobRunArchiveStore` using DI-injected `BlobServiceClient` in `src/BillDrift.Infrastructure/History/AzureBlobRunArchiveStore.cs` per `contracts/azure-blob-run-archive.md` (no manual connection strings)
+- [X] T033 [US1] Implement blob write protocol (inputs, results, manifest last) with SHA-256 content hashes in `AzureBlobRunArchiveStore.cs`
+- [X] T034 [US1] Implement `AzureTableRunHistoryStore` using DI-injected `TableServiceClient` in `src/BillDrift.Infrastructure/History/AzureTableRunHistoryStore.cs`
+- [X] T035 [US1] Implement run index, input metadata, and drift index row upserts in `AzureTableRunHistoryStore.cs`
+- [X] T036 [US1] Implement `StableMismatchKeyFactory` in `src/BillDrift.Application/History/StableMismatchKeyFactory.cs` per `contracts/mismatch-comparison-rules.md`
+- [X] T037 [US1] Implement `RunArchiveService.PersistAsync` orchestration in `src/BillDrift.Application/History/RunArchiveService.cs` per `contracts/run-history-pipeline.md`
+- [X] T038 [US1] Implement failed-run persist with partial state and `FailureReason` in `RunArchiveService.cs`
+- [X] T039 [US1] Implement idempotent re-persist rejection for `Completed` runs (409) in `RunArchiveService.cs`
+- [X] T040 [US1] Implement append-only run audit events (`RunArchiveStarted`, `RunArchived`, `RunArchiveFailed`) in `AzureTableRunHistoryStore.cs`
+- [X] T041 [US1] Complete `RunHistoryStorageExtensions` registering Azure stores in `src/BillDrift.Infrastructure/History/RunHistoryStorageExtensions.cs`
+- [X] T042 [US1] Implement `POST /api/run-history` persist endpoint in `src/BillDrift.Api/History/RunHistoryEndpoints.cs` per `contracts/run-history-api-endpoints.md`
+- [X] T043 [US1] Wire persist call from reconciliation orchestration in `src/BillDrift.Api/Program.cs` or reconciliation endpoint (post-engine hook)
+- [X] T044 [US1] Add persist creates immutable run record test in `RunArchiveServiceTests.cs` per `quickstart.md` V1
+- [X] T045 [US1] Add all input domains marked present or absent test in `RunArchiveServiceTests.cs` per `quickstart.md` V2
+- [X] T046 [US1] Add re-persist completed run rejected test in `RunArchiveServiceTests.cs` per `quickstart.md` V3
+- [X] T047 [US1] Add blob round-trip and manifest hash test in `AzureBlobRunArchiveStoreTests.cs` (Azurite)
+- [X] T048 [US1] Add table run index round-trip test in `AzureTableRunHistoryStoreTests.cs` (Azurite)
 
 **Checkpoint**: Persist via API; blobs and table rows created; manifest validates; completed runs immutable.
 
@@ -111,25 +111,25 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T049 [P] [US2] Add `RunHistoryServiceTests` skeleton in `tests/BillDrift.Application.Tests/History/RunHistoryServiceTests.cs`
-- [ ] T050 [P] [US2] Create `tests/fixtures/run-history/feb-2026-run.json` for list/filter scenarios per `quickstart.md` V4
+- [X] T049 [P] [US2] Add `RunHistoryServiceTests` skeleton in `tests/BillDrift.Application.Tests/History/RunHistoryServiceTests.cs`
+- [X] T050 [P] [US2] Create `tests/fixtures/run-history/feb-2026-run.json` for list/filter scenarios per `quickstart.md` V4
 
 ### Implementation for User Story 2
 
-- [ ] T051 [US2] Implement `RunHistoryService.ListRunsAsync` with billing period and date filters in `src/BillDrift.Application/History/RunHistoryService.cs`
-- [ ] T052 [US2] Implement `RunHistoryService.GetRunSummaryAsync` (table-only read) in `RunHistoryService.cs`
-- [ ] T053 [US2] Implement `RunHistoryService.GetRunDetailAsync` with selective blob reads in `RunHistoryService.cs`
-- [ ] T054 [US2] Implement `GET /api/run-history` list endpoint with pagination in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
-- [ ] T055 [US2] Implement `GET /api/run-history/{runId}` detail endpoint with `includeResults` query in `RunHistoryEndpoints.cs`
-- [ ] T056 [US2] Implement `GET /api/run-history/{runId}/inputs/{domain}` endpoint in `RunHistoryEndpoints.cs`
-- [ ] T057 [US2] Implement `RunHistoryApiClient` in `src/BillDrift.Web/Services/RunHistoryApiClient.cs`
-- [ ] T058 [US2] Add Run History nav item to `src/BillDrift.Web/Components/Layout/MainLayout.razor` per `contracts/fluent-ui-integration.md`
-- [ ] T059 [US2] Implement `RunHistoryListPage.razor` in `src/BillDrift.Web/Pages/History/RunHistoryListPage.razor` with `FluentDataGrid` and filters
-- [ ] T060 [US2] Implement `RunDetailPage.razor` in `src/BillDrift.Web/Pages/History/RunDetailPage.razor` with Summary and Inputs tabs
-- [ ] T061 [US2] Add routes `/history` and `/history/{RunId:guid}` in `src/BillDrift.Web/Components/Routes.razor`
-- [ ] T062 [US2] Add list runs by billing period test in `RunHistoryServiceTests.cs` per `quickstart.md` V4
-- [ ] T063 [US2] Add run detail summary without full blob load test in `RunHistoryServiceTests.cs`
-- [ ] T064 [US2] Add API list/detail integration test in `tests/BillDrift.Api.Tests/History/RunHistoryEndpointsTests.cs`
+- [X] T051 [US2] Implement `RunHistoryService.ListRunsAsync` with billing period and date filters in `src/BillDrift.Application/History/RunHistoryService.cs`
+- [X] T052 [US2] Implement `RunHistoryService.GetRunSummaryAsync` (table-only read) in `RunHistoryService.cs`
+- [X] T053 [US2] Implement `RunHistoryService.GetRunDetailAsync` with selective blob reads in `RunHistoryService.cs`
+- [X] T054 [US2] Implement `GET /api/run-history` list endpoint with pagination in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
+- [X] T055 [US2] Implement `GET /api/run-history/{runId}` detail endpoint with `includeResults` query in `RunHistoryEndpoints.cs`
+- [X] T056 [US2] Implement `GET /api/run-history/{runId}/inputs/{domain}` endpoint in `RunHistoryEndpoints.cs`
+- [X] T057 [US2] Implement `RunHistoryApiClient` in `src/BillDrift.Web/Services/RunHistoryApiClient.cs`
+- [X] T058 [US2] Add Run History nav item to `src/BillDrift.Web/Components/Layout/MainLayout.razor` per `contracts/fluent-ui-integration.md`
+- [X] T059 [US2] Implement `RunHistoryListPage.razor` in `src/BillDrift.Web/Pages/History/RunHistoryListPage.razor` with `FluentDataGrid` and filters
+- [X] T060 [US2] Implement `RunDetailPage.razor` in `src/BillDrift.Web/Pages/History/RunDetailPage.razor` with Summary and Inputs tabs
+- [X] T061 [US2] Add routes `/history` and `/history/{RunId:guid}` in `src/BillDrift.Web/Components/Routes.razor`
+- [X] T062 [US2] Add list runs by billing period test in `RunHistoryServiceTests.cs` per `quickstart.md` V4
+- [X] T063 [US2] Add run detail summary without full blob load test in `RunHistoryServiceTests.cs`
+- [X] T064 [US2] Add API list/detail integration test in `tests/BillDrift.Api.Tests/History/RunHistoryEndpointsTests.cs`
 
 **Checkpoint**: Run history list and detail pages functional; filters work; clean runs visible with zero-issue summary.
 
@@ -145,21 +145,21 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T065 [P] [US3] Add `RunComparisonServiceTests` skeleton in `tests/BillDrift.Application.Tests/History/RunComparisonServiceTests.cs`
-- [ ] T066 [P] [US3] Add `StableMismatchKeyFactoryTests` skeleton in `tests/BillDrift.Application.Tests/History/StableMismatchKeyFactoryTests.cs`
+- [X] T065 [P] [US3] Add `RunComparisonServiceTests` skeleton in `tests/BillDrift.Application.Tests/History/RunComparisonServiceTests.cs`
+- [X] T066 [P] [US3] Add `StableMismatchKeyFactoryTests` skeleton in `tests/BillDrift.Application.Tests/History/StableMismatchKeyFactoryTests.cs`
 
 ### Implementation for User Story 3
 
-- [ ] T067 [US3] Implement `RunComparisonService.Compare` algorithm in `src/BillDrift.Application/History/RunComparisonService.cs` per `contracts/mismatch-comparison-rules.md`
-- [ ] T068 [US3] Implement input delta summaries (record counts and fingerprint change) in `RunComparisonService.cs`
-- [ ] T069 [US3] Implement mapping version change detection in `RunComparisonService.cs`
-- [ ] T070 [US3] Implement `RunHistoryService.CompareRunsAsync` loading two result snapshots in `RunHistoryService.cs`
-- [ ] T071 [US3] Implement `POST /api/run-history/compare` endpoint in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
-- [ ] T072 [US3] Implement `RunComparisonPage.razor` in `src/BillDrift.Web/Pages/History/RunComparisonPage.razor` with New/Resolved/Persisting sections
-- [ ] T073 [US3] Add route `/history/compare` in `src/BillDrift.Web/Components/Routes.razor`
-- [ ] T074 [US3] Add month-to-month comparison classifies exceptions test in `RunComparisonServiceTests.cs` per `quickstart.md` V6 and SC-003
-- [ ] T075 [US3] Add mapping version change flagged test in `RunComparisonServiceTests.cs` per `quickstart.md` V7
-- [ ] T076 [US3] Add stable key determinism test in `StableMismatchKeyFactoryTests.cs`
+- [X] T067 [US3] Implement `RunComparisonService.Compare` algorithm in `src/BillDrift.Application/History/RunComparisonService.cs` per `contracts/mismatch-comparison-rules.md`
+- [X] T068 [US3] Implement input delta summaries (record counts and fingerprint change) in `RunComparisonService.cs`
+- [X] T069 [US3] Implement mapping version change detection in `RunComparisonService.cs`
+- [X] T070 [US3] Implement `RunHistoryService.CompareRunsAsync` loading two result snapshots in `RunHistoryService.cs`
+- [X] T071 [US3] Implement `POST /api/run-history/compare` endpoint in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
+- [X] T072 [US3] Implement `RunComparisonPage.razor` in `src/BillDrift.Web/Pages/History/RunComparisonPage.razor` with New/Resolved/Persisting sections
+- [X] T073 [US3] Add route `/history/compare` in `src/BillDrift.Web/Components/Routes.razor`
+- [X] T074 [US3] Add month-to-month comparison classifies exceptions test in `RunComparisonServiceTests.cs` per `quickstart.md` V6 and SC-003
+- [X] T075 [US3] Add mapping version change flagged test in `RunComparisonServiceTests.cs` per `quickstart.md` V7
+- [X] T076 [US3] Add stable key determinism test in `StableMismatchKeyFactoryTests.cs`
 
 **Checkpoint**: Two-run comparison via API and UI; exception deltas classified; mapping version warning displayed.
 
@@ -175,19 +175,19 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T077 [P] [US4] Add `DriftTrendAnalyzerTests` skeleton in `tests/BillDrift.Application.Tests/History/DriftTrendAnalyzerTests.cs`
-- [ ] T078 [P] [US4] Create `tests/fixtures/run-history/recurring-quantity-drift/` multi-run fixture per `quickstart.md` V8
+- [X] T077 [P] [US4] Add `DriftTrendAnalyzerTests` skeleton in `tests/BillDrift.Application.Tests/History/DriftTrendAnalyzerTests.cs`
+- [X] T078 [P] [US4] Create `tests/fixtures/run-history/recurring-quantity-drift/` multi-run fixture per `quickstart.md` V8
 
 ### Implementation for User Story 4
 
-- [ ] T079 [US4] Implement `DriftTrendAnalyzer.Analyze` aggregating drift index rows in `src/BillDrift.Application/History/DriftTrendAnalyzer.cs`
-- [ ] T080 [US4] Implement recurring vs transient classification (`minOccurrences` threshold) in `DriftTrendAnalyzer.cs`
-- [ ] T081 [US4] Implement `RunHistoryService.GetDriftTrendsAsync` in `RunHistoryService.cs`
-- [ ] T082 [US4] Implement `GET /api/run-history/trends/drift` endpoint in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
-- [ ] T083 [US4] Add Drift Trends sub-tab to `DriftTrendsPage.razor` in `src/BillDrift.Web/Pages/History/DriftTrendsPage.razor`
-- [ ] T084 [US4] Add route `/history/trends` in `src/BillDrift.Web/Components/Routes.razor`
-- [ ] T085 [US4] Add recurring drift 3+ occurrences test in `DriftTrendAnalyzerTests.cs` per `quickstart.md` V8 and SC-004
-- [ ] T086 [US4] Add transient single-occurrence excluded test in `DriftTrendAnalyzerTests.cs`
+- [X] T079 [US4] Implement `DriftTrendAnalyzer.Analyze` aggregating drift index rows in `src/BillDrift.Application/History/DriftTrendAnalyzer.cs`
+- [X] T080 [US4] Implement recurring vs transient classification (`minOccurrences` threshold) in `DriftTrendAnalyzer.cs`
+- [X] T081 [US4] Implement `RunHistoryService.GetDriftTrendsAsync` in `RunHistoryService.cs`
+- [X] T082 [US4] Implement `GET /api/run-history/trends/drift` endpoint in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
+- [X] T083 [US4] Add Drift Trends sub-tab to `DriftTrendsPage.razor` in `src/BillDrift.Web/Pages/History/DriftTrendsPage.razor`
+- [X] T084 [US4] Add route `/history/trends` in `src/BillDrift.Web/Components/Routes.razor`
+- [X] T085 [US4] Add recurring drift 3+ occurrences test in `DriftTrendAnalyzerTests.cs` per `quickstart.md` V8 and SC-004
+- [X] T086 [US4] Add transient single-occurrence excluded test in `DriftTrendAnalyzerTests.cs`
 
 **Checkpoint**: Drift trends page shows recurring mismatches; filters by date window and mismatch type work.
 
@@ -203,19 +203,19 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T087 [P] [US5] Add `PricingDriftAnalyzerTests` skeleton in `tests/BillDrift.Application.Tests/History/PricingDriftAnalyzerTests.cs`
-- [ ] T088 [P] [US5] Create `tests/fixtures/run-history/pricing-lag-timeline/` multi-run fixture per `quickstart.md` V9
+- [X] T087 [P] [US5] Add `PricingDriftAnalyzerTests` skeleton in `tests/BillDrift.Application.Tests/History/PricingDriftAnalyzerTests.cs`
+- [X] T088 [P] [US5] Create `tests/fixtures/run-history/pricing-lag-timeline/` multi-run fixture per `quickstart.md` V9
 
 ### Implementation for User Story 5
 
-- [ ] T089 [US5] Implement `PricingDriftAnalyzer.Analyze` in `src/BillDrift.Application/History/PricingDriftAnalyzer.cs` per `contracts/pricing-drift-timeline.md`
-- [ ] T090 [US5] Implement RRP change, override add/remove, Stripe price change, and catalogue missing event detection in `PricingDriftAnalyzer.cs`
-- [ ] T091 [US5] Implement lag persistence calculation in `PricingDriftAnalyzer.cs`
-- [ ] T092 [US5] Implement `RunHistoryService.GetPricingDriftTimelineAsync` loading pricing/stripe blobs only in `RunHistoryService.cs`
-- [ ] T093 [US5] Implement `GET /api/run-history/trends/pricing` endpoint in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
-- [ ] T094 [US5] Add Pricing Drift sub-tab with commercial key selector to `DriftTrendsPage.razor`
-- [ ] T095 [US5] Add pricing drift timeline lag test in `PricingDriftAnalyzerTests.cs` per `quickstart.md` V9 and SC-005
-- [ ] T096 [US5] Add override add/remove event test in `PricingDriftAnalyzerTests.cs`
+- [X] T089 [US5] Implement `PricingDriftAnalyzer.Analyze` in `src/BillDrift.Application/History/PricingDriftAnalyzer.cs` per `contracts/pricing-drift-timeline.md`
+- [X] T090 [US5] Implement RRP change, override add/remove, Stripe price change, and catalogue missing event detection in `PricingDriftAnalyzer.cs`
+- [X] T091 [US5] Implement lag persistence calculation in `PricingDriftAnalyzer.cs`
+- [X] T092 [US5] Implement `RunHistoryService.GetPricingDriftTimelineAsync` loading pricing/stripe blobs only in `RunHistoryService.cs`
+- [X] T093 [US5] Implement `GET /api/run-history/trends/pricing` endpoint in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
+- [X] T094 [US5] Add Pricing Drift sub-tab with commercial key selector to `DriftTrendsPage.razor`
+- [X] T095 [US5] Add pricing drift timeline lag test in `PricingDriftAnalyzerTests.cs` per `quickstart.md` V9 and SC-005
+- [X] T096 [US5] Add override add/remove event test in `PricingDriftAnalyzerTests.cs`
 
 **Checkpoint**: Pricing drift timeline renders; RRP vs Stripe lag visible; catalogue-missing distinct from amount mismatch.
 
@@ -231,20 +231,20 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T097 [P] [US6] Add approval join tests to `RunHistoryServiceTests.cs`
+- [X] T097 [P] [US6] Add approval join tests to `RunHistoryServiceTests.cs`
 
 ### Implementation for User Story 6
 
-- [ ] T098 [US6] Implement approval status join via `IApprovalStore.ListProposalsByRunAsync` in `RunHistoryService.GetRunDetailAsync` (no duplication into blobs)
-- [ ] T099 [US6] Map `ProposalStatusLink` view model with decision state, actor, timestamp, rejection reason in `RunHistoryService.cs`
-- [ ] T100 [US6] Add Proposals tab with approval status badges to `RunDetailPage.razor` per `contracts/fluent-ui-integration.md`
-- [ ] T101 [US6] Add link to `/approvals/{runId}` from Proposals tab in `RunDetailPage.razor`
-- [ ] T102 [US6] Include empty `ExecutionOutcome` list placeholder in run detail API response in `RunHistoryEndpoints.cs`
-- [ ] T103 [US6] Add Exceptions tab showing mismatches from blob in `RunDetailPage.razor`
-- [ ] T104 [US6] Add Audit tab querying `GET /api/run-history/{runId}/audit` in `RunDetailPage.razor`
-- [ ] T105 [US6] Implement `GET /api/run-history/{runId}/audit` endpoint in `RunHistoryEndpoints.cs`
-- [ ] T106 [US6] Add run detail includes approval status links test in `RunHistoryServiceTests.cs` per `quickstart.md` V5 and SC-006
-- [ ] T107 [US6] Add execution outcomes empty placeholder test in `RunHistoryServiceTests.cs`
+- [X] T098 [US6] Implement approval status join via `IApprovalStore.ListProposalsByRunAsync` in `RunHistoryService.GetRunDetailAsync` (no duplication into blobs)
+- [X] T099 [US6] Map `ProposalStatusLink` view model with decision state, actor, timestamp, rejection reason in `RunHistoryService.cs`
+- [X] T100 [US6] Add Proposals tab with approval status badges to `RunDetailPage.razor` per `contracts/fluent-ui-integration.md`
+- [X] T101 [US6] Add link to `/approvals/{runId}` from Proposals tab in `RunDetailPage.razor`
+- [X] T102 [US6] Include empty `ExecutionOutcome` list placeholder in run detail API response in `RunHistoryEndpoints.cs`
+- [X] T103 [US6] Add Exceptions tab showing mismatches from blob in `RunDetailPage.razor`
+- [X] T104 [US6] Add Audit tab querying `GET /api/run-history/{runId}/audit` in `RunDetailPage.razor`
+- [X] T105 [US6] Implement `GET /api/run-history/{runId}/audit` endpoint in `RunHistoryEndpoints.cs`
+- [X] T106 [US6] Add run detail includes approval status links test in `RunHistoryServiceTests.cs` per `quickstart.md` V5 and SC-006
+- [X] T107 [US6] Add execution outcomes empty placeholder test in `RunHistoryServiceTests.cs`
 
 **Checkpoint**: Run detail shows live approval state; audit tab works; execution fields reserved; blob proposals unchanged.
 
@@ -254,17 +254,17 @@
 
 **Purpose**: DI registration, storage boundary verification, export support, retention options, full quickstart validation, and constitution compliance.
 
-- [ ] T108 Register `AddRunHistory()` and call `AddRunHistoryStorage()` from `src/BillDrift.Api/Program.cs` after Aspire client registration
-- [ ] T109 [P] Verify `BillDrift.Web` has **no** `TableServiceClient` or `BlobServiceClient` registration (API-only storage access)
-- [ ] T110 [P] Grep run history codebase for SQL/EF Core references — confirm none introduced
-- [ ] T111 Implement `POST /api/run-history/compare/export` optional comparison export to blob in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
-- [ ] T112 Implement retention options (`DefaultRetentionMonths`, `ArchivedAt`) enforcement stub in `RunHistoryService.cs` per research R10
-- [ ] T113 Add blob integrity mismatch error handling in `AzureBlobRunArchiveStore.cs` per `quickstart.md` V11
-- [ ] T114 Add failed run retained test in `RunArchiveServiceTests.cs` per `quickstart.md` V10
-- [ ] T115 Add audit events on persist and compare test in `AzureTableRunHistoryStoreTests.cs` per `quickstart.md` V12
-- [ ] T116 Run full `quickstart.md` validation scenarios V1–V12; document pass/fail in `specs/008-reconciliation-run-history/quickstart.md` checklist section
-- [ ] T117 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, and `dotnet test --no-build` on full solution with zero errors/warnings per workspace rules
-- [ ] T118 [P] Principle VI simplicity review — confirm `IRunHistoryStore` is sole new persistence abstraction; no SQL introduced
+- [X] T108 Register `AddRunHistory()` and call `AddRunHistoryStorage()` from `src/BillDrift.Api/Program.cs` after Aspire client registration
+- [X] T109 [P] Verify `BillDrift.Web` has **no** `TableServiceClient` or `BlobServiceClient` registration (API-only storage access)
+- [X] T110 [P] Grep run history codebase for SQL/EF Core references — confirm none introduced
+- [X] T111 Implement `POST /api/run-history/compare/export` optional comparison export to blob in `src/BillDrift.Api/History/RunHistoryEndpoints.cs`
+- [X] T112 Implement retention options (`DefaultRetentionMonths`, `ArchivedAt`) enforcement stub in `RunHistoryService.cs` per research R10
+- [X] T113 Add blob integrity mismatch error handling in `AzureBlobRunArchiveStore.cs` per `quickstart.md` V11
+- [X] T114 Add failed run retained test in `RunArchiveServiceTests.cs` per `quickstart.md` V10
+- [X] T115 Add audit events on persist and compare test in `AzureTableRunHistoryStoreTests.cs` per `quickstart.md` V12
+- [X] T116 Run full `quickstart.md` validation scenarios V1–V12; document pass/fail in `specs/008-reconciliation-run-history/quickstart.md` checklist section
+- [X] T117 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, and `dotnet test --no-build` on full solution with zero errors/warnings per workspace rules
+- [X] T118 [P] Principle VI simplicity review — confirm `IRunHistoryStore` is sole new persistence abstraction; no SQL introduced
 
 **Checkpoint**: Full test suite passes; quickstart scenarios verified; storage and safety constraints confirmed.
 

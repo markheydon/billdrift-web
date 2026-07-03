@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BillDrift.Domain\BillDrift.Domain.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
   </ItemGroup>
 
 </Project>

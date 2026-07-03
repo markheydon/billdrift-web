@@ -1,0 +1,76 @@
+@page "/history"
+@using BillDrift.Application.History
+@using BillDrift.Domain.History
+@using Icons = Microsoft.FluentUI.AspNetCore.Components.Icons
+@inject IRunHistoryApiClient ApiClient
+
+<PageTitle>Run History</PageTitle>
+
+<h1>Run History</h1>
+
+<FluentStack Orientation="Orientation.Horizontal" VerticalGap="8">
+    <FluentCheckbox @bind-Value="_cleanRunsOnly" Label="Clean runs only" />
+    <FluentButton Appearance="ButtonAppearance.Primary" OnClick="LoadAsync">Refresh</FluentButton>
+</FluentStack>
+
+@if (_loading)
+{
+    <FluentSpinner />
+}
+else if (_error is not null)
+{
+    <FluentMessageBar Intent="MessageBarIntent.Error">@_error</FluentMessageBar>
+}
+else if (_items.Count == 0)
+{
+    <FluentMessageBar Intent="MessageBarIntent.Info">
+        No reconciliation runs archived yet. Complete a reconciliation to build history.
+    </FluentMessageBar>
+}
+else
+{
+    <FluentDataGrid Items="@_items.AsQueryable()" GridTemplateColumns="1.5fr 1fr 0.75fr 0.75fr 0.75fr">
+        <PropertyColumn Title="Completed" Property="@(r => r.CompletedAt)" Format="g" />
+        <TemplateColumn Title="Billing Period">
+            @($"{context.BillingPeriod.Start:yyyy-MM-dd} – {context.BillingPeriod.End:yyyy-MM-dd}")
+        </TemplateColumn>
+        <TemplateColumn Title="Mismatches">
+            <FluentBadge>@context.MismatchCount</FluentBadge>
+        </TemplateColumn>
+        <PropertyColumn Title="Proposals" Property="@(r => r.ProposedChangeCount)" />
+        <TemplateColumn Title="Actions">
+            <FluentButton Appearance="ButtonAppearance.Transparent" Href="@($"/history/{context.RunId.Value}")">View</FluentButton>
+        </TemplateColumn>
+    </FluentDataGrid>
+}
+
+@code {
+    private readonly List<RunHistoryListItem> _items = [];
+    private bool _loading = true;
+    private string? _error;
+    private bool _cleanRunsOnly;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+
+        try
+        {
+            var filter = new RunHistoryListFilter(CleanRunsOnly: _cleanRunsOnly ? true : null);
+            var response = await ApiClient.ListRunsAsync(filter);
+            _items.Clear();
+            _items.AddRange(response.Items);
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

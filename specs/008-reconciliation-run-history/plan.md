@@ -213,7 +213,7 @@ See [research.md](./research.md) — all technical context items resolved:
 3. **Approval join on read**: `RunHistoryService.GetRunDetailAsync` queries `IApprovalStore.ListProposalsByRunAsync` — never copy decision state into blob snapshot.
 4. **Stable mismatch key**: Computed at persist time and stored in drift index table rows; see [mismatch-comparison-rules.md](./contracts/mismatch-comparison-rules.md).
 5. **No Web storage access**: Do not add `TableServiceClient` or `BlobServiceClient` to `BillDrift.Web`.
-6. **Idempotent persist**: Re-persist same `RunId` replaces blob payloads and upserts index rows (only allowed before `FinalizedAt` or for failed-run retry).
+6. **Immutable persist**: An existing record for a `RunId` (any status) rejects re-persist. Each attempt is durable and immutable; retries require a new `RunId`.
 7. **Phase 1 manual uploads**: Input metadata populated from ingestion upload handlers (features 002/003/015–018); API integrations deferred to Phase 2 build queue.
 
 ## Storage Constraints (user-provided)
