@@ -1,0 +1,59 @@
+@using BillDrift.Application.Ingestion
+
+@if (Run is not null)
+{
+    var status = GetStatus(Run);
+    var fileName = GetFileName(Run);
+    var failure = GetFailureReason(Run);
+
+    <FluentMessageBar Intent="@GetIntent(status)">
+        <strong>@status</strong>
+        @if (!string.IsNullOrWhiteSpace(fileName))
+        {
+            <span> — @fileName</span>
+        }
+        @if (!string.IsNullOrWhiteSpace(failure))
+        {
+            <div style="white-space: pre-wrap;">@failure</div>
+        }
+    </FluentMessageBar>
+}
+
+@code {
+    [Parameter] public object? Run { get; set; }
+
+    private static IngestionRunStatus GetStatus(object run) => run switch
+    {
+        SubscriptionManagementIngestionRun sm => sm.Status,
+        RetailPricingIngestionRun rp => rp.Status,
+        GiacomPdfIngestionRun pdf => pdf.Status,
+        StripeCsvIngestionRun stripe => stripe.Status,
+        _ => IngestionRunStatus.Failed
+    };
+
+    private static string? GetFileName(object run) => run switch
+    {
+        SubscriptionManagementIngestionRun sm => sm.OriginalFileName,
+        RetailPricingIngestionRun rp => rp.OriginalFileName,
+        GiacomPdfIngestionRun pdf => pdf.OriginalFileName,
+        StripeCsvIngestionRun stripe => stripe.OriginalFileName,
+        _ => null
+    };
+
+    private static string? GetFailureReason(object run) => run switch
+    {
+        SubscriptionManagementIngestionRun sm => sm.FailureReason,
+        RetailPricingIngestionRun rp => rp.FailureReason,
+        GiacomPdfIngestionRun pdf => pdf.FailureReason,
+        StripeCsvIngestionRun stripe => stripe.FailureReason,
+        _ => null
+    };
+
+    private static MessageBarIntent GetIntent(IngestionRunStatus status) => status switch
+    {
+        IngestionRunStatus.Completed => MessageBarIntent.Success,
+        IngestionRunStatus.PartialSuccess => MessageBarIntent.Warning,
+        IngestionRunStatus.Failed => MessageBarIntent.Error,
+        _ => MessageBarIntent.Info
+    };
+}

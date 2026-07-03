@@ -1,0 +1,86 @@
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<FluentInputFile Id="@InputId"
+                 Mode="InputFileMode.Stream"
+                 Multiple="false"
+                 Accept="@Accept"
+                 MaximumFileSize="@MaximumFileSize"
+                 Disabled="@Disabled"
+                 @bind-ProgressPercent="@_progressPercent"
+                 OnFileUploaded="@OnFileUploadedAsync"
+                 OnCompleted="@OnCompletedAsync"
+                 OnFileError="@OnFileErrorAsync"
+                 Height="180px"
+                 Margin="@Margin.Bottom3">
+    <ChildContent>
+        <label for="@InputId" style="cursor: pointer;">
+            <FluentIcon Value="@(new Icons.Regular.Size24.ArrowUpload())" Color="@Color.Primary" />
+        </label>
+        <div>
+            Drag and drop your file here, or <label for="@InputId" style="cursor: pointer; text-decoration: underline;">browse</label> to select.
+        </div>
+        <div><em>@Hint</em></div>
+    </ChildContent>
+</FluentInputFile>
+
+@if (_progressPercent > 0 && _progressPercent < 100)
+{
+    <FluentProgressBar Min="0" Max="100" Value="@_progressPercent" />
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public string InputId { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Accept { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Hint { get; set; } = string.Empty;
+
+    [Parameter]
+    public long MaximumFileSize { get; set; } = 25 * 1024 * 1024;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<(Stream Stream, string FileName)> OnUploadAsync { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnErrorAsync { get; set; }
+
+    private int _progressPercent;
+
+    private async Task OnFileUploadedAsync(FluentInputFileEventArgs file)
+    {
+        if (file.Stream is null || file.IsCancelled)
+        {
+            return;
+        }
+
+        try
+        {
+            await using var memory = new MemoryStream();
+            await file.Stream.CopyToAsync(memory);
+            memory.Position = 0;
+            await OnUploadAsync.InvokeAsync((memory, file.Name));
+        }
+        finally
+        {
+            await file.Stream.DisposeAsync();
+        }
+    }
+
+    private Task OnCompletedAsync(IEnumerable<FluentInputFileEventArgs> files)
+    {
+        _progressPercent = 0;
+        return Task.CompletedTask;
+    }
+
+    private async Task OnFileErrorAsync(FluentInputFileErrorEventArgs args)
+    {
+        _progressPercent = 0;
+        await OnErrorAsync.InvokeAsync(args.ErrorMessage);
+    }
+}

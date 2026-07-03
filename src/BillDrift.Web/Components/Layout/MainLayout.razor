@@ -14,14 +14,38 @@
             <FluentNavItem Href="/" Icon="@(new Icons.Regular.Size20.Home())">
                 Home
             </FluentNavItem>
+
+            <FluentNavSectionHeader Label="Workflow" />
+            <FluentNavItem Href="/ingestion" Icon="@(new Icons.Regular.Size20.ArrowUpload())">
+                Ingestion
+            </FluentNavItem>
             <FluentNavItem Href="/reconciliation" Icon="@(new Icons.Regular.Size20.ArrowSync())">
                 Reconciliation
             </FluentNavItem>
             <FluentNavItem Href="/approvals" Icon="@(new Icons.Regular.Size20.CheckmarkCircle())">
                 Approvals
             </FluentNavItem>
+
+            <FluentNavSectionHeader Label="Reference data" />
+            <FluentNavItem Href="/catalogue" Icon="@(new Icons.Regular.Size20.Box())">
+                Catalogue
+            </FluentNavItem>
+            <FluentNavItem Href="/mapping" Icon="@(new Icons.Regular.Size20.Link())">
+                Mapping
+            </FluentNavItem>
+            <FluentNavItem Href="/classification" Icon="@(new Icons.Regular.Size20.Tag())">
+                Classification
+            </FluentNavItem>
+
+            <FluentNavSectionHeader Label="History" />
             <FluentNavItem Href="/history" Icon="@(new Icons.Regular.Size20.History())">
                 Run History
+            </FluentNavItem>
+            <FluentNavItem Href="/history/compare" Icon="@(new Icons.Regular.Size20.ArrowSwap())">
+                Compare
+            </FluentNavItem>
+            <FluentNavItem Href="/history/trends" Icon="@(new Icons.Regular.Size20.DataTrending())">
+                Trends
             </FluentNavItem>
         </FluentNav>
     </FluentLayoutItem>

@@ -1,0 +1,63 @@
+@page "/mapping"
+@rendermode InteractiveServer
+@using System.Text.Json
+@using BillDrift.Web.Pages.Mapping
+
+<PageTitle>Product mapping</PageTitle>
+
+<h1>Product mapping</h1>
+
+<FluentMessageBar Intent="MessageBarIntent.Warning">
+    Mappings are stored in this browser session only. Persistent mapping storage is deferred.
+</FluentMessageBar>
+
+<FluentStack VerticalGap="12">
+    <FluentTextArea @bind-Value="_json" Label="Product mappings (JSON)" Rows="16" Style="width: 100%;" />
+    <FluentStack Orientation="Orientation.Horizontal" HorizontalGap="8">
+        <FluentButton Appearance="ButtonAppearance.Primary" OnClick="ApplyJsonAsync">Apply JSON</FluentButton>
+        <FluentButton OnClick="ExportJson">Copy to clipboard format</FluentButton>
+        <FluentAnchorButton Appearance="ButtonAppearance.Transparent" Href="/reconciliation">Use in reconciliation</FluentAnchorButton>
+    </FluentStack>
+    @if (!string.IsNullOrEmpty(_status))
+    {
+        <FluentMessageBar Intent="@_statusIntent">@_status</FluentMessageBar>
+    }
+</FluentStack>
+
+@code {
+    private string _json = "[]";
+    private string? _status;
+    private MessageBarIntent _statusIntent = MessageBarIntent.Info;
+
+    protected override void OnInitialized()
+    {
+        if (MappingSessionStore.MappingsJson is { } stored)
+        {
+            _json = stored;
+        }
+    }
+
+    private Task ApplyJsonAsync()
+    {
+        try
+        {
+            JsonDocument.Parse(_json);
+            MappingSessionStore.MappingsJson = _json;
+            _status = "Mappings saved to session.";
+            _statusIntent = MessageBarIntent.Success;
+        }
+        catch (JsonException ex)
+        {
+            _status = $"Invalid JSON: {ex.Message}";
+            _statusIntent = MessageBarIntent.Error;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private void ExportJson()
+    {
+        _status = "JSON ready above — copy for portability.";
+        _statusIntent = MessageBarIntent.Info;
+    }
+}

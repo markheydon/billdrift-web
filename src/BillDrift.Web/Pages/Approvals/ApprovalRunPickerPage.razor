@@ -1,0 +1,48 @@
+@page "/approvals"
+@rendermode InteractiveServer
+@using BillDrift.Application.History
+@using BillDrift.Domain.History
+@inject IRunHistoryApiClient HistoryClient
+@inject NavigationManager Navigation
+
+<PageTitle>Approvals</PageTitle>
+
+<h1>Approval runs</h1>
+
+@if (_loading)
+{
+    <FluentSpinner />
+}
+else if (_runs.Count == 0)
+{
+    <EmptyStatePanel
+        Title="No reconciliation runs"
+        Message="Run reconciliation first, then send proposals to the approval queue."
+        ActionHref="/reconciliation"
+        ActionLabel="Go to reconciliation" />
+}
+else
+{
+    <FluentDataGrid Items="@_runs.AsQueryable()" GridTemplateColumns="2fr 1fr 1fr 1fr">
+        <PropertyColumn Title="Run" Property="@(r => r.RunId)" />
+        <PropertyColumn Title="Completed" Property="@(r => r.CompletedAt)" Format="g" />
+        <PropertyColumn Title="Proposals" Property="@(r => r.ProposedChangeCount)" />
+        <TemplateColumn Title="Actions">
+            <FluentAnchorButton Href="@($"/approvals/{context.RunId.Value}")">Open queue</FluentAnchorButton>
+        </TemplateColumn>
+    </FluentDataGrid>
+}
+
+@code {
+    private bool _loading = true;
+    private IReadOnlyList<RunHistoryListItem> _runs = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await HistoryClient.ListRunsAsync(new RunHistoryListFilter(IncludeArchived: true), pageSize: 50);
+        _runs = response.Items
+            .Where(r => r.ProposedChangeCount > 0)
+            .ToList();
+        _loading = false;
+    }
+}

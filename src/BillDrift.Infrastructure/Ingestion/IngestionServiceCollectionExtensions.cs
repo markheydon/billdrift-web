@@ -1,4 +1,6 @@
+using BillDrift.Application.Import.Giacom;
 using BillDrift.Application.Import.RetailPricing;
+using BillDrift.Application.Import.Stripe;
 using BillDrift.Application.Import.SubscriptionManagement;
 using BillDrift.Application.Ingestion;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +28,8 @@ public static class IngestionServiceCollectionExtensions
 
         services.AddSingleton<ISubscriptionManagementIngestionService, SubscriptionManagementIngestionService>();
         services.AddSingleton<IRetailPricingIngestionService, RetailPricingIngestionService>();
+        services.AddSingleton<IGiacomPdfIngestionService, GiacomPdfIngestionService>();
+        services.AddSingleton<IStripeCsvIngestionService, StripeCsvIngestionService>();
         return services;
     }
 }

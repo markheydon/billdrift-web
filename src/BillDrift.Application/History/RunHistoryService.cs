@@ -221,6 +221,30 @@ public sealed class RunHistoryService(
         return new ComparisonExportResponse(path, hash);
     }
 
+    /// <summary>Reconstructs a reconciliation run from archived blob snapshots for approval ingest and API reads.</summary>
+    public async Task<ReconciliationRun?> LoadArchivedReconciliationRunAsync(
+        RunId runId,
+        CancellationToken cancellationToken = default)
+    {
+        var record = await store.GetRunAsync(runId, cancellationToken);
+        if (record is null || record.Status != RunArchiveStatus.Completed)
+        {
+            return null;
+        }
+
+        await blobStore.VerifyManifestIntegrityAsync(runId, cancellationToken);
+        var snapshot = await blobStore.LoadResultsSnapshotAsync(runId, cancellationToken);
+
+        return new ReconciliationRun(
+            runId,
+            record.CompletedAt ?? record.StartedAt,
+            record.BillingPeriodScope,
+            new ReconciliationInputs([], [], [], [], []),
+            snapshot.MatchGroups,
+            snapshot.Mismatches,
+            snapshot.ProposedChanges);
+    }
+
     /// <summary>Applies retention policy stub marking runs past retention.</summary>
     public async Task ApplyRetentionPolicyAsync(CancellationToken cancellationToken = default)
     {

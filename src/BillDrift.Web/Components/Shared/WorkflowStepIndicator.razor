@@ -1,0 +1,26 @@
+<FluentStack Orientation="Orientation.Horizontal" VerticalGap="8" HorizontalGap="8">
+    @foreach (var step in Steps)
+    {
+        <FluentBadge>@step.Number. @step.Label</FluentBadge>
+        @if (step != Steps[^1])
+        {
+            <span>→</span>
+        }
+    }
+</FluentStack>
+
+@code {
+    [Parameter]
+    public int ActiveStep { get; set; } = 1;
+
+    private IReadOnlyList<WorkflowStep> Steps =>
+    [
+        new(1, "Upload", ActiveStep == 1),
+        new(2, "Reconcile", ActiveStep == 2),
+        new(3, "Review", ActiveStep == 3),
+        new(4, "Approve", ActiveStep == 4),
+        new(5, "Export", ActiveStep == 5)
+    ];
+
+    private sealed record WorkflowStep(int Number, string Label, bool IsActive);
+}

@@ -81,4 +81,32 @@ public interface IIngestionBlobStore
     Task<IReadOnlyList<StripeCataloguePrice>?> GetStripeCataloguePricesAsync(
         Guid ingestionId,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Persists normalized supplier cost lines from a Giacom PDF ingestion run.</summary>
+    Task<string> PersistSupplierCostLinesAsync(
+        Guid ingestionId,
+        GiacomPdfIngestionResult result,
+        IReadOnlyList<SupplierCostLine> supplierCostLines,
+        string? originalFileName,
+        DateTimeOffset uploadedAt,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Loads normalized supplier cost lines for an ingestion run.</summary>
+    Task<IReadOnlyList<SupplierCostLine>?> GetSupplierCostLinesAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Persists normalized Stripe billing items from a Stripe CSV ingestion run.</summary>
+    Task<string> PersistStripeBillingItemsAsync(
+        Guid ingestionId,
+        StripeCsvIngestionResult result,
+        IReadOnlyList<StripeBillingItem> billingItems,
+        string? originalFileName,
+        DateTimeOffset uploadedAt,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Loads normalized Stripe billing items for an ingestion run.</summary>
+    Task<IReadOnlyList<StripeBillingItem>?> GetStripeBillingItemsAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default);
 }

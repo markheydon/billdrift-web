@@ -12,7 +12,7 @@ public static class SubscriptionManagementImportEndpoints
     {
         var group = endpoints.MapGroup("/api/imports/subscription-management").WithTags("SubscriptionManagementImports");
 
-        group.MapPost("/", UploadAsync);
+        group.MapPost("/", UploadAsync).DisableAntiforgery();
         group.MapGet("/", ListRunsAsync);
         group.MapGet("/{ingestionId:guid}", GetRunDetailAsync);
         group.MapGet("/{ingestionId:guid}/subscription-truth", GetSubscriptionTruthAsync);

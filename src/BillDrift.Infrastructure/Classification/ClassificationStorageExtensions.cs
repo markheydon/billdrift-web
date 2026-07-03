@@ -420,10 +420,19 @@ public static class ClassificationStorageExtensions
     /// <summary>
     /// Registers classification storage services with Azure Table store.
     /// </summary>
-    public static IServiceCollection AddClassificationStorage(this IServiceCollection services)
+    public static IServiceCollection AddClassificationStorage(this IServiceCollection services, bool useInMemory = false)
     {
         services.Configure<ClassificationStorageOptions>(_ => { });
-        services.AddScoped<IItemClassificationStore, AzureTableItemClassificationStore>();
+
+        if (useInMemory)
+        {
+            services.AddScoped<IItemClassificationStore, InMemoryItemClassificationStore>();
+        }
+        else
+        {
+            services.AddScoped<IItemClassificationStore, AzureTableItemClassificationStore>();
+        }
+
         return services;
     }
 }

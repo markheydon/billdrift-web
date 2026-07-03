@@ -41,6 +41,7 @@ public static class ReconciliationServiceCollectionExtensions
         services.AddSingleton<IProductMappingResolver, ProductMappingResolver>();
         services.AddSingleton<IReconciliationEngine, ReconciliationEngine>();
         services.AddSingleton<ExceptionSurfacingService>();
+        services.AddScoped<ReconciliationOrchestrationService>();
         return services;
     }
 }

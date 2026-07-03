@@ -1,0 +1,26 @@
+@using BillDrift.Application.Reconciliation
+
+@if (Lines is null || Lines.Count == 0)
+{
+    <FluentMessageBar Intent="MessageBarIntent.Info">No margin lines available for this run.</FluentMessageBar>
+}
+else
+{
+    <FluentDataGrid Items="@SortedLines.AsQueryable()" GridTemplateColumns="1fr 1.5fr 0.75fr 0.75fr 0.75fr 0.75fr">
+        <PropertyColumn Title="Customer" Property="@(l => l.CustomerLabel)" />
+        <PropertyColumn Title="Product" Property="@(l => l.ProductLabel)" />
+        <TemplateColumn Title="Cost">@(context.Cost?.ToString() ?? "—")</TemplateColumn>
+        <TemplateColumn Title="RRP">@(context.Rrp?.ToString() ?? "—")</TemplateColumn>
+        <TemplateColumn Title="Margin %">@(context.MarginPercent?.ToString("0.##") ?? "—")</TemplateColumn>
+        <TemplateColumn Title="Severity">
+            <MarginSeverityBadge Severity="context.Severity" />
+        </TemplateColumn>
+    </FluentDataGrid>
+}
+
+@code {
+    [Parameter] public IReadOnlyList<MarginLineViewModel>? Lines { get; set; }
+
+    private IEnumerable<MarginLineViewModel> SortedLines =>
+        (Lines ?? []).OrderBy(l => l.MarginPercent ?? decimal.MaxValue);
+}

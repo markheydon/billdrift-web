@@ -5,6 +5,7 @@
     <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
         <h1>Approval Queue</h1>
         <FluentBadge>@RunId</FluentBadge>
+        <FluentButton OnClick="BulkApproveAsync">Bulk approve eligible</FluentButton>
     </FluentStack>
 
     @if (!string.IsNullOrEmpty(_error))
@@ -18,23 +19,27 @@
     }
     else if (_queue is null)
     {
-        <FluentMessageBar Intent="MessageBarIntent.Info">No queue loaded.</FluentMessageBar>
+        <EmptyStatePanel
+            Title="No approval queue loaded"
+            Message="This run has not been sent to the approval queue yet. Run reconciliation, then use Send to approval queue, or ingest proposals from run history."
+            ActionHref="/reconciliation"
+            ActionLabel="Go to reconciliation" />
     }
     else
     {
         <FluentTabs>
-            <FluentTab Id="subscription" Label="@($"Subscription ({_queue.Summary.SubscriptionCount})")">
+            <FluentTab Id="subscription" Header="@($"Subscription ({_queue.Summary.SubscriptionCount})")">
                 @RenderProposalTable(_queue.CustomerGroups.SelectMany(g => g.SubscriptionProposals))
             </FluentTab>
-            <FluentTab Id="catalogue" Label="@($"Catalogue ({_queue.Summary.CatalogueCount})")">
+            <FluentTab Id="catalogue" Header="@($"Catalogue ({_queue.Summary.CatalogueCount})")">
                 @RenderProposalTable(_queue.CustomerGroups.SelectMany(g => g.CatalogueProposals))
             </FluentTab>
-            <FluentTab Id="investigation" Label="@($"Investigation ({_queue.Summary.InvestigationCount})")">
+            <FluentTab Id="investigation" Header="@($"Investigation ({_queue.Summary.InvestigationCount})")">
                 @RenderProposalTable(_queue.CustomerGroups.SelectMany(g => g.InvestigationItems))
             </FluentTab>
         </FluentTabs>
 
-        <ExportChangesetPanel RunId="RunId" OnExportCompleted="LoadQueueAsync" />
+        <ExportChangesetPanel RunId="RunId" EmptyQueue="@(_queue.Summary.ApprovedCount == 0)" OnExportCompleted="LoadQueueAsync" />
         <ApprovalAuditPanel RunId="RunId" />
     }
 </FluentStack>
@@ -73,7 +78,11 @@
         var list = proposals.ToList();
         if (list.Count == 0)
         {
-            <FluentMessageBar Intent="MessageBarIntent.Info">No items in this category.</FluentMessageBar>
+            <EmptyStatePanel
+                Title="No items in this category"
+                Message="Proposals appear here after you send a reconciliation run to the approval queue. Subscription and catalogue tabs show actionable changes; investigation items need manual review."
+                ActionHref="/reconciliation"
+                ActionLabel="Run reconciliation" />
             return;
         }
 
@@ -154,5 +163,39 @@
         {
             _error = ex.Message;
         }
+    }
+
+    private async Task BulkApproveAsync()
+    {
+        if (_queue is null)
+        {
+            return;
+        }
+
+        var eligible = _queue.CustomerGroups
+            .SelectMany(g => g.SubscriptionProposals.Concat(g.CatalogueProposals).Select(p => (g.CustomerMexId, p)))
+            .Where(x => x.p.CanApprove)
+            .ToList();
+
+        if (eligible.Count == 0)
+        {
+            _error = "No eligible proposals to bulk approve.";
+            return;
+        }
+
+        var customerMexId = eligible[0].CustomerMexId.Value;
+        var proposalIds = eligible.Select(x => x.p.Id.Value).ToList();
+        var preview = await ApiClient.PreviewBulkApproveAsync(RunId, customerMexId, proposalIds);
+
+        var dialog = await DialogService.ShowDialogAsync<BulkApproveDialog>(
+            new DialogOptions { Header = { Title = $"Bulk approve ({preview.Count})" }, Modal = true });
+
+        if (dialog.Cancelled)
+        {
+            return;
+        }
+
+        await ApiClient.BulkApproveAsync(RunId, preview.ConfirmationToken, customerMexId, proposalIds);
+        await LoadQueueAsync();
     }
 }

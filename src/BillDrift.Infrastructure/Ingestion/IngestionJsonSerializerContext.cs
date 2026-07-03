@@ -30,6 +30,15 @@ namespace BillDrift.Infrastructure.Ingestion;
 [JsonSerializable(typeof(StripeCataloguePricesBlobDocument))]
 [JsonSerializable(typeof(StripeCatalogueProduct))]
 [JsonSerializable(typeof(StripeCataloguePrice))]
+[JsonSerializable(typeof(SupplierCostLine))]
+[JsonSerializable(typeof(StripeBillingItem))]
+[JsonSerializable(typeof(RawGiacomBillingLine))]
+[JsonSerializable(typeof(GiacomPdfIngestionSummary))]
+[JsonSerializable(typeof(StripeCsvIngestionSummary))]
+[JsonSerializable(typeof(SupplierCostBlobDocument))]
+[JsonSerializable(typeof(StripeBillingItemsBlobDocument))]
+[JsonSerializable(typeof(GiacomPdfManifestDocument))]
+[JsonSerializable(typeof(StripeCsvManifestDocument))]
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
@@ -122,3 +131,45 @@ public sealed record StripeCatalogueProductsBlobDocument(IReadOnlyList<StripeCat
 
 /// <summary>Stripe catalogue prices blob payload (003 ingestion archive layout).</summary>
 public sealed record StripeCataloguePricesBlobDocument(IReadOnlyList<StripeCataloguePrice> Records);
+
+/// <summary>Normalized supplier cost lines blob payload.</summary>
+public sealed record SupplierCostBlobDocument(
+    IReadOnlyList<SupplierCostLine> Records,
+    int NormalizationSkipped);
+
+/// <summary>Normalized Stripe billing items blob payload.</summary>
+public sealed record StripeBillingItemsBlobDocument(
+    IReadOnlyList<StripeBillingItem> Records,
+    int NormalizationSkipped);
+
+/// <summary>Commit marker for Giacom PDF ingestion runs.</summary>
+public sealed record GiacomPdfManifestDocument(
+    Guid IngestionId,
+    ImportSourceKind SourceKind,
+    string? OriginalFileName,
+    string ContentFingerprint,
+    DateTimeOffset UploadedAt,
+    DateTimeOffset CompletedAt,
+    string Status,
+    GiacomPdfIngestionSummary Summary,
+    GiacomPdfManifestBlobs Blobs,
+    string? FailureReason = null);
+
+/// <summary>Blob path references for Giacom PDF manifests.</summary>
+public sealed record GiacomPdfManifestBlobs(string Source, string RawLines, string SupplierCost);
+
+/// <summary>Commit marker for Stripe CSV ingestion runs.</summary>
+public sealed record StripeCsvManifestDocument(
+    Guid IngestionId,
+    ImportSourceKind SourceKind,
+    string? OriginalFileName,
+    string ContentFingerprint,
+    DateTimeOffset UploadedAt,
+    DateTimeOffset CompletedAt,
+    string Status,
+    StripeCsvIngestionSummary Summary,
+    StripeCsvManifestBlobs Blobs,
+    string? FailureReason = null);
+
+/// <summary>Blob path references for Stripe CSV manifests.</summary>
+public sealed record StripeCsvManifestBlobs(string Source, string BillingItems);

@@ -2,6 +2,7 @@
 @using BillDrift.Application.History
 @using BillDrift.Domain.History
 @inject IRunHistoryApiClient ApiClient
+@inject IApprovalApiClient ApprovalClient
 @inject NavigationManager Navigation
 
 <PageTitle>Run Detail</PageTitle>
@@ -25,13 +26,13 @@ else if (_detail is not null)
     </FluentStack>
 
     <FluentTabs>
-        <FluentTab Label="Summary">
+        <FluentTab Header="Summary">
             <p>Billing period: @_detail.BillingPeriod.Start – @_detail.BillingPeriod.End</p>
             <p>Match groups: @_detail.SummaryMetrics.MatchGroupCount</p>
             <p>Mismatches: @_detail.SummaryMetrics.MismatchCount</p>
             <p>Mapping version: @_detail.MappingVersion.VersionId</p>
         </FluentTab>
-        <FluentTab Label="Inputs">
+        <FluentTab Header="Inputs">
             <FluentDataGrid Items="@_detail.InputSnapshots.AsQueryable()" GridTemplateColumns="1fr 1fr 1fr 1fr">
                 <PropertyColumn Title="Domain" Property="@(i => i.Domain)" />
                 <PropertyColumn Title="Present" Property="@(i => i.IsPresent)" />
@@ -39,21 +40,24 @@ else if (_detail is not null)
                 <PropertyColumn Title="Records" Property="@(i => i.RecordCount)" />
             </FluentDataGrid>
         </FluentTab>
-        <FluentTab Label="Proposals">
+        <FluentTab Header="Proposals">
             @if (_detail.ProposalStatusLinks.Count == 0)
             {
-                <p>No proposals linked.</p>
+                <EmptyStatePanel
+                    Title="No proposals in approval queue"
+                    Message="Ingest reconciliation proposals to start the approval workflow." />
+                <FluentButton OnClick="IngestProposalsAsync">Ingest proposals</FluentButton>
             }
             else
             {
-                <FluentButton Appearance="ButtonAppearance.Transparent" Href="@($"/approvals/{RunId}")">Open approval queue</FluentButton>
+                <FluentAnchorButton Appearance="ButtonAppearance.Transparent" Href="@($"/approvals/{RunId}")">Open approval queue</FluentAnchorButton>
                 <FluentDataGrid Items="@_detail.ProposalStatusLinks.AsQueryable()" GridTemplateColumns="1fr 1fr">
                     <PropertyColumn Title="Proposal" Property="@(p => p.ProposedChangeId)" />
                     <PropertyColumn Title="Status" Property="@(p => p.DecisionState)" />
                 </FluentDataGrid>
             }
         </FluentTab>
-        <FluentTab Label="Exceptions">
+        <FluentTab Header="Exceptions">
             @if (_detail.Results?.Mismatches.Count > 0)
             {
                 <FluentDataGrid Items="@_detail.Results.Mismatches.AsQueryable()" GridTemplateColumns="1fr 1fr 2fr">
@@ -64,13 +68,21 @@ else if (_detail is not null)
             }
             else
             {
-                <p>No exceptions loaded.</p>
+                <EmptyStatePanel
+                    Title="No exceptions in this run"
+                    Message="A clean run means all compared billing lines matched within tolerance. You can still review margin lines and send proposals to approval if changes were suggested."
+                    ActionHref="/reconciliation"
+                    ActionLabel="Run another reconciliation" />
             }
         </FluentTab>
-        <FluentTab Label="Audit">
+        <FluentTab Header="Audit">
             @if (_auditEvents.Count == 0)
             {
-                <p>No audit events.</p>
+                <EmptyStatePanel
+                    Title="No audit events"
+                    Message="Audit events are recorded when proposals are approved, rejected, or exported. Complete the approval workflow to build an audit trail for this run."
+                    ActionHref="@($"/approvals/{RunId}")"
+                    ActionLabel="Open approval queue" />
             }
             else
             {
@@ -112,5 +124,11 @@ else if (_detail is not null)
         {
             _loading = false;
         }
+    }
+
+    private async Task IngestProposalsAsync()
+    {
+        await ApprovalClient.IngestFromRunAsync(RunId);
+        Navigation.NavigateTo($"/approvals/{RunId}");
     }
 }

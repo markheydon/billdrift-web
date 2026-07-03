@@ -16,6 +16,8 @@ public sealed class InMemoryIngestionBlobStore : IIngestionBlobStore
     private readonly ConcurrentDictionary<Guid, IReadOnlyList<IntendedPrice>> _resolvedPrices = new();
     private readonly ConcurrentDictionary<Guid, IReadOnlyList<StripeCatalogueProduct>> _stripeCatalogueProducts = new();
     private readonly ConcurrentDictionary<Guid, IReadOnlyList<StripeCataloguePrice>> _stripeCataloguePrices = new();
+    private readonly ConcurrentDictionary<Guid, IReadOnlyList<SupplierCostLine>> _supplierCostLines = new();
+    private readonly ConcurrentDictionary<Guid, IReadOnlyList<StripeBillingItem>> _stripeBillingItems = new();
 
     /// <inheritdoc />
     public Task<string> UploadSourceAsync(
@@ -118,6 +120,50 @@ public sealed class InMemoryIngestionBlobStore : IIngestionBlobStore
         Guid ingestionId,
         CancellationToken cancellationToken = default) =>
         Task.FromResult(_stripeCataloguePrices.TryGetValue(ingestionId, out var prices) ? prices : null);
+
+    /// <inheritdoc />
+    public Task<string> PersistSupplierCostLinesAsync(
+        Guid ingestionId,
+        GiacomPdfIngestionResult result,
+        IReadOnlyList<SupplierCostLine> supplierCostLines,
+        string? originalFileName,
+        DateTimeOffset uploadedAt,
+        CancellationToken cancellationToken = default)
+    {
+        _ = result;
+        _ = originalFileName;
+        _ = uploadedAt;
+        _supplierCostLines[ingestionId] = supplierCostLines;
+        return Task.FromResult($"{ingestionId:D}/result/manifest.json");
+    }
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<SupplierCostLine>?> GetSupplierCostLinesAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default) =>
+        Task.FromResult(_supplierCostLines.TryGetValue(ingestionId, out var lines) ? lines : null);
+
+    /// <inheritdoc />
+    public Task<string> PersistStripeBillingItemsAsync(
+        Guid ingestionId,
+        StripeCsvIngestionResult result,
+        IReadOnlyList<StripeBillingItem> billingItems,
+        string? originalFileName,
+        DateTimeOffset uploadedAt,
+        CancellationToken cancellationToken = default)
+    {
+        _ = result;
+        _ = originalFileName;
+        _ = uploadedAt;
+        _stripeBillingItems[ingestionId] = billingItems;
+        return Task.FromResult($"{ingestionId:D}/result/manifest.json");
+    }
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<StripeBillingItem>?> GetStripeBillingItemsAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default) =>
+        Task.FromResult(_stripeBillingItems.TryGetValue(ingestionId, out var items) ? items : null);
 
     /// <summary>Seeds resolved intended prices without a full retail pricing ingestion result.</summary>
     public void SeedResolvedPrices(Guid ingestionId, IReadOnlyList<IntendedPrice> prices) =>

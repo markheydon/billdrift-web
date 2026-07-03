@@ -1,0 +1,78 @@
+@page "/"
+@rendermode InteractiveServer
+@inject IIngestionApiClient IngestionClient
+@inject IRunHistoryApiClient HistoryClient
+
+<PageTitle>BillDrift</PageTitle>
+
+<h1>Operator workflow</h1>
+
+<p>Follow the steps below to upload source files, reconcile billing drift, review exceptions, approve changes, and export corrections.</p>
+
+<WorkflowStepIndicator ActiveStep="1" />
+
+<FluentStack Orientation="Orientation.Horizontal" VerticalGap="12" HorizontalGap="12" Wrap="true">
+    <FluentCard>
+        <h3>1. Upload</h3>
+        <p>Import subscription management CSV, retail pricing, Giacom PDF invoices, and Stripe export files.</p>
+        <p><em>Start here — reconciliation needs at least one completed import per source you want to compare.</em></p>
+        <FluentAnchorButton Href="/ingestion" Appearance="ButtonAppearance.Primary">Go to ingestion</FluentAnchorButton>
+    </FluentCard>
+    <FluentCard>
+        <h3>2. Reconcile</h3>
+        <p>Run billing drift reconciliation across your uploaded sources for a billing period.</p>
+        <p><em>Requires completed imports. Review exceptions and margin impact before approving.</em></p>
+        <FluentAnchorButton Href="/reconciliation" Appearance="ButtonAppearance.Primary">Go to reconciliation</FluentAnchorButton>
+    </FluentCard>
+    <FluentCard>
+        <h3>3. Approve</h3>
+        <p>Review proposed subscription and catalogue changes, then approve or reject each item.</p>
+        <p><em>Send a reconciliation run to the approval queue first, then work through proposals.</em></p>
+        <FluentAnchorButton Href="/approvals" Appearance="ButtonAppearance.Primary">Go to approvals</FluentAnchorButton>
+    </FluentCard>
+    <FluentCard>
+        <h3>4. History</h3>
+        <p>Browse archived reconciliation runs, compare periods, and track recurring drift trends.</p>
+        <p><em>Runs are archived automatically when reconciliation completes with persistence enabled.</em></p>
+        <FluentAnchorButton Href="/history" Appearance="ButtonAppearance.Primary">Go to history</FluentAnchorButton>
+    </FluentCard>
+</FluentStack>
+
+@if (_loading)
+{
+    <FluentSpinner />
+}
+else
+{
+    <h2>Latest import status</h2>
+    <p>Quick snapshot of the most recent upload for each source type.</p>
+    <FluentStack Orientation="Orientation.Horizontal" VerticalGap="8" HorizontalGap="8" Wrap="true">
+        <FluentBadge>Subscription: @(_subscriptionLatest?.Status.ToString() ?? "none")</FluentBadge>
+        <FluentBadge>Retail: @(_retailLatest?.Status.ToString() ?? "none")</FluentBadge>
+        <FluentBadge>PDF: @(_pdfLatest?.Status.ToString() ?? "none")</FluentBadge>
+        <FluentBadge>Stripe: @(_stripeLatest?.Status.ToString() ?? "none")</FluentBadge>
+    </FluentStack>
+}
+
+@code {
+    private bool _loading = true;
+    private BillDrift.Application.Ingestion.SubscriptionManagementIngestionRun? _subscriptionLatest;
+    private BillDrift.Application.Ingestion.RetailPricingIngestionRun? _retailLatest;
+    private BillDrift.Application.Ingestion.GiacomPdfIngestionRun? _pdfLatest;
+    private BillDrift.Application.Ingestion.StripeCsvIngestionRun? _stripeLatest;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _subscriptionLatest = (await IngestionClient.ListSubscriptionManagementRunsAsync(1)).FirstOrDefault();
+            _retailLatest = (await IngestionClient.ListRetailPricingRunsAsync(1)).FirstOrDefault();
+            _pdfLatest = (await IngestionClient.ListGiacomPdfRunsAsync(1)).FirstOrDefault();
+            _stripeLatest = (await IngestionClient.ListStripeCsvRunsAsync(1)).FirstOrDefault();
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}
