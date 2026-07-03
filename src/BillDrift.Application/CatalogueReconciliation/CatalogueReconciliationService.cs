@@ -39,8 +39,7 @@ public sealed class CatalogueReconciliationService : ICatalogueReconciliationSer
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var stripeProducts = request.StripeProducts ?? [];
-        var stripePrices = request.StripePrices ?? [];
+        var (stripeProducts, stripePrices) = await LoadStripeCatalogueAsync(request, cancellationToken);
 
         var intendedPrices = request.PricingIngestionRunId is { } pricingId
             ? await _ingestionBlobStore.GetResolvedPricesAsync(pricingId, cancellationToken) ?? []
@@ -68,6 +67,38 @@ public sealed class CatalogueReconciliationService : ICatalogueReconciliationSer
         }
 
         return run;
+    }
+
+    /// <summary>
+    /// Resolves the Stripe catalogue snapshot for a run. An inline snapshot on the request takes
+    /// precedence; otherwise the snapshot archived for the referenced Stripe ingestion run is loaded.
+    /// When a run ID is supplied the caller expects catalogue data, so absent blobs indicate a broken
+    /// or not-yet-persisted import and cause an immediate failure rather than a silent empty catalogue.
+    /// </summary>
+    private async Task<(IReadOnlyList<StripeCatalogueProduct> Products, IReadOnlyList<StripeCataloguePrice> Prices)> LoadStripeCatalogueAsync(
+        CatalogueReconciliationRunRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (request.StripeProducts is { Count: > 0 } || request.StripePrices is { Count: > 0 })
+        {
+            return (request.StripeProducts ?? [], request.StripePrices ?? []);
+        }
+
+        if (request.StripeIngestionRunId is not { } stripeIngestionRunId)
+        {
+            return ([], []);
+        }
+
+        var products = await _ingestionBlobStore.GetStripeCatalogueProductsAsync(stripeIngestionRunId, cancellationToken);
+        if (products is null)
+        {
+            throw new CatalogueReconciliationValidationException(
+                $"Stripe ingestion run '{stripeIngestionRunId:D}' has no archived catalogue products. " +
+                "Ensure Stripe catalogue ingestion has persisted its snapshot before running reconciliation against this run ID.");
+        }
+
+        var prices = await _ingestionBlobStore.GetStripeCataloguePricesAsync(stripeIngestionRunId, cancellationToken) ?? [];
+        return (products, prices);
     }
 
     /// <inheritdoc />

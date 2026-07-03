@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using BillDrift.Application.Import;
 using BillDrift.Domain.Billing;
+using BillDrift.Domain.CatalogueReconciliation;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Import;
 
@@ -25,6 +26,10 @@ namespace BillDrift.Infrastructure.Ingestion;
 [JsonSerializable(typeof(SubscriptionManagementCsvIngestionSummary))]
 [JsonSerializable(typeof(RetailPricingCsvIngestionSummary))]
 [JsonSerializable(typeof(RetailPricingCsvIngestionResult))]
+[JsonSerializable(typeof(StripeCatalogueProductsBlobDocument))]
+[JsonSerializable(typeof(StripeCataloguePricesBlobDocument))]
+[JsonSerializable(typeof(StripeCatalogueProduct))]
+[JsonSerializable(typeof(StripeCataloguePrice))]
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
@@ -111,3 +116,9 @@ public sealed record CataloguePricesBlobDocument(IReadOnlyList<IntendedPrice> Re
 public sealed record ManualPricesBlobDocument(
     IReadOnlyList<IntendedPrice> Records,
     IReadOnlyList<RawManualPriceEntry> RawEntries);
+
+/// <summary>Stripe catalogue products blob payload (003 ingestion archive layout).</summary>
+public sealed record StripeCatalogueProductsBlobDocument(IReadOnlyList<StripeCatalogueProduct> Records);
+
+/// <summary>Stripe catalogue prices blob payload (003 ingestion archive layout).</summary>
+public sealed record StripeCataloguePricesBlobDocument(IReadOnlyList<StripeCataloguePrice> Records);

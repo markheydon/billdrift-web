@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BillDrift.Application\BillDrift.Application.csproj" />
+    <ProjectReference Include="..\..\src\BillDrift.Infrastructure\BillDrift.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

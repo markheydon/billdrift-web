@@ -1,5 +1,6 @@
 using BillDrift.Application.Import;
 using BillDrift.Domain.Billing;
+using BillDrift.Domain.CatalogueReconciliation;
 
 namespace BillDrift.Application.Ingestion;
 
@@ -57,6 +58,27 @@ public interface IIngestionBlobStore
 
     /// <summary>Loads resolved intended prices from blob storage.</summary>
     Task<IReadOnlyList<IntendedPrice>?> GetResolvedPricesAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Persists normalized Stripe catalogue snapshots (products and prices) for an ingestion run so
+    /// catalogue reconciliation can reload them by run ID. Called by the Stripe catalogue ingestion
+    /// flow once normalization completes; writes both blobs so their presence is deterministic.
+    /// </summary>
+    Task PersistStripeCatalogueAsync(
+        Guid ingestionId,
+        IReadOnlyList<StripeCatalogueProduct> products,
+        IReadOnlyList<StripeCataloguePrice> prices,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Loads normalized Stripe catalogue products archived for an ingestion run.</summary>
+    Task<IReadOnlyList<StripeCatalogueProduct>?> GetStripeCatalogueProductsAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Loads normalized Stripe catalogue prices archived for an ingestion run.</summary>
+    Task<IReadOnlyList<StripeCataloguePrice>?> GetStripeCataloguePricesAsync(
         Guid ingestionId,
         CancellationToken cancellationToken = default);
 }
