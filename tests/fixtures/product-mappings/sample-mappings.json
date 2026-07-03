@@ -1,0 +1,13 @@
+[
+  {
+    "id": "a1111111-1111-1111-1111-111111111111",
+    "key": { "offerId": "OFFER-MS365-BB", "skuId": "SKU-MS365-BB" },
+    "normalizedProductName": "Microsoft 365 Business Basic",
+    "stripeProductId": "prod_test222",
+    "stripePricesByTerm": {},
+    "supplierNameVariants": [],
+    "classification": "Csp",
+    "confidence": "High",
+    "mappingSource": "Manual"
+  }
+]

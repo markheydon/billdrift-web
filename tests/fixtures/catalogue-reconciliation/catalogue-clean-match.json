@@ -1,0 +1,1 @@
+{ "scenario": "catalogue-clean-match", "description": "Mapped product with matching Stripe product and price — zero exceptions" }

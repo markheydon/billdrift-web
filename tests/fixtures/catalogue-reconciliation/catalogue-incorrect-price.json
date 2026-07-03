@@ -1,0 +1,1 @@
+{ "scenario": "catalogue-incorrect-price", "description": "Stripe price amount differs from intended RRP" }
