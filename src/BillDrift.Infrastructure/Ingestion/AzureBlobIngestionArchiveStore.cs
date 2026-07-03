@@ -6,6 +6,7 @@ using Azure.Storage.Blobs;
 using BillDrift.Application.Import;
 using BillDrift.Application.Ingestion;
 using BillDrift.Domain.Billing;
+using BillDrift.Domain.CatalogueReconciliation;
 using BillDrift.Domain.Common;
 using Microsoft.Extensions.Options;
 
@@ -326,6 +327,49 @@ public sealed class AzureBlobIngestionArchiveStore : IIngestionBlobStore
         {
             return null;
         }
+    }
+
+    /// <inheritdoc />
+    public async Task PersistStripeCatalogueAsync(
+        Guid ingestionId,
+        IReadOnlyList<StripeCatalogueProduct> products,
+        IReadOnlyList<StripeCataloguePrice> prices,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(products);
+        ArgumentNullException.ThrowIfNull(prices);
+
+        await EnsureContainerAsync(cancellationToken);
+
+        // Write both blobs unconditionally so a reader can distinguish "run archived with no products"
+        // (empty array) from "no catalogue archived for this run" (blob absent → 404 → null).
+        var productsJson = JsonSerializer.Serialize(new StripeCatalogueProductsBlobDocument(products), JsonOptions);
+        await UploadJsonAsync($"{ingestionId:D}/result/stripe-catalogue-products.json", productsJson, cancellationToken);
+
+        var pricesJson = JsonSerializer.Serialize(new StripeCataloguePricesBlobDocument(prices), JsonOptions);
+        await UploadJsonAsync($"{ingestionId:D}/result/stripe-catalogue-prices.json", pricesJson, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<StripeCatalogueProduct>?> GetStripeCatalogueProductsAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureContainerAsync(cancellationToken);
+        var path = $"{ingestionId:D}/result/stripe-catalogue-products.json";
+        var document = await TryDownloadJsonAsync<StripeCatalogueProductsBlobDocument>(path, cancellationToken);
+        return document?.Records;
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<StripeCataloguePrice>?> GetStripeCataloguePricesAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureContainerAsync(cancellationToken);
+        var path = $"{ingestionId:D}/result/stripe-catalogue-prices.json";
+        var document = await TryDownloadJsonAsync<StripeCataloguePricesBlobDocument>(path, cancellationToken);
+        return document?.Records;
     }
 
     private async Task<T?> TryDownloadJsonAsync<T>(string path, CancellationToken cancellationToken)

@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using BillDrift.Application.Import;
 using BillDrift.Application.Ingestion;
 using BillDrift.Domain.Billing;
+using BillDrift.Domain.CatalogueReconciliation;
 
 namespace BillDrift.Infrastructure.Ingestion;
 
@@ -13,6 +14,8 @@ public sealed class InMemoryIngestionBlobStore : IIngestionBlobStore
     private readonly ConcurrentDictionary<Guid, IReadOnlyList<MicrosoftSubscriptionLine>> _subscriptionTruth = new();
     private readonly ConcurrentDictionary<Guid, RetailPricingCsvIngestionResult> _retailResults = new();
     private readonly ConcurrentDictionary<Guid, IReadOnlyList<IntendedPrice>> _resolvedPrices = new();
+    private readonly ConcurrentDictionary<Guid, IReadOnlyList<StripeCatalogueProduct>> _stripeCatalogueProducts = new();
+    private readonly ConcurrentDictionary<Guid, IReadOnlyList<StripeCataloguePrice>> _stripeCataloguePrices = new();
 
     /// <inheritdoc />
     public Task<string> UploadSourceAsync(
@@ -89,4 +92,34 @@ public sealed class InMemoryIngestionBlobStore : IIngestionBlobStore
         Guid ingestionId,
         CancellationToken cancellationToken = default) =>
         Task.FromResult(_resolvedPrices.TryGetValue(ingestionId, out var prices) ? prices : null);
+
+    /// <inheritdoc />
+    public Task PersistStripeCatalogueAsync(
+        Guid ingestionId,
+        IReadOnlyList<StripeCatalogueProduct> products,
+        IReadOnlyList<StripeCataloguePrice> prices,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(products);
+        ArgumentNullException.ThrowIfNull(prices);
+        _stripeCatalogueProducts[ingestionId] = products;
+        _stripeCataloguePrices[ingestionId] = prices;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<StripeCatalogueProduct>?> GetStripeCatalogueProductsAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default) =>
+        Task.FromResult(_stripeCatalogueProducts.TryGetValue(ingestionId, out var products) ? products : null);
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<StripeCataloguePrice>?> GetStripeCataloguePricesAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default) =>
+        Task.FromResult(_stripeCataloguePrices.TryGetValue(ingestionId, out var prices) ? prices : null);
+
+    /// <summary>Seeds resolved intended prices without a full retail pricing ingestion result.</summary>
+    public void SeedResolvedPrices(Guid ingestionId, IReadOnlyList<IntendedPrice> prices) =>
+        _resolvedPrices[ingestionId] = prices;
 }

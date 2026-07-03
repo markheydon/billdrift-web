@@ -144,6 +144,19 @@ dotnet test tests/BillDrift.Application.Tests --filter "FullyQualifiedName~Catal
 
 ---
 
+## Notes
+
+Validated via unit and integration tests on 2026-07-03:
+
+- Engine scenarios 1–10 covered by `CatalogueReconciliationEngineTests`, `DeterminismTests`, and `CatalogueInputsFixtureLoader`.
+- Azurite integration test `AzureCatalogueReconciliationStoreTests` skips when storage emulator unavailable.
+- `CatalogueReconciliationServiceTests` verifies Stripe and pricing ingestion run IDs resolve via `IIngestionBlobStore`.
+- Stripe catalogue blobs use `{ingestionId}/result/stripe-catalogue-products.json` and `stripe-catalogue-prices.json` in the ingestion archive container (Aspire-injected `BlobServiceClient` only).
+- Inline `stripeProducts` / `stripePrices` on the API take precedence over `stripeIngestionRunId`.
+- Blazor UI deferred per plan; API-only v1.
+
+---
+
 ## Related Documents
 
 - [catalogue-reconciliation-pipeline.md](./contracts/catalogue-reconciliation-pipeline.md)

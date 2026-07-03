@@ -8,7 +8,7 @@
 
 **Storage note**: **Azure Blob + Table only, no SQL**; `BlobServiceClient` and `TableServiceClient` via Aspire DI in API/Infrastructure only — no manual connection string construction.
 
-**Implementation status**: Core engine, Azure persistence, API, and tests were implemented on branch `011-stripe-catalogue-reconciliation`. Tasks T001–T084 are marked complete. Remaining work (T085–T090) closes the Stripe ingestion blob-loading gap and validates against 012 plan.
+**Implementation status**: All tasks T001–T091 complete on branch `012-stripe-catalogue-reconciliation`.
 
 **Tests**: Included per constitution Principle II, `quickstart.md` validation scenarios, and `contracts/catalogue-check-rules.md`.
 
@@ -197,10 +197,10 @@
 
 ### Remaining US5 gap (Stripe ingestion blob loading)
 
-- [ ] T085 [US5] Add `GetStripeCatalogueProductsAsync` and `GetStripeCataloguePricesAsync` to `src/BillDrift.Application/Ingestion/IIngestionBlobStore.cs` per research R7 and `contracts/catalogue-reconciliation-api-endpoints.md`
-- [ ] T086 [P] [US5] Implement Stripe catalogue blob load methods in `src/BillDrift.Infrastructure/Ingestion/AzureBlobIngestionArchiveStore.cs` and `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionBlobStore.cs` using existing 003 archive layout
-- [ ] T087 [US5] Wire `CatalogueReconciliationService.RunAsync` to load `stripeProducts`/`stripePrices` from `stripeIngestionRunId` when inline arrays are empty in `src/BillDrift.Application/CatalogueReconciliation/CatalogueReconciliationService.cs`
-- [ ] T088 [US5] Add service test for Stripe ingestion run ID resolution in `tests/BillDrift.Application.Tests/CatalogueReconciliation/CatalogueReconciliationServiceTests.cs` per `quickstart.md` scenario 13
+- [X] T085 [US5] Add `GetStripeCatalogueProductsAsync` and `GetStripeCataloguePricesAsync` to `src/BillDrift.Application/Ingestion/IIngestionBlobStore.cs` per research R7 and `contracts/catalogue-reconciliation-api-endpoints.md`
+- [X] T086 [P] [US5] Implement Stripe catalogue blob load methods in `src/BillDrift.Infrastructure/Ingestion/AzureBlobIngestionArchiveStore.cs` and `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionBlobStore.cs` using existing 003 archive layout
+- [X] T087 [US5] Wire `CatalogueReconciliationService.RunAsync` to load `stripeProducts`/`stripePrices` from `stripeIngestionRunId` when inline arrays are empty in `src/BillDrift.Application/CatalogueReconciliation/CatalogueReconciliationService.cs`
+- [X] T088 [US5] Add service test for Stripe ingestion run ID resolution in `tests/BillDrift.Application.Tests/CatalogueReconciliation/CatalogueReconciliationServiceTests.cs` per `quickstart.md` scenario 13
 
 **Checkpoint**: End-to-end API trigger with both Stripe and pricing ingestion run IDs; Azure persistence; approval ingestion functional.
 
@@ -213,9 +213,9 @@
 - [X] T079 [P] Implement `GoldenRunComparer` for catalogue runs in `tests/BillDrift.Application.Tests/CatalogueReconciliation/GoldenRunComparer.cs`
 - [X] T080 [P] Add `StripeCatalogueSnapshotIndexTests.cs` in `tests/BillDrift.Application.Tests/CatalogueReconciliation/StripeCatalogueSnapshotIndexTests.cs`
 - [X] T081 [P] Add `StripeCatalogueNormalizerTests.cs` in `tests/BillDrift.Application.Tests/CatalogueReconciliation/StripeCatalogueNormalizerTests.cs`
-- [ ] T089 [P] Audit `src/BillDrift.Infrastructure/CatalogueReconciliation/` and `src/BillDrift.Infrastructure/Ingestion/` for manual `BlobServiceClient`/`TableServiceClient` construction — confirm Aspire DI only per plan storage policy
-- [ ] T090 Run full `specs/012-stripe-catalogue-reconciliation/quickstart.md` validation checklist and update Notes section if gaps remain
-- [ ] T091 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, and `dotnet test --no-build` from solution root per constitution build quality gate
+- [X] T089 [P] Audit `src/BillDrift.Infrastructure/CatalogueReconciliation/` and `src/BillDrift.Infrastructure/Ingestion/` for manual `BlobServiceClient`/`TableServiceClient` construction — confirm Aspire DI only per plan storage policy
+- [X] T090 Run full `specs/012-stripe-catalogue-reconciliation/quickstart.md` validation checklist and update Notes section if gaps remain
+- [X] T091 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, and `dotnet test --no-build` from solution root per constitution build quality gate
 
 **Checkpoint**: Clean build, all tests pass, quickstart scenarios verified, storage policy confirmed.
 
@@ -231,8 +231,8 @@
 - **US2 (Phase 4)**: Depends on US1 pipeline skeleton ✅
 - **US3 (Phase 5)**: Depends on US1 exceptions ✅
 - **US4 (Phase 6)**: Depends on US1 reconcile stage ✅
-- **US5 (Phase 7)**: Engine complete ✅; **T085–T088** remain for Stripe blob loading
-- **Polish (Phase 8)**: **T089–T091** after US5 gap closed
+- **US5 (Phase 7)**: ✅ Complete
+- **Polish (Phase 8)**: ✅ Complete
 
 ### User Story Dependencies
 
@@ -242,7 +242,7 @@
 | US2 (P1) | US1 pipeline | Duplicate fixtures only | ✅ Complete |
 | US3 (P1) | US1 exceptions | Fix + adapter unit tests | ✅ Complete |
 | US4 (P2) | US1 reconcile stage | Gap/unmapped/override fixtures | ✅ Complete |
-| US5 (P2) | US1–US3 engine | API + Azurite; Stripe blob load pending | ⚠️ T085–T088 |
+| US5 (P2) | US1–US3 engine | API + Azurite; Stripe blob load | ✅ Complete |
 
 ### Parallel Opportunities
 
@@ -273,14 +273,12 @@ Phases 1–3 complete. Engine validates missing product, missing price, and inco
 3. US2 → ✅ duplicate hygiene
 4. US3 → ✅ approval-ready fixes
 5. US4 → ✅ scoped iteration + unmapped surfacing
-6. US5 → ⚠️ persistence + API done; Stripe ingestion blob loading (T085–T088) remains
-7. Polish → T089–T091
+6. US5 → ✅ persistence + API + Stripe ingestion blob loading
+7. Polish → ✅ CI green
 
 ### Suggested Next Actions
 
-1. Complete **T085–T088** to close US5 Stripe ingestion run ID path
-2. Run **T089–T091** for storage audit and CI validation
-3. Run `/speckit-implement` to execute remaining tasks
+Feature implementation complete. Optional follow-on: Stripe CSV ingestion persist path writing `stripe-catalogue-products.json` / `stripe-catalogue-prices.json` blobs (003 feature extension).
 
 ---
 
