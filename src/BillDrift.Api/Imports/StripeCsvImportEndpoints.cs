@@ -40,16 +40,27 @@ public static class StripeCsvImportEndpoints
         }
 
         var options = new StripeCsvIngestionOptions();
-        if (subscriptions.Length > options.MaxFileSizeBytes)
+
+        var subscriptionsTooLarge = TooLarge(subscriptions, "subscriptions.csv", options.MaxFileSizeBytes);
+        if (subscriptionsTooLarge is not null)
         {
-            return Results.Problem(
-                statusCode: StatusCodes.Status413PayloadTooLarge,
-                title: "Payload Too Large",
-                detail: $"subscriptions.csv exceeds maximum allowed size of {options.MaxFileSizeBytes} bytes.");
+            return subscriptionsTooLarge;
         }
 
         var products = form.Files.GetFile("products");
         var prices = form.Files.GetFile("prices");
+
+        var productsTooLarge = TooLarge(products, "products.csv", options.MaxFileSizeBytes);
+        if (productsTooLarge is not null)
+        {
+            return productsTooLarge;
+        }
+
+        var pricesTooLarge = TooLarge(prices, "prices.csv", options.MaxFileSizeBytes);
+        if (pricesTooLarge is not null)
+        {
+            return pricesTooLarge;
+        }
 
         try
         {
@@ -74,6 +85,19 @@ public static class StripeCsvImportEndpoints
         {
             return Results.Problem(ex.Message, statusCode: StatusCodes.Status422UnprocessableEntity);
         }
+    }
+
+    private static IResult? TooLarge(IFormFile? file, string displayName, long maxFileSizeBytes)
+    {
+        if (file is null || file.Length <= maxFileSizeBytes)
+        {
+            return null;
+        }
+
+        return Results.Problem(
+            statusCode: StatusCodes.Status413PayloadTooLarge,
+            title: "Payload Too Large",
+            detail: $"{displayName} exceeds maximum allowed size of {maxFileSizeBytes} bytes.");
     }
 
     private static async Task<IResult> ListRunsAsync(

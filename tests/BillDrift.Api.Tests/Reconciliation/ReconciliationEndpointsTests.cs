@@ -21,6 +21,21 @@ public sealed class ReconciliationEndpointsTests(BillDriftApiWebApplicationFacto
     }
 
     [Fact]
+    public async Task Post_runs_with_unknown_ingestion_id_returns_bad_request()
+    {
+        var response = await _client.PostAsJsonAsync(
+            "/api/reconciliation/runs",
+            new
+            {
+                billingPeriod = new { start = "2026-01-01", end = "2026-01-31" },
+                stripeBillingIngestionId = Guid.NewGuid()
+            },
+            TestContext.Current.CancellationToken);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
     public async Task Get_unknown_run_returns_not_found()
     {
         var runId = Guid.NewGuid();

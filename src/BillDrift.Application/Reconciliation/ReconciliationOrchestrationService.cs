@@ -1,6 +1,7 @@
 using BillDrift.Application.History;
 using BillDrift.Application.Ingestion;
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
+using BillDrift.Domain.Billing;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.History;
 using BillDrift.Domain.Reconciliation;
@@ -41,13 +42,6 @@ public sealed class ReconciliationOrchestrationService
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
-
-        var missing = ValidateIngestionReferences(request);
-        if (missing.Count > 0)
-        {
-            throw new ReconciliationOrchestrationException(
-                $"Missing or invalid ingestion references: {string.Join(", ", missing)}");
-        }
 
         if (!HasAnyIngestionId(request))
         {
@@ -116,21 +110,69 @@ public sealed class ReconciliationOrchestrationService
         StartReconciliationRunRequest request,
         CancellationToken cancellationToken)
     {
-        var supplierCost = request.SupplierCostIngestionId is { } pdfId
-            ? await _blobStore.GetSupplierCostLinesAsync(pdfId, cancellationToken) ?? []
-            : [];
+        var missing = new List<string>();
 
-        var subscriptionTruth = request.SubscriptionTruthIngestionId is { } subId
-            ? await _blobStore.GetSubscriptionTruthAsync(subId, cancellationToken) ?? []
-            : [];
+        IReadOnlyList<SupplierCostLine> supplierCost = [];
+        if (request.SupplierCostIngestionId is { } pdfId)
+        {
+            var loaded = await _blobStore.GetSupplierCostLinesAsync(pdfId, cancellationToken);
+            if (loaded is null)
+            {
+                missing.Add($"SupplierCost ({pdfId})");
+            }
+            else
+            {
+                supplierCost = loaded;
+            }
+        }
 
-        var intendedPricing = request.IntendedPricingIngestionId is { } priceId
-            ? await _blobStore.GetResolvedPricesAsync(priceId, cancellationToken) ?? []
-            : [];
+        IReadOnlyList<MicrosoftSubscriptionLine> subscriptionTruth = [];
+        if (request.SubscriptionTruthIngestionId is { } subId)
+        {
+            var loaded = await _blobStore.GetSubscriptionTruthAsync(subId, cancellationToken);
+            if (loaded is null)
+            {
+                missing.Add($"SubscriptionTruth ({subId})");
+            }
+            else
+            {
+                subscriptionTruth = loaded;
+            }
+        }
 
-        var stripeBilling = request.StripeBillingIngestionId is { } stripeId
-            ? await _blobStore.GetStripeBillingItemsAsync(stripeId, cancellationToken) ?? []
-            : [];
+        IReadOnlyList<IntendedPrice> intendedPricing = [];
+        if (request.IntendedPricingIngestionId is { } priceId)
+        {
+            var loaded = await _blobStore.GetResolvedPricesAsync(priceId, cancellationToken);
+            if (loaded is null)
+            {
+                missing.Add($"IntendedPricing ({priceId})");
+            }
+            else
+            {
+                intendedPricing = loaded;
+            }
+        }
+
+        IReadOnlyList<StripeBillingItem> stripeBilling = [];
+        if (request.StripeBillingIngestionId is { } stripeId)
+        {
+            var loaded = await _blobStore.GetStripeBillingItemsAsync(stripeId, cancellationToken);
+            if (loaded is null)
+            {
+                missing.Add($"StripeBilling ({stripeId})");
+            }
+            else
+            {
+                stripeBilling = loaded;
+            }
+        }
+
+        if (missing.Count > 0)
+        {
+            throw new ReconciliationOrchestrationException(
+                $"Missing or invalid ingestion references: {string.Join(", ", missing)}");
+        }
 
         return new ReconciliationInputs(
             supplierCost,
@@ -138,14 +180,6 @@ public sealed class ReconciliationOrchestrationService
             intendedPricing,
             stripeBilling,
             request.ProductMappings ?? []);
-    }
-
-    private static List<string> ValidateIngestionReferences(StartReconciliationRunRequest request)
-    {
-        var missing = new List<string>();
-        // Validation of existence happens during load; this is a placeholder for extended checks.
-        _ = request;
-        return missing;
     }
 
     private static bool HasAnyIngestionId(StartReconciliationRunRequest request) =>
