@@ -1,8 +1,8 @@
-using Azure.Data.Tables;
 using BillDrift.Domain.Approval;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
 using BillDrift.Infrastructure.Approval;
+using BillDrift.Infrastructure.Tests.Storage;
 using Microsoft.Extensions.Options;
 
 namespace BillDrift.Infrastructure.Tests.Approval;
@@ -10,42 +10,35 @@ namespace BillDrift.Infrastructure.Tests.Approval;
 public sealed class AzureTableApprovalStoreTests
 {
     [Fact]
+    [Trait("Category", AzureStorageTestSupport.IntegrationTrait)]
     public async Task Decision_round_trip_against_azurite_when_available()
     {
+        AzureStorageTestSupport.EnsureAvailableOrSkip();
+
         var cancellationToken = TestContext.Current.CancellationToken;
-        var connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING")
-            ?? "UseDevelopmentStorage=true";
+        var client = AzureStorageTestSupport.CreateTableServiceClient(AzureStorageTestSupport.GetConnectionString());
+        var store = new AzureTableApprovalStore(
+            client,
+            Options.Create(new ApprovalStorageOptions { TableName = $"approvaltest{Guid.NewGuid():N}" }));
 
-        try
-        {
-            var client = new TableServiceClient(connectionString);
-            var store = new AzureTableApprovalStore(
-                client,
-                Options.Create(new ApprovalStorageOptions { TableName = $"approvaltest{Guid.NewGuid():N}" }));
+        var runId = RunId.New();
+        var proposal = CreateProposal(runId);
+        await store.UpsertProposalAsync(proposal, cancellationToken);
 
-            var runId = RunId.New();
-            var proposal = CreateProposal(runId);
-            await store.UpsertProposalAsync(proposal, cancellationToken);
+        var decision = new ApprovalDecision(
+            proposal.Id,
+            runId,
+            ApprovalDecisionState.Pending,
+            ApprovalDecisionState.Approved,
+            "operator",
+            DateTimeOffset.UtcNow,
+            null,
+            false);
 
-            var decision = new ApprovalDecision(
-                proposal.Id,
-                runId,
-                ApprovalDecisionState.Pending,
-                ApprovalDecisionState.Approved,
-                "operator",
-                DateTimeOffset.UtcNow,
-                null,
-                false);
+        await store.AppendDecisionAsync(decision, cancellationToken);
 
-            await store.AppendDecisionAsync(decision, cancellationToken);
-
-            var loaded = await store.GetProposalAsync(runId, proposal.Id, cancellationToken);
-            loaded.Should().NotBeNull();
-        }
-        catch (Exception ex) when (ex.Message.Contains("connection", StringComparison.OrdinalIgnoreCase))
-        {
-            // Azurite not available in CI — skip gracefully.
-        }
+        var loaded = await store.GetProposalAsync(runId, proposal.Id, cancellationToken);
+        loaded.Should().NotBeNull();
     }
 
     private static ApprovalProposal CreateProposal(RunId runId) =>

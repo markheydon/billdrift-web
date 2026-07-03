@@ -1,0 +1,2 @@
+Mex ID,Customer,Offer ID,SKU ID,Licences,Status,Service,Product,NCE,Trial,End of Term Action,Cancellable Until,Migration to NCE,Assigned Licences,Price,ERP
+MEX001,Contoso Ltd,OFFER-001,SKU-001,25,Active,Microsoft 365,Microsoft 365 Business Standard,Yes,No,Auto-renew,31/03/2026,Complete,20,8.50,12.00

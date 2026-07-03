@@ -21,10 +21,10 @@
 
 **Purpose**: Fixture layout, storage options, and verify shared dependencies.
 
-- [ ] T001 Verify `CsvHelper` package reference exists in `src/BillDrift.Infrastructure/BillDrift.Infrastructure.csproj` (reuse from 003; no duplicate add)
-- [ ] T002 [P] Create `tests/fixtures/subscription-management/` and `tests/fixtures/subscription-management/expected/` directory structure
-- [ ] T003 [P] Add `tests/fixtures/subscription-management/README.md` documenting required fixtures per `quickstart.md` and commit policy for sanitized CSV exports
-- [ ] T004 Obtain and place sanitized CSV fixtures (minimum: `subscription-management-sample-a.csv`, `mixed-products.csv`, `column-variant.csv`, `partial-success.csv`, `lifecycle-columns.csv`) under `tests/fixtures/subscription-management/`
+- [X] T001 Verify `CsvHelper` package reference exists in `src/BillDrift.Infrastructure/BillDrift.Infrastructure.csproj` (reuse from 003; no duplicate add)
+- [X] T002 [P] Create `tests/fixtures/subscription-management/` and `tests/fixtures/subscription-management/expected/` directory structure
+- [X] T003 [P] Add `tests/fixtures/subscription-management/README.md` documenting required fixtures per `quickstart.md` and commit policy for sanitized CSV exports
+- [X] T004 Obtain and place sanitized CSV fixtures (minimum: `subscription-management-sample-a.csv`, `mixed-products.csv`, `column-variant.csv`, `partial-success.csv`, `lifecycle-columns.csv`) under `tests/fixtures/subscription-management/`
 
 **Checkpoint**: Fixture directories ready; CsvHelper available; production CSVs may arrive in parallel with parser work.
 
@@ -36,31 +36,31 @@
 
 **⚠️ CRITICAL**: No user story work until this phase is complete.
 
-- [ ] T005 Extend `IngestionFailureReason` enum with subscription-management codes (`ProductOutOfScope`, `ProductScopeAmbiguous`, `LicenceCountUnparseable`, `PriceUnparseable`, `CommercialKeyMissing`, `DateUnparseable`) in `src/BillDrift.Application/Import/IngestionEnums.cs` per research R11
-- [ ] T006 [P] Implement `ProductDisplayFacts` record in `src/BillDrift.Domain/Billing/ProductDisplayFacts.cs` per `data-model.md`
-- [ ] T007 [P] Implement `SubscriptionLifecycleFacts` record in `src/BillDrift.Domain/Billing/SubscriptionLifecycleFacts.cs` per `data-model.md`
-- [ ] T008 Extend `RawSubscriptionManagementRow` with optional raw lifecycle/pricing/display fields in `src/BillDrift.Domain/Import/RawSubscriptionManagementRow.cs` per `data-model.md`
-- [ ] T009 Extend `MicrosoftSubscriptionLine` with optional `ProductDisplay` and `Lifecycle` parameters in `src/BillDrift.Domain/Billing/MicrosoftSubscriptionLine.cs` per `data-model.md`
-- [ ] T010 [P] Implement `SubscriptionManagementCsvIngestionOptions` record in `src/BillDrift.Application/Import/SubscriptionManagementCsvIngestionOptions.cs` per `data-model.md`
-- [ ] T011 [P] Implement `SubscriptionManagementCsvIngestionRequest` record in `src/BillDrift.Application/Import/SubscriptionManagementCsvIngestionRequest.cs`
-- [ ] T012 [P] Implement `SubscriptionManagementSourceFileInfo` record in `src/BillDrift.Application/Import/SubscriptionManagementSourceFileInfo.cs`
-- [ ] T013 [P] Implement `SubscriptionManagementCsvIngestionSummary` record in `src/BillDrift.Application/Import/SubscriptionManagementCsvIngestionSummary.cs`
-- [ ] T014 Implement `SubscriptionManagementCsvIngestionResult` record in `src/BillDrift.Application/Import/SubscriptionManagementCsvIngestionResult.cs` per `data-model.md`
-- [ ] T015 Implement `ISubscriptionManagementCsvIngester` interface in `src/BillDrift.Application/Import/ISubscriptionManagementCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
-- [ ] T016 [P] Implement `IngestionRunStatus` enum in `src/BillDrift.Application/Ingestion/IngestionRunStatus.cs`
-- [ ] T017 [P] Implement `SubscriptionManagementIngestionRun` record in `src/BillDrift.Application/Ingestion/SubscriptionManagementIngestionRun.cs` per `data-model.md`
-- [ ] T018 [P] Define `IIngestionBlobStore` interface in `src/BillDrift.Application/Ingestion/IIngestionBlobStore.cs` per `contracts/azure-blob-ingestion-archive.md`
-- [ ] T019 [P] Define `IIngestionRunIndexStore` interface in `src/BillDrift.Application/Ingestion/IIngestionRunIndexStore.cs` per `contracts/azure-table-ingestion-index.md`
-- [ ] T020 [P] Define `ISubscriptionManagementIngestionService` interface in `src/BillDrift.Application/Import/SubscriptionManagement/ISubscriptionManagementIngestionService.cs` per `contracts/csv-ingestion-pipeline.md`
-- [ ] T021 [P] Implement `ParsedSubscriptionManagementRow` in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/Internal/ParsedSubscriptionManagementRow.cs`
-- [ ] T022 Implement SHA-256 file hash helper in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementFileIdentity.cs` per research R2
-- [ ] T023 Implement intake limits (`MaxFileSizeBytes` default 10 MB) in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementIngestionLimits.cs`
-- [ ] T024 Implement `SubscriptionManagementCsvHeaderMap` column alias registry in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementCsvHeaderMap.cs` per `contracts/subscription-csv-header-map.md`
-- [ ] T025 Implement `SubscriptionManagementCsvRowReader` CsvHelper wrapper in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementCsvRowReader.cs`
-- [ ] T026 [P] Implement `IngestionStorageOptions` in `src/BillDrift.Infrastructure/Ingestion/IngestionStorageOptions.cs` per `contracts/azure-table-ingestion-index.md`
-- [ ] T027 [P] Create `IngestionJsonSerializerContext` source-gen skeleton in `src/BillDrift.Infrastructure/Ingestion/IngestionJsonSerializerContext.cs`
-- [ ] T028 Extend `GiacomImportServiceCollectionExtensions` skeleton for subscription CSV ingester in `src/BillDrift.Infrastructure/Import/Giacom/GiacomImportServiceCollectionExtensions.cs`
-- [ ] T029 Reuse or reference shared `GoldenFileComparer` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/SubscriptionManagement/GoldenFileComparer.cs` (from Giacom PDF or Stripe tests)
+- [X] T005 Extend `IngestionFailureReason` enum with subscription-management codes (`ProductOutOfScope`, `ProductScopeAmbiguous`, `LicenceCountUnparseable`, `PriceUnparseable`, `CommercialKeyMissing`, `DateUnparseable`) in `src/BillDrift.Application/Import/IngestionEnums.cs` per research R11
+- [X] T006 [P] Implement `ProductDisplayFacts` record in `src/BillDrift.Domain/Billing/ProductDisplayFacts.cs` per `data-model.md`
+- [X] T007 [P] Implement `SubscriptionLifecycleFacts` record in `src/BillDrift.Domain/Billing/SubscriptionLifecycleFacts.cs` per `data-model.md`
+- [X] T008 Extend `RawSubscriptionManagementRow` with optional raw lifecycle/pricing/display fields in `src/BillDrift.Domain/Import/RawSubscriptionManagementRow.cs` per `data-model.md`
+- [X] T009 Extend `MicrosoftSubscriptionLine` with optional `ProductDisplay` and `Lifecycle` parameters in `src/BillDrift.Domain/Billing/MicrosoftSubscriptionLine.cs` per `data-model.md`
+- [X] T010 [P] Implement `SubscriptionManagementCsvIngestionOptions` record in `src/BillDrift.Application/Import/SubscriptionManagementCsvIngestionOptions.cs` per `data-model.md`
+- [X] T011 [P] Implement `SubscriptionManagementCsvIngestionRequest` record in `src/BillDrift.Application/Import/SubscriptionManagementCsvIngestionRequest.cs`
+- [X] T012 [P] Implement `SubscriptionManagementSourceFileInfo` record in `src/BillDrift.Application/Import/SubscriptionManagementSourceFileInfo.cs`
+- [X] T013 [P] Implement `SubscriptionManagementCsvIngestionSummary` record in `src/BillDrift.Application/Import/SubscriptionManagementCsvIngestionSummary.cs`
+- [X] T014 Implement `SubscriptionManagementCsvIngestionResult` record in `src/BillDrift.Application/Import/SubscriptionManagementCsvIngestionResult.cs` per `data-model.md`
+- [X] T015 Implement `ISubscriptionManagementCsvIngester` interface in `src/BillDrift.Application/Import/ISubscriptionManagementCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
+- [X] T016 [P] Implement `IngestionRunStatus` enum in `src/BillDrift.Application/Ingestion/IngestionRunStatus.cs`
+- [X] T017 [P] Implement `SubscriptionManagementIngestionRun` record in `src/BillDrift.Application/Ingestion/SubscriptionManagementIngestionRun.cs` per `data-model.md`
+- [X] T018 [P] Define `IIngestionBlobStore` interface in `src/BillDrift.Application/Ingestion/IIngestionBlobStore.cs` per `contracts/azure-blob-ingestion-archive.md`
+- [X] T019 [P] Define `IIngestionRunIndexStore` interface in `src/BillDrift.Application/Ingestion/IIngestionRunIndexStore.cs` per `contracts/azure-table-ingestion-index.md`
+- [X] T020 [P] Define `ISubscriptionManagementIngestionService` interface in `src/BillDrift.Application/Import/SubscriptionManagement/ISubscriptionManagementIngestionService.cs` per `contracts/csv-ingestion-pipeline.md`
+- [X] T021 [P] Implement `ParsedSubscriptionManagementRow` in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/Internal/ParsedSubscriptionManagementRow.cs`
+- [X] T022 Implement SHA-256 file hash helper in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementFileIdentity.cs` per research R2
+- [X] T023 Implement intake limits (`MaxFileSizeBytes` default 10 MB) in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementIngestionLimits.cs`
+- [X] T024 Implement `SubscriptionManagementCsvHeaderMap` column alias registry in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementCsvHeaderMap.cs` per `contracts/subscription-csv-header-map.md`
+- [X] T025 Implement `SubscriptionManagementCsvRowReader` CsvHelper wrapper in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementCsvRowReader.cs`
+- [X] T026 [P] Implement `IngestionStorageOptions` in `src/BillDrift.Infrastructure/Ingestion/IngestionStorageOptions.cs` per `contracts/azure-table-ingestion-index.md`
+- [X] T027 [P] Create `IngestionJsonSerializerContext` source-gen skeleton in `src/BillDrift.Infrastructure/Ingestion/IngestionJsonSerializerContext.cs`
+- [X] T028 Extend `GiacomImportServiceCollectionExtensions` skeleton for subscription CSV ingester in `src/BillDrift.Infrastructure/Import/Giacom/GiacomImportServiceCollectionExtensions.cs`
+- [X] T029 Reuse or reference shared `GoldenFileComparer` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/SubscriptionManagement/GoldenFileComparer.cs` (from Giacom PDF or Stripe tests)
 
 **Checkpoint**: Application contract compiles; domain types extended; header map and row reader available.
 
@@ -76,22 +76,22 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T030 [P] [US1] Create integration test skeleton in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/SubscriptionManagement/SubscriptionManagementCsvIngesterTests.cs`
-- [ ] T031 [P] [US1] Add multi-customer association assertion test in `SubscriptionManagementCsvIngesterTests.cs` per spec acceptance scenario 2
+- [X] T030 [P] [US1] Create integration test skeleton in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/SubscriptionManagement/SubscriptionManagementCsvIngesterTests.cs`
+- [X] T031 [P] [US1] Add multi-customer association assertion test in `SubscriptionManagementCsvIngesterTests.cs` per spec acceptance scenario 2
 
 ### Implementation for User Story 1
 
-- [ ] T032 [US1] Implement `RawSubscriptionManagementRowMapper` core field mapping in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/RawSubscriptionManagementRowMapper.cs`
-- [ ] T033 [US1] Implement `RawImportId.Create(ImportSourceKind.GiacomSubscriptionManagement, sourceDocumentId, lineKey)` assignment in `RawSubscriptionManagementRowMapper.cs` per research R2
-- [ ] T034 [US1] Implement mandatory field validation (Mex ID, licences, status, offer ID, SKU ID presence) in `RawSubscriptionManagementRowMapper.cs`
-- [ ] T035 [US1] Implement `SubscriptionManagementCsvIngester` orchestrator skeleton in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
-- [ ] T036 [US1] Complete intake, header detection, row parsing, and raw mapping stages in `SubscriptionManagementCsvIngester.cs`
-- [ ] T037 [US1] Wire basic normalization pass-through (identity normalizer stub or inline) so `SubscriptionLines` populated for happy path in `SubscriptionManagementCsvIngester.cs`
-- [ ] T038 [US1] Complete result assembly with `IngestionOutcomeStatus`, summary counts, and `IngestionLogEntry` list in `SubscriptionManagementCsvIngester.cs`
-- [ ] T039 [US1] Register `AddGiacomSubscriptionManagementCsvIngestion` (`Singleton<ISubscriptionManagementCsvIngester>`) in `GiacomImportServiceCollectionExtensions.cs`
-- [ ] T040 [US1] Register ingester in `src/BillDrift.Api/Program.cs` via `AddGiacomBillingPdfIngestion` extension or dedicated call
-- [ ] T041 [US1] Generate golden JSON `tests/fixtures/subscription-management/expected/sample-a.json` from validated output
-- [ ] T042 [US1] Complete golden-file assertions in `SubscriptionManagementCsvIngesterTests.cs` per `quickstart.md` Scenario 1
+- [X] T032 [US1] Implement `RawSubscriptionManagementRowMapper` core field mapping in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/RawSubscriptionManagementRowMapper.cs`
+- [X] T033 [US1] Implement `RawImportId.Create(ImportSourceKind.GiacomSubscriptionManagement, sourceDocumentId, lineKey)` assignment in `RawSubscriptionManagementRowMapper.cs` per research R2
+- [X] T034 [US1] Implement mandatory field validation (Mex ID, licences, status, offer ID, SKU ID presence) in `RawSubscriptionManagementRowMapper.cs`
+- [X] T035 [US1] Implement `SubscriptionManagementCsvIngester` orchestrator skeleton in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementCsvIngester.cs` per `contracts/csv-ingestion-pipeline.md`
+- [X] T036 [US1] Complete intake, header detection, row parsing, and raw mapping stages in `SubscriptionManagementCsvIngester.cs`
+- [X] T037 [US1] Wire basic normalization pass-through (identity normalizer stub or inline) so `SubscriptionLines` populated for happy path in `SubscriptionManagementCsvIngester.cs`
+- [X] T038 [US1] Complete result assembly with `IngestionOutcomeStatus`, summary counts, and `IngestionLogEntry` list in `SubscriptionManagementCsvIngester.cs`
+- [X] T039 [US1] Register `AddGiacomSubscriptionManagementCsvIngestion` (`Singleton<ISubscriptionManagementCsvIngester>`) in `GiacomImportServiceCollectionExtensions.cs`
+- [X] T040 [US1] Register ingester in `src/BillDrift.Api/Program.cs` via `AddGiacomBillingPdfIngestion` extension or dedicated call
+- [X] T041 [US1] Generate golden JSON `tests/fixtures/subscription-management/expected/sample-a.json` from validated output
+- [X] T042 [US1] Complete golden-file assertions in `SubscriptionManagementCsvIngesterTests.cs` per `quickstart.md` Scenario 1
 
 **Checkpoint**: MVP ingests sample CSV independently; golden test passes; mandatory fields captured.
 
@@ -105,16 +105,16 @@
 
 ### Tests for User Story 2
 
-- [ ] T043 [P] [US2] Create `ProductScopeClassifierTests` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/SubscriptionManagement/ProductScopeClassifierTests.cs` per `contracts/product-scope-rules.md`
-- [ ] T044 [P] [US2] Add mixed-products integration test in `SubscriptionManagementCsvIngesterTests.cs` per SC-002
+- [X] T043 [P] [US2] Create `ProductScopeClassifierTests` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/SubscriptionManagement/ProductScopeClassifierTests.cs` per `contracts/product-scope-rules.md`
+- [X] T044 [P] [US2] Add mixed-products integration test in `SubscriptionManagementCsvIngesterTests.cs` per SC-002
 
 ### Implementation for User Story 2
 
-- [ ] T045 [P] [US2] Implement `SubscriptionManagementScopeOptions` with deny/allow token lists in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementScopeOptions.cs` per `contracts/product-scope-rules.md`
-- [ ] T046 [US2] Implement `ProductScopeClassifier` in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/ProductScopeClassifier.cs` per research R4
-- [ ] T047 [US2] Integrate scope filter stage (before raw mapping) into `SubscriptionManagementCsvIngester.cs` per pipeline contract stage 4
-- [ ] T048 [US2] Emit `ProductOutOfScope` and `ProductScopeAmbiguous` log entries with row location in `SubscriptionManagementCsvIngester.cs`
-- [ ] T049 [US2] Update `SubscriptionManagementCsvIngestionSummary.RowsExcludedByScope` rollup in `SubscriptionManagementCsvIngester.cs`
+- [X] T045 [P] [US2] Implement `SubscriptionManagementScopeOptions` with deny/allow token lists in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/SubscriptionManagementScopeOptions.cs` per `contracts/product-scope-rules.md`
+- [X] T046 [US2] Implement `ProductScopeClassifier` in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/ProductScopeClassifier.cs` per research R4
+- [X] T047 [US2] Integrate scope filter stage (before raw mapping) into `SubscriptionManagementCsvIngester.cs` per pipeline contract stage 4
+- [X] T048 [US2] Emit `ProductOutOfScope` and `ProductScopeAmbiguous` log entries with row location in `SubscriptionManagementCsvIngester.cs`
+- [X] T049 [US2] Update `SubscriptionManagementCsvIngestionSummary.RowsExcludedByScope` rollup in `SubscriptionManagementCsvIngester.cs`
 
 **Checkpoint**: Scope filter active; non-CSP rows excluded with summary; SC-002 test passes.
 
@@ -128,18 +128,18 @@
 
 ### Tests for User Story 3
 
-- [ ] T050 [P] [US3] Create `SubscriptionManagementNormalizerTests` in `tests/BillDrift.Application.Tests/Normalization/SubscriptionManagementNormalizerTests.cs`
-- [ ] T051 [P] [US3] Add casing/whitespace normalization assertion tests in `SubscriptionManagementNormalizerTests.cs` per spec acceptance scenario 1–2
+- [X] T050 [P] [US3] Create `SubscriptionManagementNormalizerTests` in `tests/BillDrift.Application.Tests/Normalization/SubscriptionManagementNormalizerTests.cs`
+- [X] T051 [P] [US3] Add casing/whitespace normalization assertion tests in `SubscriptionManagementNormalizerTests.cs` per spec acceptance scenario 1–2
 
 ### Implementation for User Story 3
 
-- [ ] T052 [US3] Implement `SubscriptionManagementNormalizer` implementing `ISubscriptionManagementNormalizer` in `src/BillDrift.Application/Normalization/SubscriptionManagementNormalizer.cs` per `contracts/csv-ingestion-pipeline.md` normalization table
-- [ ] T053 [US3] Implement Mex ID trim + uppercase normalisation with raw traceability in `SubscriptionManagementNormalizer.cs` per research R6
-- [ ] T054 [US3] Implement Offer ID + SKU ID trim normalisation into `CommercialKeyRoot` in `SubscriptionManagementNormalizer.cs`
-- [ ] T055 [US3] Map `CustomerNameRaw` to `CustomerIdentity.DisplayName` without cross-row merge in `SubscriptionManagementNormalizer.cs` per spec acceptance scenario 3
-- [ ] T056 [US3] Implement `ProductDisplayFacts` mapping from raw service/product/product-type fields in `SubscriptionManagementNormalizer.cs`
-- [ ] T057 [US3] Replace ingester inline normalization with `SubscriptionManagementNormalizer` in `SubscriptionManagementCsvIngester.cs`
-- [ ] T058 [US3] Add commercial-key-missing warning (`CommercialKeyMissing`) without inventing IDs in `SubscriptionManagementCsvIngester.cs` per FR-017
+- [X] T052 [US3] Implement `SubscriptionManagementNormalizer` implementing `ISubscriptionManagementNormalizer` in `src/BillDrift.Application/Normalization/SubscriptionManagementNormalizer.cs` per `contracts/csv-ingestion-pipeline.md` normalization table
+- [X] T053 [US3] Implement Mex ID trim + uppercase normalisation with raw traceability in `SubscriptionManagementNormalizer.cs` per research R6
+- [X] T054 [US3] Implement Offer ID + SKU ID trim normalisation into `CommercialKeyRoot` in `SubscriptionManagementNormalizer.cs`
+- [X] T055 [US3] Map `CustomerNameRaw` to `CustomerIdentity.DisplayName` without cross-row merge in `SubscriptionManagementNormalizer.cs` per spec acceptance scenario 3
+- [X] T056 [US3] Implement `ProductDisplayFacts` mapping from raw service/product/product-type fields in `SubscriptionManagementNormalizer.cs`
+- [X] T057 [US3] Replace ingester inline normalization with `SubscriptionManagementNormalizer` in `SubscriptionManagementCsvIngester.cs`
+- [X] T058 [US3] Add commercial-key-missing warning (`CommercialKeyMissing`) without inventing IDs in `SubscriptionManagementCsvIngester.cs` per FR-017
 
 **Checkpoint**: Normalizer tests pass; cross-domain correlation keys consistent with 002/003 conventions.
 
@@ -153,16 +153,16 @@
 
 ### Tests for User Story 4
 
-- [ ] T059 [P] [US4] Create `BooleanFlagParserTests` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/SubscriptionManagement/BooleanFlagParserTests.cs` per research R5
-- [ ] T060 [P] [US4] Add lifecycle-column integration test in `SubscriptionManagementCsvIngesterTests.cs` per SC-006
+- [X] T059 [P] [US4] Create `BooleanFlagParserTests` in `tests/BillDrift.Infrastructure.Tests/Import/Giacom/SubscriptionManagement/BooleanFlagParserTests.cs` per research R5
+- [X] T060 [P] [US4] Add lifecycle-column integration test in `SubscriptionManagementCsvIngesterTests.cs` per SC-006
 
 ### Implementation for User Story 4
 
-- [ ] T061 [P] [US4] Implement `BooleanFlagParser` in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/BooleanFlagParser.cs` per research R5
-- [ ] T062 [US4] Extend `RawSubscriptionManagementRowMapper` to map optional lifecycle/pricing columns in `RawSubscriptionManagementRowMapper.cs`
-- [ ] T063 [US4] Extend `SubscriptionManagementNormalizer` to populate `SubscriptionLifecycleFacts` (dates, flags, assigned licences, Money) in `SubscriptionManagementNormalizer.cs` per research R12
-- [ ] T064 [US4] Implement price/ERP parse with `PriceUnparseable` row skip when column non-empty and invalid in `SubscriptionManagementCsvIngester.cs`
-- [ ] T065 [US4] Ensure blank optional columns emit absent lifecycle fields (no defaults) in `SubscriptionManagementNormalizer.cs` per spec acceptance scenario 3
+- [X] T061 [P] [US4] Implement `BooleanFlagParser` in `src/BillDrift.Infrastructure/Import/Giacom/SubscriptionManagement/BooleanFlagParser.cs` per research R5
+- [X] T062 [US4] Extend `RawSubscriptionManagementRowMapper` to map optional lifecycle/pricing columns in `RawSubscriptionManagementRowMapper.cs`
+- [X] T063 [US4] Extend `SubscriptionManagementNormalizer` to populate `SubscriptionLifecycleFacts` (dates, flags, assigned licences, Money) in `SubscriptionManagementNormalizer.cs` per research R12
+- [X] T064 [US4] Implement price/ERP parse with `PriceUnparseable` row skip when column non-empty and invalid in `SubscriptionManagementCsvIngester.cs`
+- [X] T065 [US4] Ensure blank optional columns emit absent lifecycle fields (no defaults) in `SubscriptionManagementNormalizer.cs` per spec acceptance scenario 3
 
 **Checkpoint**: Lifecycle and pricing fields captured; SC-006 test passes.
 
@@ -176,17 +176,17 @@
 
 ### Tests for User Story 5
 
-- [ ] T066 [P] [US5] Add partial-success fixture test in `SubscriptionManagementCsvIngesterTests.cs` per spec acceptance scenario 1
-- [ ] T067 [P] [US5] Add column-variant header reorder test in `SubscriptionManagementCsvIngesterTests.cs` per spec acceptance scenario 2
-- [ ] T068 [P] [US5] Add determinism re-parse test (identical bytes → identical `RawImportId` keys) in `SubscriptionManagementCsvIngesterTests.cs` per SC-004
+- [X] T066 [P] [US5] Add partial-success fixture test in `SubscriptionManagementCsvIngesterTests.cs` per spec acceptance scenario 1
+- [X] T067 [P] [US5] Add column-variant header reorder test in `SubscriptionManagementCsvIngesterTests.cs` per spec acceptance scenario 2
+- [X] T068 [P] [US5] Add determinism re-parse test (identical bytes → identical `RawImportId` keys) in `SubscriptionManagementCsvIngesterTests.cs` per SC-004
 
 ### Implementation for User Story 5
 
-- [ ] T069 [US5] Implement row skip for missing Mex ID (`MexIdMissing`) in `SubscriptionManagementCsvIngester.cs` per spec acceptance scenario 4
-- [ ] T070 [US5] Implement row skip for unparseable licence count (`LicenceCountUnparseable`) in `SubscriptionManagementCsvIngester.cs`
-- [ ] T071 [US5] Implement file-level fail for missing mandatory headers (`MandatoryHeaderMissing`) in `SubscriptionManagementCsvIngester.cs` per FR-025
-- [ ] T072 [US5] Implement `PartialSuccess` vs `Success` vs `Failure` outcome resolution in `SubscriptionManagementCsvIngester.cs` per pipeline contract
-- [ ] T073 [US5] Validate header alias coverage against `column-variant.csv` and extend `SubscriptionManagementCsvHeaderMap.cs` as needed
+- [X] T069 [US5] Implement row skip for missing Mex ID (`MexIdMissing`) in `SubscriptionManagementCsvIngester.cs` per spec acceptance scenario 4
+- [X] T070 [US5] Implement row skip for unparseable licence count (`LicenceCountUnparseable`) in `SubscriptionManagementCsvIngester.cs`
+- [X] T071 [US5] Implement file-level fail for missing mandatory headers (`MandatoryHeaderMissing`) in `SubscriptionManagementCsvIngester.cs` per FR-025
+- [X] T072 [US5] Implement `PartialSuccess` vs `Success` vs `Failure` outcome resolution in `SubscriptionManagementCsvIngester.cs` per pipeline contract
+- [X] T073 [US5] Validate header alias coverage against `column-variant.csv` and extend `SubscriptionManagementCsvHeaderMap.cs` as needed
 
 **Checkpoint**: Partial success and format tolerance verified; SC-003/SC-004/SC-005 scenarios pass.
 
@@ -200,21 +200,21 @@
 
 ### Tests for Azure Persistence
 
-- [ ] T074 [P] Implement `InMemoryIngestionBlobStore` in `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionBlobStore.cs` for unit tests
-- [ ] T075 [P] Implement `InMemoryIngestionRunIndexStore` in `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionRunIndexStore.cs` for unit tests
-- [ ] T076 [P] Create `AzureBlobIngestionArchiveStoreTests` in `tests/BillDrift.Infrastructure.Tests/Ingestion/AzureBlobIngestionArchiveStoreTests.cs` (Azurite when available)
-- [ ] T077 [P] Create `AzureTableIngestionRunIndexStoreTests` in `tests/BillDrift.Infrastructure.Tests/Ingestion/AzureTableIngestionRunIndexStoreTests.cs` (Azurite when available)
+- [X] T074 [P] Implement `InMemoryIngestionBlobStore` in `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionBlobStore.cs` for unit tests
+- [X] T075 [P] Implement `InMemoryIngestionRunIndexStore` in `src/BillDrift.Infrastructure/Ingestion/InMemoryIngestionRunIndexStore.cs` for unit tests
+- [X] T076 [P] Create `AzureBlobIngestionArchiveStoreTests` in `tests/BillDrift.Infrastructure.Tests/Ingestion/AzureBlobIngestionArchiveStoreTests.cs` (Azurite when available)
+- [X] T077 [P] Create `AzureTableIngestionRunIndexStoreTests` in `tests/BillDrift.Infrastructure.Tests/Ingestion/AzureTableIngestionRunIndexStoreTests.cs` (Azurite when available)
 
 ### Implementation for Azure Persistence
 
-- [ ] T078 Implement `AzureBlobIngestionArchiveStore` with constructor `(BlobServiceClient, IOptions<IngestionStorageOptions>)` in `src/BillDrift.Infrastructure/Ingestion/AzureBlobIngestionArchiveStore.cs` per `contracts/azure-blob-ingestion-archive.md`
-- [ ] T079 Implement `AzureTableIngestionRunIndexStore` with constructor `(TableServiceClient, IOptions<IngestionStorageOptions>)` in `src/BillDrift.Infrastructure/Ingestion/AzureTableIngestionRunIndexStore.cs` per `contracts/azure-table-ingestion-index.md`
-- [ ] T080 Complete `IngestionJsonSerializerContext` with domain types for raw rows and subscription lines in `src/BillDrift.Infrastructure/Ingestion/IngestionJsonSerializerContext.cs`
-- [ ] T081 Implement `IngestionServiceCollectionExtensions.AddIngestionStorage` registering Azure + in-memory stores in `src/BillDrift.Infrastructure/Ingestion/IngestionServiceCollectionExtensions.cs`
-- [ ] T082 Implement `SubscriptionManagementIngestionService` orchestrating blob upload → ingest → result persist → table index in `src/BillDrift.Application/Import/SubscriptionManagement/SubscriptionManagementIngestionService.cs`
-- [ ] T083 Implement `SubscriptionManagementImportEndpoints` (`POST`, `GET` list, `GET` detail, `GET` subscription-truth) in `src/BillDrift.Api/Imports/SubscriptionManagementImportEndpoints.cs` per `contracts/azure-table-ingestion-index.md`
-- [ ] T084 Register `AddIngestionStorage` and map import endpoints in `src/BillDrift.Api/Program.cs` (Aspire `BlobServiceClient`/`TableServiceClient` already registered)
-- [ ] T085 Add API integration test for multipart upload round-trip in `tests/BillDrift.Infrastructure.Tests/Ingestion/SubscriptionManagementImportApiTests.cs` or dedicated API test project
+- [X] T078 Implement `AzureBlobIngestionArchiveStore` with constructor `(BlobServiceClient, IOptions<IngestionStorageOptions>)` in `src/BillDrift.Infrastructure/Ingestion/AzureBlobIngestionArchiveStore.cs` per `contracts/azure-blob-ingestion-archive.md`
+- [X] T079 Implement `AzureTableIngestionRunIndexStore` with constructor `(TableServiceClient, IOptions<IngestionStorageOptions>)` in `src/BillDrift.Infrastructure/Ingestion/AzureTableIngestionRunIndexStore.cs` per `contracts/azure-table-ingestion-index.md`
+- [X] T080 Complete `IngestionJsonSerializerContext` with domain types for raw rows and subscription lines in `src/BillDrift.Infrastructure/Ingestion/IngestionJsonSerializerContext.cs`
+- [X] T081 Implement `IngestionServiceCollectionExtensions.AddIngestionStorage` registering Azure + in-memory stores in `src/BillDrift.Infrastructure/Ingestion/IngestionServiceCollectionExtensions.cs`
+- [X] T082 Implement `SubscriptionManagementIngestionService` orchestrating blob upload → ingest → result persist → table index in `src/BillDrift.Application/Import/SubscriptionManagement/SubscriptionManagementIngestionService.cs`
+- [X] T083 Implement `SubscriptionManagementImportEndpoints` (`POST`, `GET` list, `GET` detail, `GET` subscription-truth) in `src/BillDrift.Api/Imports/SubscriptionManagementImportEndpoints.cs` per `contracts/azure-table-ingestion-index.md`
+- [X] T084 Register `AddIngestionStorage` and map import endpoints in `src/BillDrift.Api/Program.cs` (Aspire `BlobServiceClient`/`TableServiceClient` already registered)
+- [X] T085 Add API integration test for multipart upload round-trip in `tests/BillDrift.Infrastructure.Tests/Ingestion/SubscriptionManagementImportApiTests.cs` or dedicated API test project
 
 **Checkpoint**: Upload API persists to blob + table; manifest-last write protocol; no SQL introduced.
 
@@ -224,11 +224,11 @@
 
 **Purpose**: Run-history integration, validation, and final quality gates.
 
-- [ ] T086 [P] Ensure ingestion result exposes `ContentFingerprint` and `UploadedAt` fields consumable by `InputSnapshotMetadata` for feature 008 in `SubscriptionManagementIngestionRun.cs` and blob manifest
-- [ ] T087 [P] Add XML doc comments on public ingestion interfaces and normalizer per constitution Principle I
-- [ ] T088 Run full `quickstart.md` validation scenarios (V1–V6) and document pass/fail in `specs/009-giacom-subscription-csv/quickstart.md` checklist section
-- [ ] T089 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build` from solution root per workspace build-quality rules
-- [ ] T090 Verify no `new BlobServiceClient(connectionString)` or `new TableServiceClient(connectionString)` introduced — Aspire DI only (grep audit)
+- [X] T086 [P] Ensure ingestion result exposes `ContentFingerprint` and `UploadedAt` fields consumable by `InputSnapshotMetadata` for feature 008 in `SubscriptionManagementIngestionRun.cs` and blob manifest
+- [X] T087 [P] Add XML doc comments on public ingestion interfaces and normalizer per constitution Principle I
+- [X] T088 Run full `quickstart.md` validation scenarios (V1–V6) and document pass/fail in `specs/009-giacom-subscription-csv/quickstart.md` checklist section
+- [X] T089 Run `dotnet clean`, `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build` from solution root per workspace build-quality rules
+- [X] T090 Verify no `new BlobServiceClient(connectionString)` or `new TableServiceClient(connectionString)` introduced — Aspire DI only (grep audit)
 
 **Checkpoint**: All tests pass; quickstart validated; storage constraints verified.
 
@@ -346,4 +346,4 @@ T011: SubscriptionManagementCsvIngestionRequest.cs
 | 9 Polish | T086–T090 (5) | — |
 | **Total** | **90 tasks** | |
 
-**Format validation**: All tasks use `- [ ] [TaskID] [P?] [Story?] Description with file path` format.
+**Format validation**: All tasks use `- [X] [TaskID] [P?] [Story?] Description with file path` format.

@@ -1,6 +1,7 @@
 using BillDrift.Api.Approval;
 using BillDrift.Api.Classification;
 using BillDrift.Api.History;
+using BillDrift.Api.Imports;
 using BillDrift.Application.Approval;
 using BillDrift.Application.Classification;
 using BillDrift.Application.History;
@@ -10,6 +11,7 @@ using BillDrift.Infrastructure.Classification;
 using BillDrift.Infrastructure.History;
 using BillDrift.Infrastructure.Import.Giacom;
 using BillDrift.Infrastructure.Import.Stripe;
+using BillDrift.Infrastructure.Ingestion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,9 @@ builder.Services.AddScoped<IOperatorContext>(sp => OperatorContextResolver.Resol
     sp.GetRequiredService<IHttpContextAccessor>().HttpContext,
     sp.GetRequiredService<IHostEnvironment>()));
 builder.Services.AddGiacomBillingPdfIngestion();
+builder.Services.AddGiacomSubscriptionManagementCsvIngestion();
 builder.Services.AddStripeBillingCsvIngestion();
+builder.Services.AddIngestionStorage();
 builder.Services.AddReconciliationEngine();
 builder.Services.AddClassification();
 builder.Services.AddClassificationStorage();
@@ -47,5 +51,6 @@ app.MapDefaultEndpoints();
 app.MapClassificationEndpoints();
 app.MapApprovalEndpoints();
 app.MapRunHistoryEndpoints();
+app.MapSubscriptionManagementImportEndpoints();
 
 app.Run();

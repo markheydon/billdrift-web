@@ -1,0 +1,3 @@
+Mex ID,Customer,Offer ID,SKU ID,Licences,Status,Service,Product,Product Type
+MEX001,Contoso Ltd,OFFER-001,SKU-001,25,Active,Microsoft 365,Microsoft 365 Business Standard,CSP
+MEX003,Adventure Works,OFFER-EX,SKU-EX,5,Active,Exclaimer,Exclaimer Cloud Signatures,Third Party

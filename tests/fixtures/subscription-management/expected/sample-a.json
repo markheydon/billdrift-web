@@ -1,0 +1,57 @@
+{
+  "status": "Success",
+  "summary": {
+    "rowsEmitted": 3,
+    "rowsExcludedByScope": 0,
+    "rowsSkipped": 0
+  },
+  "rawRows": [
+    {
+      "mexIdRaw": "MEX001",
+      "offerIdRaw": "OFFER-001",
+      "skuIdRaw": "SKU-001",
+      "licencesRaw": "25",
+      "statusRaw": "Active",
+      "sourceLineKey": "1"
+    },
+    {
+      "mexIdRaw": "mex002",
+      "offerIdRaw": "OFFER-002",
+      "skuIdRaw": "SKU-002",
+      "licencesRaw": "10",
+      "statusRaw": "Active",
+      "sourceLineKey": "2"
+    },
+    {
+      "mexIdRaw": "MEX003",
+      "offerIdRaw": "OFFER-003",
+      "skuIdRaw": "SKU-003",
+      "licencesRaw": "5",
+      "statusRaw": "Active",
+      "sourceLineKey": "3"
+    }
+  ],
+  "subscriptionLines": [
+    {
+      "mexId": "MEX001",
+      "offerId": "OFFER-001",
+      "skuId": "SKU-001",
+      "licenceCount": 25,
+      "status": "Active"
+    },
+    {
+      "mexId": "MEX002",
+      "offerId": "OFFER-002",
+      "skuId": "SKU-002",
+      "licenceCount": 10,
+      "status": "Active"
+    },
+    {
+      "mexId": "MEX003",
+      "offerId": "OFFER-003",
+      "skuId": "SKU-003",
+      "licenceCount": 5,
+      "status": "Active"
+    }
+  ]
+}

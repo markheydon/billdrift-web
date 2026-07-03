@@ -1,10 +1,11 @@
 using BillDrift.Application.Import;
+using BillDrift.Application.Normalization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
 
 /// <summary>
-/// Dependency-injection registration for the Giacom supplier billing PDF ingestion pipeline.
+/// Dependency-injection registration for Giacom supplier import pipelines.
 /// </summary>
 public static class GiacomImportServiceCollectionExtensions
 {
@@ -14,13 +15,21 @@ public static class GiacomImportServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection to configure.</param>
     /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
-    /// <remarks>
-    /// The ingester extracts supplier cost lines from Giacom pre-billing and post-billing PDFs.
-    /// Output is non-authoritative raw import data for downstream normalization; no Stripe writes occur.
-    /// </remarks>
     public static IServiceCollection AddGiacomBillingPdfIngestion(this IServiceCollection services)
     {
         services.AddSingleton<IGiacomBillingPdfIngester, GiacomBillingPdfIngester>();
+        return services;
+    }
+
+    /// <summary>
+    /// Registers Subscription Management CSV ingestion and normalization services.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
+    public static IServiceCollection AddGiacomSubscriptionManagementCsvIngestion(this IServiceCollection services)
+    {
+        services.AddSingleton<ISubscriptionManagementNormalizer, SubscriptionManagementNormalizer>();
+        services.AddSingleton<ISubscriptionManagementCsvIngester, SubscriptionManagement.SubscriptionManagementCsvIngester>();
         return services;
     }
 }

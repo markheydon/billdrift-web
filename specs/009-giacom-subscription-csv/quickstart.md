@@ -60,10 +60,12 @@ dotnet test tests/BillDrift.Infrastructure.Tests --configuration Release --filte
 ## Run Storage Integration Tests (Azurite)
 
 ```powershell
-dotnet test tests/BillDrift.Infrastructure.Tests --configuration Release --filter "FullyQualifiedName~Ingestion" --verbosity normal
+# Default dotnet test skips Azure storage tests in <1s when Azurite is not running.
+# With Azurite up, run ingestion storage integration tests explicitly:
+dotnet test tests/BillDrift.Infrastructure.Tests --configuration Release --filter "Category=Integration&FullyQualifiedName~Ingestion" --verbosity normal
 ```
 
-**Expected**: Blob upload + table index round-trip passes when Azurite available.
+**Expected**: Blob upload + table index round-trip passes when Azurite available; skipped quickly otherwise.
 
 ## Manual Validation Scenarios
 
@@ -141,6 +143,17 @@ dotnet restore
 dotnet build --no-restore
 dotnet test --no-build
 ```
+
+## Validation Checklist (2026-07-03)
+
+| Scenario | Status |
+|----------|--------|
+| V1 Full report import (`subscription-management-sample-a.csv`) | PASS |
+| V2 Product scope filter (`mixed-products.csv`) | PASS |
+| V3 API upload + persistence (in-memory integration test) | PASS |
+| V4 Commercial key warnings (partial-success / normalizer tests) | PASS |
+| V5 Re-import determinism | PASS |
+| V6 Lifecycle columns (`lifecycle-columns.csv`) | PASS |
 
 ## Related Contracts
 

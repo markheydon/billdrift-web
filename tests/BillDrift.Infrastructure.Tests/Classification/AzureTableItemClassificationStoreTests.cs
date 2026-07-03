@@ -1,7 +1,7 @@
-using Azure.Data.Tables;
 using BillDrift.Domain.Classification;
 using BillDrift.Domain.Common;
 using BillDrift.Infrastructure.Classification;
+using BillDrift.Infrastructure.Tests.Storage;
 using Microsoft.Extensions.Options;
 
 namespace BillDrift.Infrastructure.Tests.Classification;
@@ -9,16 +9,13 @@ namespace BillDrift.Infrastructure.Tests.Classification;
 public sealed class AzureTableItemClassificationStoreTests
 {
     [Fact]
+    [Trait("Category", AzureStorageTestSupport.IntegrationTrait)]
     public async Task SaveOverrideAsync_RoundTripsOverride()
     {
-        var cancellationToken = TestContext.Current.CancellationToken;
-        var connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
-        if (string.IsNullOrWhiteSpace(connectionString))
-        {
-            return;
-        }
+        AzureStorageTestSupport.EnsureAvailableOrSkip();
 
-        var tableServiceClient = new TableServiceClient(connectionString);
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var tableServiceClient = AzureStorageTestSupport.CreateTableServiceClient(AzureStorageTestSupport.GetConnectionString());
         var options = Options.Create(new ClassificationStorageOptions { TableName = $"itemclassifications-{Guid.NewGuid():N}" });
         var store = new AzureTableItemClassificationStore(tableServiceClient, options);
 

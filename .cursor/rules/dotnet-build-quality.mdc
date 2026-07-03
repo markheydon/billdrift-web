@@ -31,4 +31,19 @@ After all tasks are complete, as a final check before ending the coding session,
 
 At this point, all tests should pass and the build should be clean. If any of these steps fail, resolve the issues before considering the work complete. Warning and error messages should be treated as defects unless explicitly instructed otherwise.
 
-As this is a .NET Aspire solution, and there are AppHost related tests, it is important to ensure that the AppHost tests are also passing. If any of the AppHost tests fail, they should be treated as defects and resolved before considering the work complete. If the issue is missing Docker, then also check for Podman as an option before giving up trying to run the AppHost tests. If the issue is not related to missing Docker or Podman, then it should be treated as a defect and resolved before considering the work complete.
+## .NET Aspire AppHost Tests and Container Runtime Checks
+
+This repository is a .NET Aspire solution. If AppHost-related tests exist, they should be run and must pass before implementation work is considered complete.
+
+AppHost tests may require a local container runtime. If these tests fail, first check whether the failure is caused by Docker or Podman not being available/running.
+
+Before treating AppHost test failures as product defects:
+
+1. Check whether Docker is installed and running.
+2. If Docker is not available or not running, check whether Podman is installed.
+3. If Podman is installed, check whether the default Podman machine exists and is running.
+4. If the default Podman machine exists but is stopped, start it and rerun the AppHost tests.
+5. If Docker or Podman is running and the AppHost tests still fail, treat the failure as a defect.
+6. If neither Docker nor Podman can be made available, report the issue as an environment prerequisite problem, not as a completed test failure.
+
+The work should not be considered fully verified until the AppHost tests have either passed or there is a clearly documented local environment reason why they could not be run.

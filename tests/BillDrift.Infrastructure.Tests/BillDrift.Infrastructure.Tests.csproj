@@ -28,6 +28,7 @@
   <ItemGroup>
     <None Include="..\fixtures\giacom-pdf\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="fixtures\giacom-pdf" />
     <None Include="..\fixtures\stripe-csv\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="fixtures\stripe-csv" />
+    <None Include="..\fixtures\subscription-management\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="fixtures\subscription-management" />
   </ItemGroup>
 
 </Project>

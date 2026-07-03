@@ -90,5 +90,23 @@ public enum IngestionFailureReason
     CatalogueReferenceUnresolved,
 
     /// <summary>CSV file has a header row but zero data rows.</summary>
-    EmptyFile
+    EmptyFile,
+
+    /// <summary>Row excluded because the product is outside Microsoft 365 / CSP scope.</summary>
+    ProductOutOfScope,
+
+    /// <summary>Product scope classification was ambiguous; row included with operator review warning.</summary>
+    ProductScopeAmbiguous,
+
+    /// <summary>Licence count column is present but could not be parsed as a non-negative integer.</summary>
+    LicenceCountUnparseable,
+
+    /// <summary>Price column is present but could not be parsed as a monetary value.</summary>
+    PriceUnparseable,
+
+    /// <summary>Offer ID or SKU ID is missing on an otherwise valid row.</summary>
+    CommercialKeyMissing,
+
+    /// <summary>Optional date column is present but could not be parsed.</summary>
+    DateUnparseable
 }
