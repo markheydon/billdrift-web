@@ -15,6 +15,8 @@ namespace BillDrift.Domain.Billing;
 /// <param name="Status">Catalogue availability status (active, end of sale, etc.).</param>
 /// <param name="Source">Whether this price came from the catalogue or a manual override.</param>
 /// <param name="SourceReference">Traceability link back to the raw price list or manual entry import.</param>
+/// <param name="Platform">Commerce platform (NCE/Legacy) when known from the price list.</param>
+/// <param name="Classification">CSP catalogue item or non-CSP bespoke override.</param>
 public sealed record IntendedPrice(
     IntendedPriceId Id,
     CommercialKey Key,
@@ -24,4 +26,6 @@ public sealed record IntendedPrice(
     decimal? MarginPercent,
     PriceListStatus Status,
     PriceSource Source,
-    SourceReference SourceReference);
+    SourceReference SourceReference,
+    PricingPlatform Platform = PricingPlatform.Unknown,
+    ProductClassification Classification = ProductClassification.Csp);

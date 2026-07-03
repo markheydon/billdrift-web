@@ -1,0 +1,4 @@
+Offer ID,SKU ID,Term,Frequency,Wholesale,RRP,Margin,Margin %,Status,Platform
+OFFER-MS365-BB,SKU-MS365-BB,Annual,Monthly,8.50,12.00,3.50,29.17,Active,NCE
+OFFER-EXO-PL1,SKU-EXO-PL1,P1Y,Annual,3.20,5.00,1.80,36.00,Active,Legacy
+OFFER-TEAMS-ESS,SKU-TEAMS-ESS,P1M,Monthly,4.00,6.50,2.50,38.46,Active,NCE

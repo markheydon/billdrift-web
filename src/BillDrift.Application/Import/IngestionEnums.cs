@@ -108,5 +108,29 @@ public enum IngestionFailureReason
     CommercialKeyMissing,
 
     /// <summary>Optional date column is present but could not be parsed.</summary>
-    DateUnparseable
+    DateUnparseable,
+
+    /// <summary>Contract term column is present but could not be mapped.</summary>
+    TermUnparseable,
+
+    /// <summary>Billing frequency column is present but could not be mapped.</summary>
+    FrequencyUnparseable,
+
+    /// <summary>Wholesale price could not be parsed as a monetary value.</summary>
+    WholesaleUnparseable,
+
+    /// <summary>RRP could not be parsed as a monetary value.</summary>
+    RrpUnparseable,
+
+    /// <summary>Duplicate commercial key within the same catalogue upload; last row wins.</summary>
+    DuplicateCommercialKey,
+
+    /// <summary>Currency column indicates a non-GBP value in v1 scope.</summary>
+    UnsupportedCurrency,
+
+    /// <summary>Manual price override request failed validation.</summary>
+    ManualOverrideValidationFailed,
+
+    /// <summary>Platform column value was not recognised; treated as unknown.</summary>
+    PlatformUnrecognised
 }

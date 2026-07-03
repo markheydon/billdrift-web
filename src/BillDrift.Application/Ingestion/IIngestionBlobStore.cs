@@ -35,4 +35,28 @@ public interface IIngestionBlobStore
     Task<IReadOnlyList<MicrosoftSubscriptionLine>?> GetSubscriptionTruthAsync(
         Guid ingestionId,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Uploads optional manual override JSON alongside the catalogue source.</summary>
+    Task<string?> UploadManualOverridesAsync(
+        Guid ingestionId,
+        byte[]? manualOverridesJson,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Persists retail pricing ingestion result payloads and returns the manifest blob path.</summary>
+    Task<string> PersistRetailPricingResultAsync(
+        Guid ingestionId,
+        RetailPricingCsvIngestionResult result,
+        string? originalFileName,
+        DateTimeOffset uploadedAt,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Loads a persisted retail pricing ingestion result.</summary>
+    Task<RetailPricingCsvIngestionResult?> GetRetailPricingResultAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>Loads resolved intended prices from blob storage.</summary>
+    Task<IReadOnlyList<IntendedPrice>?> GetResolvedPricesAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default);
 }

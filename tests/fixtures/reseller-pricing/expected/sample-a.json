@@ -1,0 +1,69 @@
+{
+  "status": "Success",
+  "summary": {
+    "catalogueRowsEmitted": 3,
+    "catalogueRowsSkipped": 0,
+    "resolvedPriceCount": 3
+  },
+  "rawCatalogueRows": [
+    {
+      "offerIdRaw": "OFFER-MS365-BB",
+      "skuIdRaw": "SKU-MS365-BB",
+      "termRaw": "Annual",
+      "frequencyRaw": "Monthly",
+      "wholesaleRaw": "8.50",
+      "rrpRaw": "12.00",
+      "sourceLineKey": "1"
+    },
+    {
+      "offerIdRaw": "OFFER-EXO-PL1",
+      "skuIdRaw": "SKU-EXO-PL1",
+      "termRaw": "P1Y",
+      "frequencyRaw": "Annual",
+      "wholesaleRaw": "3.20",
+      "rrpRaw": "5.00",
+      "sourceLineKey": "2"
+    },
+    {
+      "offerIdRaw": "OFFER-TEAMS-ESS",
+      "skuIdRaw": "SKU-TEAMS-ESS",
+      "termRaw": "P1M",
+      "frequencyRaw": "Monthly",
+      "wholesaleRaw": "4.00",
+      "rrpRaw": "6.50",
+      "sourceLineKey": "3"
+    }
+  ],
+  "resolvedPrices": [
+    {
+      "offerId": "OFFER-MS365-BB",
+      "skuId": "SKU-MS365-BB",
+      "term": "Annual",
+      "frequency": "Monthly",
+      "wholesale": 8.50,
+      "rrp": 12.00,
+      "source": "Catalogue",
+      "status": "Active"
+    },
+    {
+      "offerId": "OFFER-EXO-PL1",
+      "skuId": "SKU-EXO-PL1",
+      "term": "Annual",
+      "frequency": "Annual",
+      "wholesale": 3.20,
+      "rrp": 5.00,
+      "source": "Catalogue",
+      "status": "Active"
+    },
+    {
+      "offerId": "OFFER-TEAMS-ESS",
+      "skuId": "SKU-TEAMS-ESS",
+      "term": "Monthly",
+      "frequency": "Monthly",
+      "wholesale": 4.00,
+      "rrp": 6.50,
+      "source": "Catalogue",
+      "status": "Active"
+    }
+  ]
+}

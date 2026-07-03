@@ -1,5 +1,6 @@
 using BillDrift.Application.Import;
 using BillDrift.Application.Normalization;
+using BillDrift.Infrastructure.Import.Giacom.RetailPricing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BillDrift.Infrastructure.Import.Giacom;
@@ -30,6 +31,19 @@ public static class GiacomImportServiceCollectionExtensions
     {
         services.AddSingleton<ISubscriptionManagementNormalizer, SubscriptionManagementNormalizer>();
         services.AddSingleton<ISubscriptionManagementCsvIngester, SubscriptionManagement.SubscriptionManagementCsvIngester>();
+        return services;
+    }
+
+    /// <summary>
+    /// Registers reseller price list CSV ingestion, normalization, and pricing strategy resolution.
+    /// </summary>
+    /// <param name="services">The service collection to configure.</param>
+    /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
+    public static IServiceCollection AddGiacomRetailPricingCsvIngestion(this IServiceCollection services)
+    {
+        services.AddSingleton<IPriceListNormalizer, PriceListNormalizer>();
+        services.AddSingleton<IIntendedPriceResolver, IntendedPriceResolver>();
+        services.AddSingleton<IResellerPricingCsvIngester, ResellerPricingCsvIngester>();
         return services;
     }
 }

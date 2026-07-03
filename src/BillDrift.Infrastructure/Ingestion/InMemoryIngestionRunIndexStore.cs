@@ -7,6 +7,7 @@ namespace BillDrift.Infrastructure.Ingestion;
 public sealed class InMemoryIngestionRunIndexStore : IIngestionRunIndexStore
 {
     private readonly ConcurrentDictionary<Guid, SubscriptionManagementIngestionRun> _runs = new();
+    private readonly ConcurrentDictionary<Guid, RetailPricingIngestionRun> _retailRuns = new();
 
     /// <inheritdoc />
     public Task CreateInProgressAsync(SubscriptionManagementIngestionRun run, CancellationToken cancellationToken = default)
@@ -43,5 +44,42 @@ public sealed class InMemoryIngestionRunIndexStore : IIngestionRunIndexStore
             .Take(take)
             .ToList();
         return Task.FromResult<IReadOnlyList<SubscriptionManagementIngestionRun>>(items);
+    }
+
+    /// <inheritdoc />
+    public Task CreateRetailPricingInProgressAsync(RetailPricingIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        _retailRuns[run.IngestionId] = run;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task CompleteRetailPricingAsync(RetailPricingIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        _retailRuns[run.IngestionId] = run;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task FailRetailPricingAsync(RetailPricingIngestionRun run, CancellationToken cancellationToken = default)
+    {
+        _retailRuns[run.IngestionId] = run;
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task<RetailPricingIngestionRun?> GetRetailPricingByIdAsync(Guid ingestionId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_retailRuns.TryGetValue(ingestionId, out var run) ? run : null);
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<RetailPricingIngestionRun>> ListRecentRetailPricingAsync(
+        int take = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var items = _retailRuns.Values
+            .OrderByDescending(r => r.UploadedAt)
+            .Take(take)
+            .ToList();
+        return Task.FromResult<IReadOnlyList<RetailPricingIngestionRun>>(items);
     }
 }

@@ -160,6 +160,207 @@ public sealed class AzureBlobIngestionArchiveStore : IIngestionBlobStore
         }
     }
 
+    /// <inheritdoc />
+    public async Task<string?> UploadManualOverridesAsync(
+        Guid ingestionId,
+        byte[]? manualOverridesJson,
+        CancellationToken cancellationToken = default)
+    {
+        if (manualOverridesJson is null || manualOverridesJson.Length == 0)
+        {
+            return null;
+        }
+
+        await EnsureContainerAsync(cancellationToken);
+        var path = $"{ingestionId:D}/source/manual-overrides.json";
+        var client = _containerClient.GetBlobClient(path);
+        await client.UploadAsync(BinaryData.FromBytes(manualOverridesJson), overwrite: true, cancellationToken);
+        return path;
+    }
+
+    /// <inheritdoc />
+    public async Task<string> PersistRetailPricingResultAsync(
+        Guid ingestionId,
+        RetailPricingCsvIngestionResult result,
+        string? originalFileName,
+        DateTimeOffset uploadedAt,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureContainerAsync(cancellationToken);
+
+        // Must match the path written by UploadSourceAsync so the manifest references the blob that actually exists.
+        var sourcePath = GetSourcePath(ingestionId, originalFileName);
+        var rawCataloguePath = $"{ingestionId:D}/result/raw-catalogue-rows.json";
+        var cataloguePricesPath = $"{ingestionId:D}/result/catalogue-prices.json";
+        var manualPricesPath = $"{ingestionId:D}/result/manual-prices.json";
+        var resolvedPricesPath = $"{ingestionId:D}/result/resolved-prices.json";
+        var manifestPath = $"{ingestionId:D}/result/manifest.json";
+
+        var rawDocument = new RawCatalogueRowsBlobDocument(result.RawCatalogueRows, result.LogEntries);
+        var rawJson = JsonSerializer.Serialize(rawDocument, JsonOptions);
+        var rawHash = ComputeHash(rawJson);
+        await UploadJsonAsync(rawCataloguePath, rawJson, cancellationToken);
+
+        var catalogueJson = JsonSerializer.Serialize(
+            new CataloguePricesBlobDocument(result.CataloguePrices),
+            JsonOptions);
+        await UploadJsonAsync(cataloguePricesPath, catalogueJson, cancellationToken);
+
+        var manualJson = JsonSerializer.Serialize(
+            new ManualPricesBlobDocument(result.ManualPrices, result.RawManualEntries),
+            JsonOptions);
+        await UploadJsonAsync(manualPricesPath, manualJson, cancellationToken);
+
+        var resolvedDocument = new ResolvedPricesBlobDocument(
+            result.ResolvedPrices,
+            result.ResolutionDetails,
+            result.LogEntries);
+        var resolvedJson = JsonSerializer.Serialize(resolvedDocument, JsonOptions);
+        var resolvedHash = ComputeHash(resolvedJson);
+        await UploadJsonAsync(resolvedPricesPath, resolvedJson, cancellationToken);
+
+        var manifest = new RetailPricingManifestDocument(
+            ingestionId,
+            ImportSourceKind.GiacomPriceList,
+            originalFileName,
+            result.SourceDocumentId,
+            uploadedAt,
+            result.IngestedAt,
+            MapStatus(result.Status),
+            result.Summary,
+            new RetailPricingManifestBlobs(
+                sourcePath,
+                null,
+                rawCataloguePath,
+                cataloguePricesPath,
+                manualPricesPath,
+                resolvedPricesPath),
+            new RetailPricingManifestContentHashes(rawHash, resolvedHash));
+
+        var manifestJson = JsonSerializer.Serialize(manifest, JsonOptions);
+        await UploadJsonAsync(manifestPath, manifestJson, cancellationToken);
+
+        var manifestClient = _containerClient.GetBlobClient(manifestPath);
+        await manifestClient.SetMetadataAsync(new Dictionary<string, string>
+        {
+            ["ingestionid"] = ingestionId.ToString("D"),
+            ["sourcekind"] = ImportSourceKind.GiacomPriceList.ToString(),
+            ["status"] = MapStatus(result.Status)
+        }, cancellationToken: cancellationToken);
+
+        return manifestPath;
+    }
+
+    /// <inheritdoc />
+    public async Task<RetailPricingCsvIngestionResult?> GetRetailPricingResultAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureContainerAsync(cancellationToken);
+        var manifestPath = $"{ingestionId:D}/result/manifest.json";
+        var manifest = await TryLoadRetailPricingManifestAsync(manifestPath, cancellationToken);
+        if (manifest is null)
+        {
+            return null;
+        }
+
+        var resolvedClient = _containerClient.GetBlobClient(manifest.Blobs.ResolvedPrices);
+        var resolvedJson = await resolvedClient.DownloadContentAsync(cancellationToken);
+        var resolvedDocument = JsonSerializer.Deserialize<ResolvedPricesBlobDocument>(
+            resolvedJson.Value.Content.ToString(),
+            JsonOptions);
+
+        var rawClient = _containerClient.GetBlobClient(manifest.Blobs.RawCatalogueRows);
+        var rawJson = await rawClient.DownloadContentAsync(cancellationToken);
+        var rawDocument = JsonSerializer.Deserialize<RawCatalogueRowsBlobDocument>(
+            rawJson.Value.Content.ToString(),
+            JsonOptions);
+
+        if (resolvedDocument is null || rawDocument is null)
+        {
+            return null;
+        }
+
+        var catalogueDocument = await TryDownloadJsonAsync<CataloguePricesBlobDocument>(
+            manifest.Blobs.CataloguePrices,
+            cancellationToken);
+        var manualDocument = await TryDownloadJsonAsync<ManualPricesBlobDocument>(
+            manifest.Blobs.ManualPrices,
+            cancellationToken);
+
+        return new RetailPricingCsvIngestionResult
+        {
+            IngestionId = ingestionId,
+            SourceDocumentId = manifest.ContentFingerprint,
+            IngestedAt = manifest.CompletedAt,
+            Status = MapRunStatus(manifest.Status),
+            RawCatalogueRows = rawDocument.Records,
+            RawManualEntries = manualDocument?.RawEntries ?? [],
+            CataloguePrices = catalogueDocument?.Records ?? [],
+            ManualPrices = manualDocument?.Records ?? [],
+            ResolvedPrices = resolvedDocument.Records,
+            ResolutionDetails = resolvedDocument.ResolutionDetails,
+            LogEntries = resolvedDocument.LogEntries,
+            Summary = manifest.Summary
+        };
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<IntendedPrice>?> GetResolvedPricesAsync(
+        Guid ingestionId,
+        CancellationToken cancellationToken = default)
+    {
+        await EnsureContainerAsync(cancellationToken);
+        var path = $"{ingestionId:D}/result/resolved-prices.json";
+        var client = _containerClient.GetBlobClient(path);
+
+        try
+        {
+            var content = await client.DownloadContentAsync(cancellationToken);
+            var document = JsonSerializer.Deserialize<ResolvedPricesBlobDocument>(
+                content.Value.Content.ToString(),
+                JsonOptions);
+            return document?.Records;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            return null;
+        }
+    }
+
+    private async Task<T?> TryDownloadJsonAsync<T>(string path, CancellationToken cancellationToken)
+        where T : class
+    {
+        var client = _containerClient.GetBlobClient(path);
+        try
+        {
+            var content = await client.DownloadContentAsync(cancellationToken);
+            return JsonSerializer.Deserialize<T>(content.Value.Content.ToString(), JsonOptions);
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            return null;
+        }
+    }
+
+    private async Task<RetailPricingManifestDocument?> TryLoadRetailPricingManifestAsync(
+        string path,
+        CancellationToken cancellationToken)
+    {
+        var client = _containerClient.GetBlobClient(path);
+        try
+        {
+            var content = await client.DownloadContentAsync(cancellationToken);
+            return JsonSerializer.Deserialize<RetailPricingManifestDocument>(
+                content.Value.Content.ToString(),
+                JsonOptions);
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            return null;
+        }
+    }
+
     private async Task EnsureContainerAsync(CancellationToken cancellationToken)
     {
         if (_containerEnsured)
