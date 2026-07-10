@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  javascript-syntax-check:
+    name: JavaScript Syntax Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Verify JavaScript syntax
+        shell: bash
+        run: |
+          mapfile -t js_files < <(git ls-files '*.js')
+
+          if [[ ${#js_files[@]} -eq 0 ]]; then
+            echo "No JavaScript files found."
+            exit 0
+          fi
+
+          for file in "${js_files[@]}"; do
+            echo "Checking syntax: ${file}"
+            node --check "${file}"
+          done
+
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Restore dependencies
+        run: dotnet restore BillDrift.slnx
+
+      - name: Verify formatting
+        run: dotnet format BillDrift.slnx --no-restore --verify-no-changes --verbosity minimal
+
+      - name: Build solution
+        run: dotnet build BillDrift.slnx --no-restore
+
+      - name: Run tests
+        run: dotnet test BillDrift.slnx --filter "FullyQualifiedName!~AppHost.Tests" --no-build --verbosity normal
