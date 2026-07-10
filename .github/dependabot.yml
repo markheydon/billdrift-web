@@ -1,0 +1,75 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+      timezone: "Europe/London"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    assignees:
+      - "markheydon"
+
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+      timezone: "Europe/London"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    assignees:
+      - "markheydon"
+    groups:
+      tests:
+        patterns:
+          - "xunit"
+          - "Moq"
+          - "Microsoft.NET.Test.Sdk"
+          - "coverlet"
+        update-types:
+          - "minor"
+          - "patch"
+
+      microsoft-extensions:
+        patterns:
+          - "^Microsoft\\.Extensions\\."
+        update-types:
+          - "minor"
+          - "patch"
+
+      azure:
+        patterns:
+          - "^Azure\\."
+          - "^Microsoft\\.Azure\\."
+        update-types:
+          - "minor"
+          - "patch"
+
+      opentelemetry:
+        patterns:
+          - "^OpenTelemetry"
+        update-types:
+          - "minor"
+          - "patch"
+
+      analyzers:
+        patterns:
+          - "Analyzer$"
+          - "Analyzers$"
+          - "^Microsoft\\.CodeAnalysis"
+        update-types:
+          - "minor"
+          - "patch"
+
+      minor-and-patch:
+        patterns:
+          - ".*"
+        update-types:
+          - "minor"
+          - "patch"
