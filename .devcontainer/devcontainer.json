@@ -1,0 +1,48 @@
+{
+    "name": "BillDrift",
+    "image": "mcr.microsoft.com/devcontainers/dotnet:dev-10.0-noble",
+    "features": {
+        "ghcr.io/microsoft/aspire-devcontainer-feature/aspire:2": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:4": {},
+        "ghcr.io/devcontainers/features/powershell:2": {},
+        "ghcr.io/devcontainers/features/node:2": {},
+        "ghcr.io/devcontainers/features/python:1": {},
+        "ghcr.io/devcontainers-extra/features/uv:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {
+            "version": "2"
+        },
+        "ghcr.io/markheydon/devcontainer-features/copilot-likes:1": {}
+    },
+    "containerEnv": {
+        "SSL_CERT_DIR": "/home/vscode/.aspnet/dev-certs/trust:/usr/lib/ssl/certs"
+    },
+    "updateContentCommand": "dotnet restore BillDrift.slnx && dotnet restore src/BillDrift.AppHost/BillDrift.AppHost.csproj",
+    "hostRequirements": {
+        "cpus": 4,
+        "memory": "8gb",
+        "storage": "32gb"
+    },
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [5000, 5001],
+    // "portsAttributes": {
+    //		"5001": {
+    //			"protocol": "https"
+    //		}
+    // }
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // "postCreateCommand": "dotnet restore",
+    "postStartCommand": "dotnet dev-certs https --trust && docker rm -f azurite 2>/dev/null || true && docker run -d --name azurite -p 10000:10000 -p 10001:10001 -p 10002:10002 mcr.microsoft.com/azure-storage/azurite:latest azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csdevkit",
+                "GitHub.copilot-chat",
+                "microsoft-aspire.aspire-vscode"
+            ]
+        }
+    }
+    // Configure tool-specific properties.
+    // "customizations": {},
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
+}
