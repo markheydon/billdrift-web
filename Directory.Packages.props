@@ -30,7 +30,7 @@
     <PackageVersion Include="Moq" Version="4.21.0" />
 
     <!-- Fluent UI Blazor -->
-    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components" Version="5.0.0-rc.4-26180.1" />
+    <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components" Version="5.0.0-rc.5-26219.1" />
     <PackageVersion Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="5.0.0-rc.4-26180.1" />
 
     <!-- ASP.NET Core -->
