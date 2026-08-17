@@ -82,6 +82,11 @@ internal static class AzureStorageTestSupport
         {
             return false;
         }
+        catch (AggregateException aggregateException) when (
+            aggregateException.InnerException is SocketException or OperationCanceledException)
+        {
+            return false;
+        }
         catch (SocketException)
         {
             return false;

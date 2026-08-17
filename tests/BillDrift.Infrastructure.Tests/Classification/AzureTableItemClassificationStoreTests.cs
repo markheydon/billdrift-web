@@ -16,7 +16,7 @@ public sealed class AzureTableItemClassificationStoreTests
 
         var cancellationToken = TestContext.Current.CancellationToken;
         var tableServiceClient = AzureStorageTestSupport.CreateTableServiceClient(AzureStorageTestSupport.GetConnectionString());
-        var options = Options.Create(new ClassificationStorageOptions { TableName = $"itemclassifications-{Guid.NewGuid():N}" });
+        var options = Options.Create(new ClassificationStorageOptions { TableName = $"itemclassifications{Guid.NewGuid():N}" });
         var store = new AzureTableItemClassificationStore(tableServiceClient, options);
 
         var itemRef = ReconciliationItemRef.Create(
