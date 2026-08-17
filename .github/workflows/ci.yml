@@ -77,6 +77,8 @@ jobs:
         run: dotnet build BillDrift.slnx --no-restore
 
       - name: Trust ASP.NET HTTPS development certificate
+        env:
+          SSL_CERT_DIR: ${{ env.HOME }}/.aspnet/dev-certs/trust:/etc/ssl/certs
         run: dotnet dev-certs https --trust
 
       - name: Run tests
