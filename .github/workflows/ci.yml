@@ -57,6 +57,10 @@ jobs:
           - 10000:10000
           - 10001:10001
           - 10002:10002
+        options: >-
+          --entrypoint sh
+          -c
+          "azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 --skipApiVersionCheck"
 
     steps:
       - name: Checkout repository
@@ -76,5 +80,10 @@ jobs:
       - name: Build solution
         run: dotnet build BillDrift.slnx --no-restore
 
+      - name: Trust ASP.NET HTTPS development certificate
+        run: dotnet dev-certs https --trust
+
       - name: Run tests
+        env:
+          SSL_CERT_DIR: ${{ env.HOME }}/.aspnet/dev-certs/trust:/etc/ssl/certs
         run: dotnet test BillDrift.slnx --no-build --verbosity normal
