@@ -1,6 +1,5 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -15,10 +14,10 @@ public class SupplierCostReconciliationTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationInputsFixtureLoader.Load("non-csp-supplier-line")));
 
-        run.Mismatches.Should().Contain(m =>
+        Assert.Contains(run.Mismatches, m =>
             m.Type == MismatchType.MappingMissing &&
             m.Description.StartsWith("Non-CSP line requires manual mapping:"));
-        run.ProposedChanges.Should().BeEmpty();
+        Assert.Empty(run.ProposedChanges);
     }
 
     [Fact]
@@ -32,7 +31,7 @@ public class SupplierCostReconciliationTests
             inputs));
 
         var qtyMismatch = run.Mismatches.First(m => m.Type == MismatchType.QuantityMismatch);
-        qtyMismatch.ExpectedValue.Should().Be("10");
-        qtyMismatch.ActualValue.Should().Be("5");
+        Assert.Equal("10", qtyMismatch.ExpectedValue);
+        Assert.Equal("5", qtyMismatch.ActualValue);
     }
 }

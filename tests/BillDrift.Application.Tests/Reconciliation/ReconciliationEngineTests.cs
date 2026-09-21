@@ -1,7 +1,6 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -18,9 +17,9 @@ public class ReconciliationEngineTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationInputsFixtureLoader.Load("clean-match-all-domains")));
 
-        run.Mismatches.Should().BeEmpty();
-        run.MatchGroups.Should().HaveCount(1);
-        run.MatchGroups[0].Confidence.Should().Be(MatchConfidence.High);
+        Assert.Empty(run.Mismatches);
+        var matchGroup = Assert.Single(run.MatchGroups);
+        Assert.Equal(MatchConfidence.High, matchGroup.Confidence);
     }
 
     [Fact]
@@ -31,8 +30,8 @@ public class ReconciliationEngineTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationInputsFixtureLoader.Load("missing-in-stripe")));
 
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.MissingInStripe);
-        run.ProposedChanges.Should().Contain(p => p.ActionType == ProposedActionType.CreateMissingItem);
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.MissingInStripe);
+        Assert.Contains(run.ProposedChanges, p => p.ActionType == ProposedActionType.CreateMissingItem);
     }
 
     [Fact]
@@ -43,9 +42,9 @@ public class ReconciliationEngineTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationInputsFixtureLoader.Load("quantity-mismatch")));
 
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.QuantityMismatch);
-        run.ProposedChanges.Should().Contain(p => p.ActionType == ProposedActionType.UpdateQuantity);
-        run.ProposedChanges.Should().Contain(p =>
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.QuantityMismatch);
+        Assert.Contains(run.ProposedChanges, p => p.ActionType == ProposedActionType.UpdateQuantity);
+        Assert.Contains(run.ProposedChanges, p =>
             p.ProposedValues["proposedQuantity"] == "10");
     }
 
@@ -58,7 +57,7 @@ public class ReconciliationEngineTests
             ReconciliationTestDataBuilder.DefaultScope,
             inputs));
 
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.BillingFrequencyMismatch);
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.BillingFrequencyMismatch);
     }
 
     [Fact]
@@ -70,7 +69,7 @@ public class ReconciliationEngineTests
             ReconciliationInputsFixtureLoader.Load("price-mismatch"),
             new ReconciliationOptions(PriceTolerance: Money.Gbp(0))));
 
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.PriceMismatch);
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.PriceMismatch);
     }
 
     [Fact]
@@ -83,7 +82,7 @@ public class ReconciliationEngineTests
             ReconciliationInputsFixtureLoader.Load("quantity-mismatch")));
 
         var signatures = GoldenRunComparer.ExtractSignatures(run);
-        signatures.Should().Contain(s => s.Type == MismatchType.QuantityMismatch);
+        Assert.Contains(signatures, s => s.Type == MismatchType.QuantityMismatch);
     }
 
     [Fact]
@@ -94,7 +93,7 @@ public class ReconciliationEngineTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationInputsFixtureLoader.Load("duplicate-stripe-items")));
 
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.MappingAmbiguous);
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.MappingAmbiguous);
     }
 
     [Fact]
@@ -115,10 +114,10 @@ public class ReconciliationEngineTests
                 new Dictionary<string, BillDrift.Domain.Classification.ItemClassification>(),
                 DateTimeOffset.UtcNow)));
 
-        withoutClassification.Mismatches.Should().Contain(m => m.Type == MismatchType.MissingInStripe);
-        withEmptyClassification.Mismatches.Should().Contain(m => m.Type == MismatchType.MissingInStripe);
-        withoutClassification.Mismatches.Select(m => m.Type)
-            .Should()
-            .BeEquivalentTo(withEmptyClassification.Mismatches.Select(m => m.Type));
+        Assert.Contains(withoutClassification.Mismatches, m => m.Type == MismatchType.MissingInStripe);
+        Assert.Contains(withEmptyClassification.Mismatches, m => m.Type == MismatchType.MissingInStripe);
+        Assert.Equivalent(
+            withEmptyClassification.Mismatches.Select(m => m.Type),
+            withoutClassification.Mismatches.Select(m => m.Type));
     }
 }

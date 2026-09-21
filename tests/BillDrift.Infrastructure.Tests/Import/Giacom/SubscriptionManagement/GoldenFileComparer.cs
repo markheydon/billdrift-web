@@ -19,24 +19,24 @@ public static class GoldenFileComparer
         var expected = JsonSerializer.Deserialize<GoldenResult>(expectedJson, JsonOptions)
             ?? throw new InvalidOperationException($"Golden file empty: {goldenFilePath}");
 
-        actual.RawRows.Should().HaveCount(expected.RawRows.Count);
-        actual.SubscriptionLines.Should().HaveCount(expected.SubscriptionLines.Count);
-        actual.Status.ToString().Should().Be(expected.Status);
-        actual.Summary.RowsEmitted.Should().Be(expected.Summary.RowsEmitted);
-        actual.Summary.RowsExcludedByScope.Should().Be(expected.Summary.RowsExcludedByScope);
-        actual.Summary.RowsSkipped.Should().Be(expected.Summary.RowsSkipped);
+        Assert.Equal(expected.RawRows.Count, actual.RawRows.Count);
+        Assert.Equal(expected.SubscriptionLines.Count, actual.SubscriptionLines.Count);
+        Assert.Equal(expected.Status, actual.Status.ToString());
+        Assert.Equal(expected.Summary.RowsEmitted, actual.Summary.RowsEmitted);
+        Assert.Equal(expected.Summary.RowsExcludedByScope, actual.Summary.RowsExcludedByScope);
+        Assert.Equal(expected.Summary.RowsSkipped, actual.Summary.RowsSkipped);
 
         for (var i = 0; i < expected.RawRows.Count; i++)
         {
             var exp = expected.RawRows[i];
             var act = actual.RawRows[i];
 
-            act.MexIdRaw.Should().Be(exp.MexIdRaw);
-            act.OfferIdRaw.Should().Be(exp.OfferIdRaw);
-            act.SkuIdRaw.Should().Be(exp.SkuIdRaw);
-            act.LicencesRaw.Should().Be(exp.LicencesRaw);
-            act.StatusRaw.Should().Be(exp.StatusRaw);
-            act.Id.SourceLineKey.Should().Be(exp.SourceLineKey);
+            Assert.Equal(exp.MexIdRaw, act.MexIdRaw);
+            Assert.Equal(exp.OfferIdRaw, act.OfferIdRaw);
+            Assert.Equal(exp.SkuIdRaw, act.SkuIdRaw);
+            Assert.Equal(exp.LicencesRaw, act.LicencesRaw);
+            Assert.Equal(exp.StatusRaw, act.StatusRaw);
+            Assert.Equal(exp.SourceLineKey, act.Id.SourceLineKey);
         }
 
         for (var i = 0; i < expected.SubscriptionLines.Count; i++)
@@ -44,11 +44,11 @@ public static class GoldenFileComparer
             var exp = expected.SubscriptionLines[i];
             var act = actual.SubscriptionLines[i];
 
-            act.Customer.MexId.Value.Should().Be(exp.MexId);
-            act.CommercialKeyRoot.OfferId.Value.Should().Be(exp.OfferId);
-            act.CommercialKeyRoot.SkuId.Value.Should().Be(exp.SkuId);
-            act.LicenceCount.Should().Be(exp.LicenceCount);
-            act.Status.ToString().Should().Be(exp.Status);
+            Assert.Equal(exp.MexId, act.Customer.MexId.Value);
+            Assert.Equal(exp.OfferId, act.CommercialKeyRoot.OfferId.Value);
+            Assert.Equal(exp.SkuId, act.CommercialKeyRoot.SkuId.Value);
+            Assert.Equal(exp.LicenceCount, act.LicenceCount);
+            Assert.Equal(exp.Status, act.Status.ToString());
         }
     }
 

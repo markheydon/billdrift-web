@@ -1,7 +1,6 @@
 using System.Net;
 using BillDrift.Api.Tests.Infrastructure;
 using BillDrift.Application.Import;
-using FluentAssertions;
 
 namespace BillDrift.Api.Tests.Imports;
 
@@ -14,7 +13,7 @@ public sealed class StripeCsvImportEndpointsTests(BillDriftApiWebApplicationFact
     {
         var response = await _client.PostAsync("/api/imports/stripe-csv", null, TestContext.Current.CancellationToken);
 
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -33,7 +32,7 @@ public sealed class StripeCsvImportEndpointsTests(BillDriftApiWebApplicationFact
 
         var response = await _client.PostAsync("/api/imports/stripe-csv", content, TestContext.Current.CancellationToken);
 
-        response.StatusCode.Should().Be(HttpStatusCode.RequestEntityTooLarge);
+        Assert.Equal(HttpStatusCode.RequestEntityTooLarge, response.StatusCode);
     }
 
     [Fact]
@@ -41,8 +40,8 @@ public sealed class StripeCsvImportEndpointsTests(BillDriftApiWebApplicationFact
     {
         var response = await _client.GetAsync("/api/imports/stripe-csv", TestContext.Current.CancellationToken);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        body.Should().Be("[]");
+        Assert.Equal("[]", body);
     }
 }

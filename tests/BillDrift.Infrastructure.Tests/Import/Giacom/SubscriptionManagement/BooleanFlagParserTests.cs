@@ -14,7 +14,7 @@ public class BooleanFlagParserTests
     [InlineData("0", false)]
     public void Recognised_values_parse(string raw, bool expected)
     {
-        BooleanFlagParser.Parse(raw).Should().Be(expected);
+        Assert.Equal(expected, BooleanFlagParser.Parse(raw));
     }
 
     [Theory]
@@ -22,13 +22,13 @@ public class BooleanFlagParserTests
     [InlineData("")]
     public void Blank_values_are_absent(string? raw)
     {
-        BooleanFlagParser.Parse(raw).Should().BeNull();
-        BooleanFlagParser.IsRecognised(raw).Should().BeTrue();
+        Assert.Null(BooleanFlagParser.Parse(raw));
+        Assert.True(BooleanFlagParser.IsRecognised(raw));
     }
 
     [Fact]
     public void Unrecognised_non_blank_value_parses_absent()
     {
-        BooleanFlagParser.Parse("maybe").Should().BeNull();
+        Assert.Null(BooleanFlagParser.Parse("maybe"));
     }
 }

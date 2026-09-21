@@ -18,14 +18,14 @@ public sealed class ResellerPricingCsvIngesterTests
     {
         var result = Ingest("reseller-pricing-sample-a.csv");
 
-        result.Status.Should().BeOneOf(IngestionOutcomeStatus.Success, IngestionOutcomeStatus.PartialSuccess);
-        result.ResolvedPrices.Should().HaveCount(3);
-        result.ResolvedPrices.Should().AllSatisfy(price =>
+        Assert.Contains(result.Status, new[] { IngestionOutcomeStatus.Success, IngestionOutcomeStatus.PartialSuccess });
+        Assert.Equal(3, result.ResolvedPrices.Count);
+        Assert.All(result.ResolvedPrices, price =>
         {
-            price.Key.OfferId.Value.Should().StartWith("OFFER-");
-            price.Key.SkuId.Value.Should().StartWith("SKU-");
-            price.Wholesale.Amount.Should().BeGreaterThan(0);
-            price.Rrp.Amount.Should().BeGreaterThan(0);
+            Assert.StartsWith("OFFER-", price.Key.OfferId.Value);
+            Assert.StartsWith("SKU-", price.Key.SkuId.Value);
+            Assert.True(price.Wholesale.Amount > 0);
+            Assert.True(price.Rrp.Amount > 0);
         });
     }
 
@@ -34,8 +34,9 @@ public sealed class ResellerPricingCsvIngesterTests
     {
         var result = Ingest("reseller-pricing-sample-a.csv");
 
-        result.ResolvedPrices.Select(p => p.Key.OfferId.Value)
-            .Should().BeEquivalentTo(["OFFER-MS365-BB", "OFFER-EXO-PL1", "OFFER-TEAMS-ESS"]);
+        Assert.Equivalent(
+            new[] { "OFFER-MS365-BB", "OFFER-EXO-PL1", "OFFER-TEAMS-ESS" },
+            result.ResolvedPrices.Select(p => p.Key.OfferId.Value));
     }
 
     [Fact]
@@ -57,24 +58,24 @@ public sealed class ResellerPricingCsvIngesterTests
     {
         var result = Ingest("reseller-pricing-sample-a.csv");
 
-        result.ResolvedPrices.Should().AllSatisfy(price =>
+        Assert.All(result.ResolvedPrices, price =>
         {
-            price.Source.Should().Be(PriceSource.Catalogue);
-            price.Classification.Should().Be(ProductClassification.Csp);
+            Assert.Equal(PriceSource.Catalogue, price.Source);
+            Assert.Equal(ProductClassification.Csp, price.Classification);
         });
-        result.Summary.CatalogueOnlyCount.Should().Be(result.ResolvedPrices.Count);
-        result.Summary.OverrideWinsCount.Should().Be(0);
+        Assert.Equal(result.ResolvedPrices.Count, result.Summary.CatalogueOnlyCount);
+        Assert.Equal(0, result.Summary.OverrideWinsCount);
     }
 
     [Fact]
     public void End_of_sale_retains_rrp()
     {
         var result = Ingest("end-of-sale.csv");
-        var price = result.ResolvedPrices.Should().ContainSingle().Subject;
+        var price = Assert.Single(result.ResolvedPrices);
 
-        price.Status.Should().Be(PriceListStatus.EndOfSale);
-        price.Rrp.Amount.Should().Be(7.00m);
-        price.Source.Should().Be(PriceSource.Catalogue);
+        Assert.Equal(PriceListStatus.EndOfSale, price.Status);
+        Assert.Equal(7.00m, price.Rrp.Amount);
+        Assert.Equal(PriceSource.Catalogue, price.Source);
     }
 
     [Fact]
@@ -82,11 +83,11 @@ public sealed class ResellerPricingCsvIngesterTests
     {
         var result = Ingest("column-variant.csv");
 
-        result.ResolvedPrices.Should().HaveCount(2);
-        result.ResolvedPrices.Should().AllSatisfy(price =>
+        Assert.Equal(2, result.ResolvedPrices.Count);
+        Assert.All(result.ResolvedPrices, price =>
         {
-            price.Key.OfferId.Value.Should().StartWith("OFFER-VAR-");
-            price.Key.SkuId.Value.Should().StartWith("SKU-VAR-");
+            Assert.StartsWith("OFFER-VAR-", price.Key.OfferId.Value);
+            Assert.StartsWith("SKU-VAR-", price.Key.SkuId.Value);
         });
     }
 
@@ -95,12 +96,12 @@ public sealed class ResellerPricingCsvIngesterTests
     {
         var result = Ingest("partial-bad-rows.csv");
 
-        result.Status.Should().Be(IngestionOutcomeStatus.PartialSuccess);
-        result.RawCatalogueRows.Should().HaveCount(4);
-        result.ResolvedPrices.Should().HaveCount(3);
-        result.Summary.CatalogueRowsSkipped.Should().Be(2);
-        result.LogEntries.Should().Contain(e => e.Reason == IngestionFailureReason.CommercialKeyMissing);
-        result.LogEntries.Should().Contain(e => e.Reason == IngestionFailureReason.WholesaleUnparseable);
+        Assert.Equal(IngestionOutcomeStatus.PartialSuccess, result.Status);
+        Assert.Equal(4, result.RawCatalogueRows.Count);
+        Assert.Equal(3, result.ResolvedPrices.Count);
+        Assert.Equal(2, result.Summary.CatalogueRowsSkipped);
+        Assert.Contains(result.LogEntries, e => e.Reason == IngestionFailureReason.CommercialKeyMissing);
+        Assert.Contains(result.LogEntries, e => e.Reason == IngestionFailureReason.WholesaleUnparseable);
     }
 
     [Fact]
@@ -108,10 +109,10 @@ public sealed class ResellerPricingCsvIngesterTests
     {
         var result = Ingest("duplicate-keys.csv");
 
-        result.ResolvedPrices.Should().ContainSingle();
-        result.ResolvedPrices[0].Rrp.Amount.Should().Be(9.00m);
-        result.Summary.DuplicateKeyWarnings.Should().Be(1);
-        result.LogEntries.Should().Contain(e => e.Reason == IngestionFailureReason.DuplicateCommercialKey);
+        Assert.Single(result.ResolvedPrices);
+        Assert.Equal(9.00m, result.ResolvedPrices[0].Rrp.Amount);
+        Assert.Equal(1, result.Summary.DuplicateKeyWarnings);
+        Assert.Contains(result.LogEntries, e => e.Reason == IngestionFailureReason.DuplicateCommercialKey);
     }
 
     [Fact]
@@ -119,9 +120,9 @@ public sealed class ResellerPricingCsvIngesterTests
     {
         var result = Ingest("reseller-pricing-sample-a.csv");
 
-        result.ResolvedPrices.Should().Contain(p =>
+        Assert.Contains(result.ResolvedPrices, p =>
             p.Key.OfferId.Value == "OFFER-MS365-BB" && p.Platform == PricingPlatform.Nce);
-        result.ResolvedPrices.Should().Contain(p =>
+        Assert.Contains(result.ResolvedPrices, p =>
             p.Key.OfferId.Value == "OFFER-EXO-PL1" && p.Platform == PricingPlatform.Legacy);
     }
 
@@ -145,10 +146,10 @@ public sealed class ResellerPricingCsvIngesterTests
         var result = Ingest("reseller-pricing-sample-a.csv", overrides);
         var price = result.ResolvedPrices.Single(p => p.Key.OfferId.Value == "OFFER-MS365-BB");
 
-        price.Source.Should().Be(PriceSource.ManualOverride);
-        price.Classification.Should().Be(ProductClassification.NonCsp);
-        price.Rrp.Amount.Should().Be(14.00m);
-        result.Summary.OverrideWinsCount.Should().Be(1);
+        Assert.Equal(PriceSource.ManualOverride, price.Source);
+        Assert.Equal(ProductClassification.NonCsp, price.Classification);
+        Assert.Equal(14.00m, price.Rrp.Amount);
+        Assert.Equal(1, result.Summary.OverrideWinsCount);
     }
 
     [Fact]
@@ -157,8 +158,8 @@ public sealed class ResellerPricingCsvIngesterTests
         var first = Ingest("reseller-pricing-sample-a.csv");
         var second = Ingest("reseller-pricing-sample-a.csv");
 
-        second.SourceDocumentId.Should().Be(first.SourceDocumentId);
-        second.RawCatalogueRows.Select(r => r.Id).Should().BeEquivalentTo(first.RawCatalogueRows.Select(r => r.Id));
+        Assert.Equal(first.SourceDocumentId, second.SourceDocumentId);
+        Assert.Equivalent(first.RawCatalogueRows.Select(r => r.Id), second.RawCatalogueRows.Select(r => r.Id));
     }
 
     [Fact]
@@ -166,10 +167,10 @@ public sealed class ResellerPricingCsvIngesterTests
     {
         var result = Ingest("headers-only.csv");
 
-        result.Status.Should().Be(IngestionOutcomeStatus.Failure);
-        result.RawCatalogueRows.Should().BeEmpty();
-        result.ResolvedPrices.Should().BeEmpty();
-        result.LogEntries.Should().Contain(e =>
+        Assert.Equal(IngestionOutcomeStatus.Failure, result.Status);
+        Assert.Empty(result.RawCatalogueRows);
+        Assert.Empty(result.ResolvedPrices);
+        Assert.Contains(result.LogEntries, e =>
             e.Reason == IngestionFailureReason.EmptyFile &&
             e.Severity == IngestionLogSeverity.Error);
     }
@@ -187,8 +188,8 @@ public sealed class ResellerPricingCsvIngesterTests
             },
             TestContext.Current.CancellationToken);
 
-        result.Status.Should().Be(IngestionOutcomeStatus.Failure);
-        result.LogEntries.Should().Contain(e => e.Reason == IngestionFailureReason.FileSizeExceeded);
+        Assert.Equal(IngestionOutcomeStatus.Failure, result.Status);
+        Assert.Contains(result.LogEntries, e => e.Reason == IngestionFailureReason.FileSizeExceeded);
     }
 
     private RetailPricingCsvIngestionResult Ingest(

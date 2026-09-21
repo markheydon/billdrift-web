@@ -29,15 +29,15 @@ public sealed class SubscriptionManagementImportServiceTests
             "subscription-management-sample-a.csv",
             TestContext.Current.CancellationToken);
 
-        run.Status.Should().BeOneOf(IngestionRunStatus.Completed, IngestionRunStatus.PartialSuccess);
-        run.ContentFingerprint.Should().NotBeNullOrWhiteSpace();
+        Assert.Contains(run.Status, new[] { IngestionRunStatus.Completed, IngestionRunStatus.PartialSuccess });
+        Assert.False(string.IsNullOrWhiteSpace(run.ContentFingerprint));
 
         var indexed = await indexStore.GetByIdAsync(run.IngestionId, TestContext.Current.CancellationToken);
-        indexed.Should().NotBeNull();
+        Assert.NotNull(indexed);
 
         var truth = await blobStore.GetSubscriptionTruthAsync(run.IngestionId, TestContext.Current.CancellationToken);
-        truth.Should().NotBeNull();
-        truth!.Should().NotBeEmpty();
+        Assert.NotNull(truth);
+        Assert.NotEmpty(truth!);
     }
 
     [Fact]
@@ -56,9 +56,9 @@ public sealed class SubscriptionManagementImportServiceTests
             "oversized.csv",
             TestContext.Current.CancellationToken);
 
-        await act.Should().ThrowAsync<SubscriptionManagementUploadTooLargeException>();
+        await Assert.ThrowsAsync<SubscriptionManagementUploadTooLargeException>(act);
 
         var runs = await indexStore.ListRecentAsync(10, TestContext.Current.CancellationToken);
-        runs.Should().BeEmpty();
+        Assert.Empty(runs);
     }
 }

@@ -3,7 +3,6 @@ using BillDrift.Application.Reconciliation.ExceptionSurfacing;
 using BillDrift.Domain.Approval;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Approval;
 
@@ -16,7 +15,7 @@ public sealed class ApprovalEligibilityEvaluatorTests
     {
         var evaluation = _evaluator.EvaluateInvestigation(CreateInvestigationException());
 
-        evaluation.Eligibility.Should().Be(ApprovalEligibility.InvestigationOnly);
+        Assert.Equal(ApprovalEligibility.InvestigationOnly, evaluation.Eligibility);
     }
 
     [Fact]
@@ -34,7 +33,7 @@ public sealed class ApprovalEligibilityEvaluatorTests
                 CreateCatalogueProposal()
             ]);
 
-        evaluation.Eligibility.Should().Be(ApprovalEligibility.CatalogueConflict);
+        Assert.Equal(ApprovalEligibility.CatalogueConflict, evaluation.Eligibility);
     }
 
     [Fact]
@@ -51,7 +50,7 @@ public sealed class ApprovalEligibilityEvaluatorTests
             null,
             [CreateCatalogueProposal()]);
 
-        evaluation.Eligibility.Should().Be(ApprovalEligibility.CatalogueConflict);
+        Assert.Equal(ApprovalEligibility.CatalogueConflict, evaluation.Eligibility);
     }
 
     private static SurfacedException CreateInvestigationException() =>

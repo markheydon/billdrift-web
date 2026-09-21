@@ -1,7 +1,6 @@
 using BillDrift.Domain.Billing;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Domain.Tests.Reconciliation;
 
@@ -25,8 +24,8 @@ public class MismatchTypeCoverageTests
             "actual",
             $"Example mismatch for {type}");
 
-        mismatch.Type.Should().Be(type);
-        mismatch.Description.Should().Contain(type.ToString());
+        Assert.Equal(type, mismatch.Type);
+        Assert.Contains(type.ToString(), mismatch.Description);
     }
 
     [Fact]
@@ -50,6 +49,6 @@ public class MismatchTypeCoverageTests
             "5",
             "Licence count differs from Stripe quantity");
 
-        mismatch.InvolvedEntityIds.StripeBillingItemId.Should().Be(stripeId);
+        Assert.Equal(stripeId, mismatch.InvolvedEntityIds.StripeBillingItemId);
     }
 }

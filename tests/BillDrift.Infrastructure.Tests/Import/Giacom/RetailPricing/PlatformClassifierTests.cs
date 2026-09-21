@@ -16,8 +16,8 @@ public sealed class PlatformClassifierTests
     {
         var platform = PlatformClassifier.Classify(raw, out var unrecognised);
 
-        platform.Should().Be(expected);
-        unrecognised.Should().BeFalse();
+        Assert.Equal(expected, platform);
+        Assert.False(unrecognised);
     }
 
     [Fact]
@@ -25,7 +25,7 @@ public sealed class PlatformClassifierTests
     {
         var platform = PlatformClassifier.Classify("Azure Marketplace", out var unrecognised);
 
-        platform.Should().Be(PricingPlatform.Unknown);
-        unrecognised.Should().BeTrue();
+        Assert.Equal(PricingPlatform.Unknown, platform);
+        Assert.True(unrecognised);
     }
 }

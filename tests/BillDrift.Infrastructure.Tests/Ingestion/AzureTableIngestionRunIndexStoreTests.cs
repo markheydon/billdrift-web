@@ -43,9 +43,9 @@ public sealed class AzureTableIngestionRunIndexStoreTests
         await store.CompleteAsync(completed, TestContext.Current.CancellationToken);
         var loaded = await store.GetByIdAsync(ingestionId, TestContext.Current.CancellationToken);
 
-        loaded.Should().NotBeNull();
-        loaded!.Status.Should().Be(IngestionRunStatus.Completed);
-        loaded.Summary!.RowsEmitted.Should().Be(3);
+        Assert.NotNull(loaded);
+        Assert.Equal(IngestionRunStatus.Completed, loaded!.Status);
+        Assert.Equal(3, loaded.Summary!.RowsEmitted);
     }
 
     [Fact]
@@ -83,9 +83,9 @@ public sealed class AzureTableIngestionRunIndexStoreTests
         await store.CompleteRetailPricingAsync(completed, TestContext.Current.CancellationToken);
         var loaded = await store.GetRetailPricingByIdAsync(ingestionId, TestContext.Current.CancellationToken);
 
-        loaded.Should().NotBeNull();
-        loaded!.Status.Should().Be(IngestionRunStatus.Completed);
-        loaded.Summary!.ResolvedPriceCount.Should().Be(3);
+        Assert.NotNull(loaded);
+        Assert.Equal(IngestionRunStatus.Completed, loaded!.Status);
+        Assert.Equal(3, loaded.Summary!.ResolvedPriceCount);
     }
 
     private static AzureTableIngestionRunIndexStore CreateStore(string tableName)

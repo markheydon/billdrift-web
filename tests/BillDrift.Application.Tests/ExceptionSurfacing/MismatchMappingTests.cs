@@ -1,7 +1,6 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.ExceptionSurfacing;
 
@@ -23,7 +22,7 @@ public class MismatchMappingTests
     {
         var vm = _builder.SurfaceScenario(scenario, new ReconciliationOptions(PriceTolerance: Money.Gbp(0)));
 
-        vm.FlatExceptions().Should().Contain(e =>
+        Assert.Contains(vm.FlatExceptions(), e =>
             e.Category == expectedCategory && e.Domain == expectedDomain);
     }
 
@@ -32,7 +31,7 @@ public class MismatchMappingTests
     {
         var vm = _builder.SurfaceScenario("catalogue-missing");
 
-        vm.FlatExceptions().Should().Contain(e =>
+        Assert.Contains(vm.FlatExceptions(), e =>
             e.Category == ExceptionCategory.StripePriceMissing ||
             e.Category == ExceptionCategory.StripeProductMissing);
     }
@@ -42,7 +41,7 @@ public class MismatchMappingTests
     {
         var vm = _builder.SurfaceScenario("non-csp-supplier-line");
 
-        vm.FlatExceptions().Should().Contain(e => e.Category == ExceptionCategory.NonCspManualReview);
+        Assert.Contains(vm.FlatExceptions(), e => e.Category == ExceptionCategory.NonCspManualReview);
     }
 
     [Fact]
@@ -57,8 +56,7 @@ public class MismatchMappingTests
         foreach (var scenario in scenarios)
         {
             var vm = _builder.SurfaceScenario(scenario, new ReconciliationOptions(PriceTolerance: Money.Gbp(0)));
-            vm.FlatExceptions().Should().OnlyContain(e => !string.IsNullOrWhiteSpace(e.Explanation),
-                because: $"scenario {scenario} should produce explained exceptions");
+            Assert.All(vm.FlatExceptions(), e => Assert.False(string.IsNullOrWhiteSpace(e.Explanation)));
         }
     }
 }

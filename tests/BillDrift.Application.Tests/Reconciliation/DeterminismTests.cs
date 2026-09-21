@@ -1,6 +1,5 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -20,6 +19,6 @@ public class DeterminismTests
         var run1 = engine.Execute(request);
         var run2 = engine.Execute(request);
 
-        GoldenRunComparer.AreEquivalent(run1, run2).Should().BeTrue();
+        Assert.True(GoldenRunComparer.AreEquivalent(run1, run2));
     }
 }

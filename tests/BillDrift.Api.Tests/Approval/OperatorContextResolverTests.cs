@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using BillDrift.Api.Approval;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 
@@ -17,8 +16,8 @@ public sealed class OperatorContextResolverTests
 
         var context = OperatorContextResolver.Resolve(httpContext, Env("Production"));
 
-        context.CanApprove.Should().BeFalse();
-        context.OperatorId.Should().Be("system");
+        Assert.False(context.CanApprove);
+        Assert.Equal("system", context.OperatorId);
     }
 
     [Fact]
@@ -29,8 +28,8 @@ public sealed class OperatorContextResolverTests
 
         var context = OperatorContextResolver.Resolve(httpContext, Env("Development"));
 
-        context.CanApprove.Should().BeTrue();
-        context.OperatorId.Should().Be("dev-operator");
+        Assert.True(context.CanApprove);
+        Assert.Equal("dev-operator", context.OperatorId);
     }
 
     [Fact]
@@ -42,8 +41,8 @@ public sealed class OperatorContextResolverTests
 
         var context = OperatorContextResolver.Resolve(httpContext, Env("Development"));
 
-        context.CanApprove.Should().BeFalse();
-        context.OperatorId.Should().Be("dev-operator");
+        Assert.False(context.CanApprove);
+        Assert.Equal("dev-operator", context.OperatorId);
     }
 
     [Fact]
@@ -55,8 +54,8 @@ public sealed class OperatorContextResolverTests
 
         var context = OperatorContextResolver.Resolve(httpContext, Env("Production"));
 
-        context.CanApprove.Should().BeTrue();
-        context.OperatorId.Should().Be("op-42");
+        Assert.True(context.CanApprove);
+        Assert.Equal("op-42", context.OperatorId);
     }
 
     [Fact]
@@ -66,8 +65,8 @@ public sealed class OperatorContextResolverTests
 
         var context = OperatorContextResolver.Resolve(httpContext, Env("Production"));
 
-        context.CanApprove.Should().BeFalse();
-        context.OperatorId.Should().Be("viewer-1");
+        Assert.False(context.CanApprove);
+        Assert.Equal("viewer-1", context.OperatorId);
     }
 
     private static ClaimsPrincipal Principal(string subject, params string[] roles)

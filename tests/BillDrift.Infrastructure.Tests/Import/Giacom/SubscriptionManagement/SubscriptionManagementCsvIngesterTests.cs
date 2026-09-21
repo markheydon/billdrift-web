@@ -17,14 +17,14 @@ public class SubscriptionManagementCsvIngesterTests
     {
         var result = Ingest("subscription-management-sample-a.csv");
 
-        result.Status.Should().BeOneOf(IngestionOutcomeStatus.Success, IngestionOutcomeStatus.PartialSuccess);
-        result.SubscriptionLines.Should().HaveCount(3);
-        result.SubscriptionLines.Should().AllSatisfy(line =>
+        Assert.Contains(result.Status, new[] { IngestionOutcomeStatus.Success, IngestionOutcomeStatus.PartialSuccess });
+        Assert.Equal(3, result.SubscriptionLines.Count);
+        Assert.All(result.SubscriptionLines, line =>
         {
-            line.Customer.MexId.Value.Should().NotBeNullOrWhiteSpace();
-            line.LicenceCount.Should().BeGreaterThan(0);
-            line.CommercialKeyRoot.OfferId.Value.Should().NotBeNullOrWhiteSpace();
-            line.CommercialKeyRoot.SkuId.Value.Should().NotBeNullOrWhiteSpace();
+            Assert.False(string.IsNullOrWhiteSpace(line.Customer.MexId.Value));
+            Assert.True(line.LicenceCount > 0);
+            Assert.False(string.IsNullOrWhiteSpace(line.CommercialKeyRoot.OfferId.Value));
+            Assert.False(string.IsNullOrWhiteSpace(line.CommercialKeyRoot.SkuId.Value));
         });
     }
 
@@ -33,8 +33,9 @@ public class SubscriptionManagementCsvIngesterTests
     {
         var result = Ingest("subscription-management-sample-a.csv");
 
-        result.SubscriptionLines.Select(l => l.Customer.MexId.Value)
-            .Should().BeEquivalentTo(["MEX001", "MEX002", "MEX003"]);
+        Assert.Equivalent(
+            new[] { "MEX001", "MEX002", "MEX003" },
+            result.SubscriptionLines.Select(l => l.Customer.MexId.Value));
     }
 
     [Fact]
@@ -56,10 +57,10 @@ public class SubscriptionManagementCsvIngesterTests
     {
         var result = Ingest("mixed-products.csv");
 
-        result.RawRows.Should().HaveCount(1);
-        result.Summary.RowsExcludedByScope.Should().Be(1);
-        result.RawRows.Should().ContainSingle(r => r.MexIdRaw == "MEX001");
-        result.LogEntries.Should().Contain(e => e.Reason == IngestionFailureReason.ProductOutOfScope);
+        Assert.Single(result.RawRows);
+        Assert.Equal(1, result.Summary.RowsExcludedByScope);
+        Assert.Single(result.RawRows, r => r.MexIdRaw == "MEX001");
+        Assert.Contains(result.LogEntries, e => e.Reason == IngestionFailureReason.ProductOutOfScope);
     }
 
     [Fact]
@@ -67,11 +68,11 @@ public class SubscriptionManagementCsvIngesterTests
     {
         var result = Ingest("column-variant.csv");
 
-        result.SubscriptionLines.Should().HaveCount(2);
-        result.SubscriptionLines.Should().AllSatisfy(line =>
+        Assert.Equal(2, result.SubscriptionLines.Count);
+        Assert.All(result.SubscriptionLines, line =>
         {
-            line.Customer.MexId.Value.Should().StartWith("MEX");
-            line.CommercialKeyRoot.OfferId.Value.Should().StartWith("OFFER-");
+            Assert.StartsWith("MEX", line.Customer.MexId.Value);
+            Assert.StartsWith("OFFER-", line.CommercialKeyRoot.OfferId.Value);
         });
     }
 
@@ -80,27 +81,27 @@ public class SubscriptionManagementCsvIngesterTests
     {
         var result = Ingest("partial-success.csv");
 
-        result.Status.Should().Be(IngestionOutcomeStatus.PartialSuccess);
-        result.RawRows.Should().HaveCount(1);
-        result.Summary.RowsSkipped.Should().Be(2);
-        result.LogEntries.Should().Contain(e => e.Reason == IngestionFailureReason.MexIdMissing);
-        result.LogEntries.Should().Contain(e => e.Reason == IngestionFailureReason.LicenceCountUnparseable);
+        Assert.Equal(IngestionOutcomeStatus.PartialSuccess, result.Status);
+        Assert.Single(result.RawRows);
+        Assert.Equal(2, result.Summary.RowsSkipped);
+        Assert.Contains(result.LogEntries, e => e.Reason == IngestionFailureReason.MexIdMissing);
+        Assert.Contains(result.LogEntries, e => e.Reason == IngestionFailureReason.LicenceCountUnparseable);
     }
 
     [Fact]
     public void Lifecycle_columns_populate_optional_fields()
     {
         var result = Ingest("lifecycle-columns.csv");
-        var line = result.SubscriptionLines.Should().ContainSingle().Subject;
+        var line = Assert.Single(result.SubscriptionLines);
 
-        line.Lifecycle.Should().NotBeNull();
-        line.Lifecycle!.IsNce.Should().BeTrue();
-        line.Lifecycle.IsTrial.Should().BeFalse();
-        line.Lifecycle.EndOfTermAction.Should().Be("Auto-renew");
-        line.Lifecycle.CancellableUntil.Should().Be(new DateOnly(2026, 3, 31));
-        line.Lifecycle.AssignedLicenceCount.Should().Be(20);
-        line.Lifecycle.Price.Should().NotBeNull();
-        line.Lifecycle.ErpPrice.Should().NotBeNull();
+        Assert.NotNull(line.Lifecycle);
+        Assert.True(line.Lifecycle!.IsNce);
+        Assert.False(line.Lifecycle.IsTrial);
+        Assert.Equal("Auto-renew", line.Lifecycle.EndOfTermAction);
+        Assert.Equal(new DateOnly(2026, 3, 31), line.Lifecycle.CancellableUntil);
+        Assert.Equal(20, line.Lifecycle.AssignedLicenceCount);
+        Assert.NotNull(line.Lifecycle.Price);
+        Assert.NotNull(line.Lifecycle.ErpPrice);
     }
 
     [Fact]
@@ -109,8 +110,8 @@ public class SubscriptionManagementCsvIngesterTests
         var first = Ingest("subscription-management-sample-a.csv");
         var second = Ingest("subscription-management-sample-a.csv");
 
-        second.SourceDocumentId.Should().Be(first.SourceDocumentId);
-        second.RawRows.Select(r => r.Id).Should().BeEquivalentTo(first.RawRows.Select(r => r.Id));
+        Assert.Equal(first.SourceDocumentId, second.SourceDocumentId);
+        Assert.Equivalent(first.RawRows.Select(r => r.Id), second.RawRows.Select(r => r.Id));
     }
 
     [Fact]
@@ -118,10 +119,10 @@ public class SubscriptionManagementCsvIngesterTests
     {
         var result = Ingest("headers-only.csv");
 
-        result.Status.Should().Be(IngestionOutcomeStatus.Failure);
-        result.RawRows.Should().BeEmpty();
-        result.SubscriptionLines.Should().BeEmpty();
-        result.LogEntries.Should().Contain(e =>
+        Assert.Equal(IngestionOutcomeStatus.Failure, result.Status);
+        Assert.Empty(result.RawRows);
+        Assert.Empty(result.SubscriptionLines);
+        Assert.Contains(result.LogEntries, e =>
             e.Reason == IngestionFailureReason.EmptyFile &&
             e.Severity == IngestionLogSeverity.Error);
     }
@@ -139,8 +140,8 @@ public class SubscriptionManagementCsvIngesterTests
             },
             TestContext.Current.CancellationToken);
 
-        result.Status.Should().Be(IngestionOutcomeStatus.Failure);
-        result.LogEntries.Should().Contain(e => e.Reason == IngestionFailureReason.FileSizeExceeded);
+        Assert.Equal(IngestionOutcomeStatus.Failure, result.Status);
+        Assert.Contains(result.LogEntries, e => e.Reason == IngestionFailureReason.FileSizeExceeded);
     }
 
     private static SubscriptionManagementCsvIngestionResult Ingest(string fileName)

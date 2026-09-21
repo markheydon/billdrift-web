@@ -1,7 +1,6 @@
 using BillDrift.Application.CatalogueReconciliation;
 using BillDrift.Domain.CatalogueReconciliation;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.CatalogueReconciliation;
 
@@ -23,6 +22,6 @@ public class StripeCatalogueSnapshotIndexTests
         var index = StripeCatalogueSnapshotIndex.Build([product], []);
         var found = index.FindProducts(CommercialKeyRoot.Create(offer, sku));
 
-        found.Should().ContainSingle(p => p.ProductId.Value == "prod_1");
+        Assert.Single(found, p => p.ProductId.Value == "prod_1");
     }
 }

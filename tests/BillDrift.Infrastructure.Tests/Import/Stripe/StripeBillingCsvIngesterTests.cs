@@ -15,17 +15,17 @@ public class StripeBillingCsvIngesterTests
     {
         var result = IngestSubscriptions("subscriptions-sample-a.csv");
 
-        result.Status.Should().BeOneOf(IngestionOutcomeStatus.Success, IngestionOutcomeStatus.PartialSuccess);
-        result.SubscriptionItems.Should().NotBeEmpty();
-        result.SubscriptionItems.Should().AllSatisfy(i =>
+        Assert.Contains(result.Status, new[] { IngestionOutcomeStatus.Success, IngestionOutcomeStatus.PartialSuccess });
+        Assert.NotEmpty(result.SubscriptionItems);
+        Assert.All(result.SubscriptionItems, i =>
         {
-            i.CustomerId.Should().NotBeNullOrWhiteSpace();
-            i.SubscriptionId.Should().NotBeNullOrWhiteSpace();
-            i.ProductId.Should().NotBeNullOrWhiteSpace();
-            i.PriceId.Should().NotBeNullOrWhiteSpace();
+            Assert.False(string.IsNullOrWhiteSpace(i.CustomerId));
+            Assert.False(string.IsNullOrWhiteSpace(i.SubscriptionId));
+            Assert.False(string.IsNullOrWhiteSpace(i.ProductId));
+            Assert.False(string.IsNullOrWhiteSpace(i.PriceId));
         });
-        result.Products.Should().BeEmpty();
-        result.Prices.Should().BeEmpty();
+        Assert.Empty(result.Products);
+        Assert.Empty(result.Prices);
     }
 
     [Fact]
@@ -34,8 +34,8 @@ public class StripeBillingCsvIngesterTests
         var result = IngestSubscriptions("subscriptions-sample-a.csv");
 
         var sub001Items = result.SubscriptionItems.Where(i => i.SubscriptionId == "sub_001").ToList();
-        sub001Items.Should().HaveCount(2);
-        sub001Items.Select(i => i.SubscriptionItemId).Should().BeEquivalentTo(["si_001", "si_002"]);
+        Assert.Equal(2, sub001Items.Count);
+        Assert.Equivalent(new[] { "si_001", "si_002" }, sub001Items.Select(i => i.SubscriptionItemId));
     }
 
     [Fact]
@@ -43,13 +43,13 @@ public class StripeBillingCsvIngesterTests
     {
         var result = IngestBundle("subscriptions-sample-a.csv", "products-sample-a.csv", "prices-sample-a.csv");
 
-        result.Products.Should().HaveCount(2);
-        result.Prices.Should().HaveCount(2);
+        Assert.Equal(2, result.Products.Count);
+        Assert.Equal(2, result.Prices.Count);
 
         foreach (var item in result.SubscriptionItems)
         {
-            result.Products.Select(p => p.ProductId).Should().Contain(item.ProductId);
-            result.Prices.Select(p => p.PriceId).Should().Contain(item.PriceId);
+            Assert.Contains(item.ProductId, result.Products.Select(p => p.ProductId));
+            Assert.Contains(item.PriceId, result.Prices.Select(p => p.PriceId));
         }
     }
 
@@ -86,8 +86,8 @@ public class StripeBillingCsvIngesterTests
     {
         var result = IngestSubscriptions("subscriptions-mixed-status.csv");
 
-        result.SubscriptionItems.Should().NotContain(i => i.SubscriptionStatus.Equals("canceled", StringComparison.OrdinalIgnoreCase));
-        result.Summary.SubscriptionsFilteredByStatus.Should().BeGreaterThan(0);
+        Assert.DoesNotContain(result.SubscriptionItems, i => i.SubscriptionStatus.Equals("canceled", StringComparison.OrdinalIgnoreCase));
+        Assert.True(result.Summary.SubscriptionsFilteredByStatus > 0);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class StripeBillingCsvIngesterTests
             [FixtureFile(StripeCsvFileKind.Subscriptions, "subscriptions-mixed-status.csv")],
             new StripeCsvIngestionOptions(IncludeInactiveSubscriptions: true));
 
-        result.SubscriptionItems.Should().Contain(i => i.SubscriptionStatus.Equals("canceled", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.SubscriptionItems, i => i.SubscriptionStatus.Equals("canceled", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -105,9 +105,9 @@ public class StripeBillingCsvIngesterTests
     {
         var result = IngestSubscriptions("subscriptions-partial-metadata.csv");
 
-        result.SubscriptionItems.Should().HaveCount(3);
-        result.Summary.MetadataWarnings.Should().BeGreaterThan(0);
-        result.LogEntries.Should().Contain(e =>
+        Assert.Equal(3, result.SubscriptionItems.Count);
+        Assert.True(result.Summary.MetadataWarnings > 0);
+        Assert.Contains(result.LogEntries, e =>
             e.Reason == IngestionFailureReason.MetadataIncomplete ||
             e.Reason == IngestionFailureReason.MetadataInconsistent);
     }
@@ -117,11 +117,11 @@ public class StripeBillingCsvIngesterTests
     {
         var result = IngestSubscriptions("subscriptions-column-variant.csv");
 
-        result.SubscriptionItems.Should().HaveCount(2);
-        result.SubscriptionItems.Should().AllSatisfy(i =>
+        Assert.Equal(2, result.SubscriptionItems.Count);
+        Assert.All(result.SubscriptionItems, i =>
         {
-            i.CustomerId.Should().Be("cus_A1");
-            i.SubscriptionId.Should().Be("sub_001");
+            Assert.Equal("cus_A1", i.CustomerId);
+            Assert.Equal("sub_001", i.SubscriptionId);
         });
     }
 
@@ -130,10 +130,10 @@ public class StripeBillingCsvIngesterTests
     {
         var result = IngestSubscriptions("subscriptions-partial-success.csv");
 
-        result.Status.Should().Be(IngestionOutcomeStatus.PartialSuccess);
-        result.SubscriptionItems.Should().HaveCount(2);
-        result.Summary.SubscriptionItemsSkipped.Should().Be(1);
-        result.LogEntries.Should().Contain(e => e.Reason == IngestionFailureReason.QuantityUnparseable);
+        Assert.Equal(IngestionOutcomeStatus.PartialSuccess, result.Status);
+        Assert.Equal(2, result.SubscriptionItems.Count);
+        Assert.Equal(1, result.Summary.SubscriptionItemsSkipped);
+        Assert.Contains(result.LogEntries, e => e.Reason == IngestionFailureReason.QuantityUnparseable);
     }
 
     [Fact]
@@ -142,8 +142,8 @@ public class StripeBillingCsvIngesterTests
         var first = IngestBundle("subscriptions-sample-a.csv", "products-sample-a.csv", "prices-sample-a.csv");
         var second = IngestBundle("subscriptions-sample-a.csv", "products-sample-a.csv", "prices-sample-a.csv");
 
-        second.BundleId.Should().Be(first.BundleId);
-        second.SubscriptionItems.Select(i => i.Id).Should().BeEquivalentTo(first.SubscriptionItems.Select(i => i.Id));
+        Assert.Equal(first.BundleId, second.BundleId);
+        Assert.Equivalent(first.SubscriptionItems.Select(i => i.Id), second.SubscriptionItems.Select(i => i.Id));
     }
 
     [Fact]
@@ -163,12 +163,13 @@ public class StripeBillingCsvIngesterTests
                 "no-item-id.csv")
         ]);
 
-        result.SubscriptionItems.Should().HaveCount(2);
-        result.SubscriptionItems.Select(i => i.Id.SourceLineKey).Should().OnlyHaveUniqueItems();
-        result.SubscriptionItems.Should().AllSatisfy(i =>
+        Assert.Equal(2, result.SubscriptionItems.Count);
+        var sourceLineKeys = result.SubscriptionItems.Select(i => i.Id.SourceLineKey).ToList();
+        Assert.Equal(sourceLineKeys.Count, sourceLineKeys.Distinct().Count());
+        Assert.All(result.SubscriptionItems, i =>
         {
-            i.SubscriptionItemId.Should().Be("sub_001");
-            i.Id.SourceLineKey.Should().StartWith("sub_001:");
+            Assert.Equal("sub_001", i.SubscriptionItemId);
+            Assert.StartsWith("sub_001:", i.Id.SourceLineKey);
         });
     }
 

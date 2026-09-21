@@ -1,7 +1,6 @@
 using BillDrift.Application.History;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.History;
 
@@ -16,7 +15,7 @@ public sealed class StableMismatchKeyFactoryTests
         var key1 = _factory.Create(mismatch);
         var key2 = _factory.Create(mismatch);
 
-        key1.Should().Be(key2);
+        Assert.Equal(key2, key1);
     }
 
     [Fact]
@@ -25,7 +24,7 @@ public sealed class StableMismatchKeyFactoryTests
         var key1 = _factory.Create(CreateMismatch("MEX001"));
         var key2 = _factory.Create(CreateMismatch("MEX002"));
 
-        key1.Should().NotBe(key2);
+        Assert.NotEqual(key2, key1);
     }
 
     private static Mismatch CreateMismatch(string mexId = "MEX001") =>

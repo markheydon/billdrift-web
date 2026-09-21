@@ -1,5 +1,4 @@
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.ExceptionSurfacing;
 
@@ -12,7 +11,7 @@ public class DerivedDetectorTests
     {
         var vm = _builder.SurfaceScenario("orphaned-stripe-item");
 
-        vm.FlatExceptions().Should().Contain(e =>
+        Assert.Contains(vm.FlatExceptions(), e =>
             e.Category == ExceptionCategory.OrphanedBillingItem &&
             e.Domain == ReconciliationDomain.TruthVsStripe);
     }
@@ -22,7 +21,7 @@ public class DerivedDetectorTests
     {
         var vm = _builder.SurfaceScenario("mex-id-mismatch");
 
-        vm.FlatExceptions().Should().Contain(e =>
+        Assert.Contains(vm.FlatExceptions(), e =>
             e.Category == ExceptionCategory.MexIdMismatch &&
             e.Domain == ReconciliationDomain.SupplierCostVsMapping);
     }
@@ -33,6 +32,6 @@ public class DerivedDetectorTests
         var vm = _builder.SurfaceScenario("orphaned-stripe-item");
 
         var orphan = vm.FlatExceptions().Single(e => e.Category == ExceptionCategory.OrphanedBillingItem);
-        orphan.Evidence.Should().Contain(e => e.Source == EvidenceSource.StripeSubscriptionItem);
+        Assert.Contains(orphan.Evidence, e => e.Source == EvidenceSource.StripeSubscriptionItem);
     }
 }

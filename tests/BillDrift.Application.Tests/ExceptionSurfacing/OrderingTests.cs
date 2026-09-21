@@ -1,5 +1,4 @@
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.ExceptionSurfacing;
 
@@ -12,9 +11,9 @@ public class OrderingTests
     {
         var vm = _builder.SurfaceScenario("mixed-three-customers");
 
-        vm.CustomerGroups.Should().HaveCountGreaterThan(1);
+        Assert.True(vm.CustomerGroups.Count > 1);
         var first = vm.CustomerGroups[0];
-        first.HighestSeverity.Should().Be(ExceptionSeverity.Error);
+        Assert.Equal(ExceptionSeverity.Error, first.HighestSeverity);
     }
 
     [Fact]
@@ -31,7 +30,7 @@ public class OrderingTests
                 var curr = ordered[i];
                 var prevRank = SeverityRank(prev.Severity);
                 var currRank = SeverityRank(curr.Severity);
-                (prevRank <= currRank).Should().BeTrue();
+                Assert.True((prevRank <= currRank));
             }
         }
     }

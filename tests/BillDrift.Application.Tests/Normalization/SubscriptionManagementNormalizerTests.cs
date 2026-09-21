@@ -1,7 +1,6 @@
 using BillDrift.Application.Normalization;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Import;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Normalization;
 
@@ -15,8 +14,8 @@ public class SubscriptionManagementNormalizerTests
         var raw = CreateRaw(mexId: "  mex001  ", offerId: "OFFER-1", skuId: "SKU-1", licences: "5");
         var line = _normalizer.Normalize(raw);
 
-        line.Customer.MexId.Value.Should().Be("MEX001");
-        raw.MexIdRaw.Should().Be("  mex001  ");
+        Assert.Equal("MEX001", line.Customer.MexId.Value);
+        Assert.Equal("  mex001  ", raw.MexIdRaw);
     }
 
     [Fact]
@@ -25,8 +24,8 @@ public class SubscriptionManagementNormalizerTests
         var raw = CreateRaw(mexId: "MEX001", offerId: " OFFER-1 ", skuId: " SKU-1 ", licences: "5");
         var line = _normalizer.Normalize(raw);
 
-        line.CommercialKeyRoot.OfferId.Value.Should().Be("OFFER-1");
-        line.CommercialKeyRoot.SkuId.Value.Should().Be("SKU-1");
+        Assert.Equal("OFFER-1", line.CommercialKeyRoot.OfferId.Value);
+        Assert.Equal("SKU-1", line.CommercialKeyRoot.SkuId.Value);
     }
 
     [Fact]
@@ -40,7 +39,7 @@ public class SubscriptionManagementNormalizerTests
             customerName: "  Contoso Ltd  ");
         var line = _normalizer.Normalize(raw);
 
-        line.Customer.DisplayName.Should().Be("Contoso Ltd");
+        Assert.Equal("Contoso Ltd", line.Customer.DisplayName);
     }
 
     [Fact]
@@ -48,7 +47,7 @@ public class SubscriptionManagementNormalizerTests
     {
         var raw = CreateRaw(mexId: "MEX001", offerId: "", skuId: "SKU-1", licences: "5");
         var act = () => _normalizer.Normalize(raw);
-        act.Should().Throw<NormalizationException>();
+        Assert.Throws<NormalizationException>(act);
     }
 
     private static RawSubscriptionManagementRow CreateRaw(

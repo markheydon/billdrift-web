@@ -2,7 +2,6 @@ using BillDrift.Application.History;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.History;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.History;
 
@@ -33,9 +32,9 @@ public sealed class RunComparisonServiceTests
             [],
             []);
 
-        report.ExceptionDeltas.NewExceptions.Should().HaveCount(1);
-        report.ExceptionDeltas.ResolvedExceptions.Should().HaveCount(1);
-        report.ExceptionDeltas.PersistingExceptions.Should().HaveCount(1);
+        Assert.Single(report.ExceptionDeltas.NewExceptions);
+        Assert.Single(report.ExceptionDeltas.ResolvedExceptions);
+        Assert.Single(report.ExceptionDeltas.PersistingExceptions);
     }
 
     [Fact]
@@ -50,7 +49,7 @@ public sealed class RunComparisonServiceTests
 
         var report = _service.Compare(earlierId, laterId, earlier, later, earlierMapping, laterMapping, [], []);
 
-        report.MappingVersionChanged.Should().BeTrue();
+        Assert.True(report.MappingVersionChanged);
     }
 
     private static RunResultsSnapshot CreateSnapshot(RunId runId, IReadOnlyList<Mismatch> mismatches) =>

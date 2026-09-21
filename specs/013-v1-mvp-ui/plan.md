@@ -17,7 +17,7 @@ Deliver the V1 operator experience end-to-end: upload all source files (Giacom P
 **Language/Version**: C# 14 / .NET 10  
 **Primary Dependencies**: Microsoft.FluentUI.AspNetCore.Components v5 (Web); existing BillDrift Application/Infrastructure services (frozen); Aspire service discovery (`https+http://api`)  
 **Storage**: Azure Blob + Table via Aspire DI (existing — ingestion archives, run history, approval store); **no SQL**  
-**Testing**: xUnit + FluentAssertions; API contract tests via WebApplicationFactory; existing Application tests unchanged  
+**Testing**: xUnit v3 + NSubstitute + built-in Assert; API contract tests via WebApplicationFactory; existing Application tests unchanged  
 **Target Platform**: .NET Aspire AppHost (local Azurite + Blazor Interactive Server)  
 **Project Type**: Modular Aspire solution — Api (new endpoints) + Web (new/extended pages) + minimal enablement glue  
 **Performance Goals**: Upload confirmation <1 min per file (SC-001); reconciliation orchestration <30s for typical monthly bundle  

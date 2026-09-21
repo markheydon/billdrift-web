@@ -1,6 +1,5 @@
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Domain.Tests.Reconciliation;
 
@@ -14,7 +13,7 @@ public class ProposedChangeTests
 
         var key = IdempotencyKey.Create(runId, mismatchId, ProposedActionType.UpdateQuantity);
 
-        key.Value.Should().Be("11111111-1111-1111-1111-111111111111:22222222-2222-2222-2222-222222222222:UpdateQuantity");
+        Assert.Equal("11111111-1111-1111-1111-111111111111:22222222-2222-2222-2222-222222222222:UpdateQuantity", key.Value);
     }
 
     [Fact]
@@ -41,7 +40,7 @@ public class ProposedChangeTests
                     : null,
                 0);
 
-            change.ActionType.Should().Be(action);
+            Assert.Equal(action, change.ActionType);
         }
     }
 }

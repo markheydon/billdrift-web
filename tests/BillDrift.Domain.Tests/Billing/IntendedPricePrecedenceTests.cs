@@ -1,7 +1,6 @@
 using BillDrift.Application.Normalization;
 using BillDrift.Domain.Billing;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Domain.Tests.Billing;
 
@@ -23,9 +22,9 @@ public class IntendedPricePrecedenceTests
 
         var resolved = _resolver.Resolve(key, [catalogue, manual]);
 
-        resolved.Should().NotBeNull();
-        resolved!.Source.Should().Be(PriceSource.ManualOverride);
-        resolved.Rrp.Amount.Should().Be(15m);
+        Assert.NotNull(resolved);
+        Assert.Equal(PriceSource.ManualOverride, resolved!.Source);
+        Assert.Equal(15m, resolved.Rrp.Amount);
     }
 
     private static IntendedPrice CreatePrice(CommercialKey key, PriceSource source, decimal rrp) =>

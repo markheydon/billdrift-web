@@ -2,7 +2,6 @@ using BillDrift.Application.Approval;
 using BillDrift.Domain.Approval;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Approval;
 
@@ -24,9 +23,9 @@ public sealed class ApprovalServiceDecisionTests
             new ApproveProposalCommand(run.Id, proposal.Id),
             cancellationToken);
 
-        decision.NewState.Should().Be(ApprovalDecisionState.Approved);
+        Assert.Equal(ApprovalDecisionState.Approved, decision.NewState);
         var updated = await store.GetProposalAsync(run.Id, proposal.Id, cancellationToken);
-        updated!.ApprovedWhileEligible.Should().BeTrue();
+        Assert.True(updated!.ApprovedWhileEligible);
     }
 
     [Fact]
@@ -41,13 +40,13 @@ public sealed class ApprovalServiceDecisionTests
         var proposal = (await store.ListProposalsByRunAsync(run.Id, cancellationToken)).First();
 
         var act = () => service.RejectAsync(new RejectProposalCommand(run.Id, proposal.Id, " "), cancellationToken);
-        await act.Should().ThrowAsync<ApprovalValidationException>();
+        await Assert.ThrowsAsync<ApprovalValidationException>(act);
 
         var decision = await service.RejectAsync(
             new RejectProposalCommand(run.Id, proposal.Id, "Manual fix in Stripe"),
             cancellationToken);
 
-        decision.NewState.Should().Be(ApprovalDecisionState.Rejected);
+        Assert.Equal(ApprovalDecisionState.Rejected, decision.NewState);
     }
 
     [Fact]
@@ -68,8 +67,7 @@ public sealed class ApprovalServiceDecisionTests
         await service.IngestAsync(new ApprovalIngestionRequest(run2, exceptions2, null), cancellationToken);
 
         var historical = await store.GetProposalAsync(run1.Id, proposal1.Id, cancellationToken);
-        historical!.State.Should().Be(ApprovalDecisionState.Historical);
-        (await store.ListAuditEventsAsync(run1.Id, cancellationToken: cancellationToken)).Count
-            .Should().BeGreaterThanOrEqualTo(decisionsBefore);
+        Assert.Equal(ApprovalDecisionState.Historical, historical!.State);
+        Assert.True((await store.ListAuditEventsAsync(run1.Id, cancellationToken: cancellationToken)).Count >= decisionsBefore);
     }
 }

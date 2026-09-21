@@ -1,6 +1,5 @@
 using System.Net;
 using BillDrift.Api.Tests.Infrastructure;
-using FluentAssertions;
 
 namespace BillDrift.Api.Tests.Imports;
 
@@ -13,7 +12,7 @@ public sealed class GiacomPdfImportEndpointsTests(BillDriftApiWebApplicationFact
     {
         var response = await _client.PostAsync("/api/imports/giacom-pdf", null, TestContext.Current.CancellationToken);
 
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -21,8 +20,8 @@ public sealed class GiacomPdfImportEndpointsTests(BillDriftApiWebApplicationFact
     {
         var response = await _client.GetAsync("/api/imports/giacom-pdf", TestContext.Current.CancellationToken);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-        body.Should().Be("[]");
+        Assert.Equal("[]", body);
     }
 }

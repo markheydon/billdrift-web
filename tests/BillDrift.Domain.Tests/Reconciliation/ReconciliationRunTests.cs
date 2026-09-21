@@ -2,7 +2,6 @@ using BillDrift.Application.Reconciliation;
 using BillDrift.Application.Tests.Reconciliation;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Domain.Tests.Reconciliation;
 
@@ -22,8 +21,8 @@ public class ReconciliationRunTests
             [],
             []);
 
-        run.Scope.Start.Should().Be(new DateOnly(2026, 1, 1));
-        run.Inputs.ProductMappings.Should().BeEmpty();
+        Assert.Equal(new DateOnly(2026, 1, 1), run.Scope.Start);
+        Assert.Empty(run.Inputs.ProductMappings);
     }
 
     [Fact]
@@ -40,7 +39,7 @@ public class ReconciliationRunTests
             null,
             MatchConfidence.None);
 
-        group.Customer.MexId.Should().Be(MexId.Create("MEX1"));
+        Assert.Equal(MexId.Create("MEX1"), group.Customer.MexId);
     }
 }
 
@@ -58,8 +57,8 @@ public class DeterminismTests
         var run1 = engine.Execute(request);
         var run2 = engine.Execute(request);
 
-        run1.Id.Should().Be(run2.Id);
-        run1.Mismatches.Should().BeEquivalentTo(run2.Mismatches);
-        run1.ProposedChanges.Should().BeEquivalentTo(run2.ProposedChanges);
+        Assert.Equal(run2.Id, run1.Id);
+        Assert.Equivalent(run2.Mismatches, run1.Mismatches);
+        Assert.Equivalent(run2.ProposedChanges, run1.ProposedChanges);
     }
 }

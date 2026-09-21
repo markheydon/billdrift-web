@@ -1,7 +1,6 @@
 using BillDrift.Domain.Billing;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Tests.Import;
-using FluentAssertions;
 
 namespace BillDrift.Domain.Tests.Billing;
 
@@ -25,8 +24,8 @@ public class NormalizedEntityTests
             [],
             source);
 
-        line.Source.SourceLineKey.Should().Be("REF-1001");
-        line.ProductName.Should().Be("Microsoft 365 Business Basic");
+        Assert.Equal("REF-1001", line.Source.SourceLineKey);
+        Assert.Equal("Microsoft 365 Business Basic", line.ProductName);
     }
 
     [Fact]
@@ -51,6 +50,6 @@ public class NormalizedEntityTests
             SourceReference.FromRawImportId(
                 RawImportId.Create(ImportSourceKind.StripeExport, "stripe-export", "si_test456")));
 
-        item.MappingMetadata.OfferId!.Value.Value.Should().Be("OFFER-1");
+        Assert.Equal("OFFER-1", item.MappingMetadata.OfferId!.Value.Value);
     }
 }

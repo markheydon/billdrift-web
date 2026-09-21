@@ -1,5 +1,4 @@
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.ExceptionSurfacing;
 
@@ -16,8 +15,7 @@ public class ConsolidationTests
             .Where(e => e.Domain == ReconciliationDomain.PricingVsCatalogue)
             .ToList();
 
-        catalogue.Should().NotBeEmpty();
-        catalogue.Select(e => e.Product?.CommercialKey).Distinct().Count()
-            .Should().BeLessThanOrEqualTo(catalogue.Count);
+        Assert.NotEmpty(catalogue);
+        Assert.True(catalogue.Select(e => e.Product?.CommercialKey).Distinct().Count() <= catalogue.Count);
     }
 }

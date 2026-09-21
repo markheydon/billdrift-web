@@ -19,25 +19,25 @@ public static class GoldenFileComparer
         var expected = JsonSerializer.Deserialize<GoldenResult>(expectedJson, JsonOptions)
             ?? throw new InvalidOperationException($"Golden file empty: {goldenFilePath}");
 
-        actual.Status.ToString().Should().Be(expected.Status);
-        actual.RawCatalogueRows.Should().HaveCount(expected.RawCatalogueRows.Count);
-        actual.ResolvedPrices.Should().HaveCount(expected.ResolvedPrices.Count);
-        actual.Summary.CatalogueRowsEmitted.Should().Be(expected.Summary.CatalogueRowsEmitted);
-        actual.Summary.CatalogueRowsSkipped.Should().Be(expected.Summary.CatalogueRowsSkipped);
-        actual.Summary.ResolvedPriceCount.Should().Be(expected.Summary.ResolvedPriceCount);
+        Assert.Equal(expected.Status, actual.Status.ToString());
+        Assert.Equal(expected.RawCatalogueRows.Count, actual.RawCatalogueRows.Count);
+        Assert.Equal(expected.ResolvedPrices.Count, actual.ResolvedPrices.Count);
+        Assert.Equal(expected.Summary.CatalogueRowsEmitted, actual.Summary.CatalogueRowsEmitted);
+        Assert.Equal(expected.Summary.CatalogueRowsSkipped, actual.Summary.CatalogueRowsSkipped);
+        Assert.Equal(expected.Summary.ResolvedPriceCount, actual.Summary.ResolvedPriceCount);
 
         for (var i = 0; i < expected.RawCatalogueRows.Count; i++)
         {
             var exp = expected.RawCatalogueRows[i];
             var act = actual.RawCatalogueRows[i];
 
-            act.OfferIdRaw.Should().Be(exp.OfferIdRaw);
-            act.SkuIdRaw.Should().Be(exp.SkuIdRaw);
-            act.TermRaw.Should().Be(exp.TermRaw);
-            act.FrequencyRaw.Should().Be(exp.FrequencyRaw);
-            act.WholesaleRaw.Should().Be(exp.WholesaleRaw);
-            act.RrpRaw.Should().Be(exp.RrpRaw);
-            act.Id.SourceLineKey.Should().Be(exp.SourceLineKey);
+            Assert.Equal(exp.OfferIdRaw, act.OfferIdRaw);
+            Assert.Equal(exp.SkuIdRaw, act.SkuIdRaw);
+            Assert.Equal(exp.TermRaw, act.TermRaw);
+            Assert.Equal(exp.FrequencyRaw, act.FrequencyRaw);
+            Assert.Equal(exp.WholesaleRaw, act.WholesaleRaw);
+            Assert.Equal(exp.RrpRaw, act.RrpRaw);
+            Assert.Equal(exp.SourceLineKey, act.Id.SourceLineKey);
         }
 
         for (var i = 0; i < expected.ResolvedPrices.Count; i++)
@@ -45,14 +45,14 @@ public static class GoldenFileComparer
             var exp = expected.ResolvedPrices[i];
             var act = actual.ResolvedPrices[i];
 
-            act.Key.OfferId.Value.Should().Be(exp.OfferId);
-            act.Key.SkuId.Value.Should().Be(exp.SkuId);
-            act.Key.Term.ToString().Should().Be(exp.Term);
-            act.Key.Frequency.ToString().Should().Be(exp.Frequency);
-            act.Rrp.Amount.Should().Be(exp.Rrp);
-            act.Wholesale.Amount.Should().Be(exp.Wholesale);
-            act.Source.ToString().Should().Be(exp.Source);
-            act.Status.ToString().Should().Be(exp.Status);
+            Assert.Equal(exp.OfferId, act.Key.OfferId.Value);
+            Assert.Equal(exp.SkuId, act.Key.SkuId.Value);
+            Assert.Equal(exp.Term, act.Key.Term.ToString());
+            Assert.Equal(exp.Frequency, act.Key.Frequency.ToString());
+            Assert.Equal(exp.Rrp, act.Rrp.Amount);
+            Assert.Equal(exp.Wholesale, act.Wholesale.Amount);
+            Assert.Equal(exp.Source, act.Source.ToString());
+            Assert.Equal(exp.Status, act.Status.ToString());
         }
     }
 

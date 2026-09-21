@@ -13,14 +13,16 @@ public class GiacomBillingPdfIngesterTests
     {
         var result = Ingest(SyntheticGiacomPdfBuilder.BuildPreBillingSampleA());
 
-        result.Status.Should().BeOneOf(IngestionOutcomeStatus.Success, IngestionOutcomeStatus.PartialSuccess);
-        result.ReportType.Should().Be(GiacomReportType.PreBilling);
-        result.Lines.Should().HaveCountGreaterThan(0);
-        result.Lines.Should().OnlyContain(l =>
-            !string.IsNullOrWhiteSpace(l.MexIdRaw) &&
-            !string.IsNullOrWhiteSpace(l.ProductNameRaw) &&
-            !string.IsNullOrWhiteSpace(l.QuantityRaw) &&
-            !string.IsNullOrWhiteSpace(l.LineCostRaw));
+        Assert.Contains(result.Status, new[] { IngestionOutcomeStatus.Success, IngestionOutcomeStatus.PartialSuccess });
+        Assert.Equal(GiacomReportType.PreBilling, result.ReportType);
+        Assert.True(result.Lines.Count > 0);
+        Assert.All(result.Lines, l =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(l.MexIdRaw));
+            Assert.False(string.IsNullOrWhiteSpace(l.ProductNameRaw));
+            Assert.False(string.IsNullOrWhiteSpace(l.QuantityRaw));
+            Assert.False(string.IsNullOrWhiteSpace(l.LineCostRaw));
+        });
 
         var goldenPath = Path.Combine(FixtureRoot, "expected", "pre-billing-sample-a.json");
         if (File.Exists(goldenPath))
@@ -34,8 +36,8 @@ public class GiacomBillingPdfIngesterTests
     {
         var result = Ingest(SyntheticGiacomPdfBuilder.BuildPostBillingSampleA());
 
-        result.ReportType.Should().Be(GiacomReportType.PostBilling);
-        result.Lines.Should().HaveCountGreaterThan(0);
+        Assert.Equal(GiacomReportType.PostBilling, result.ReportType);
+        Assert.True(result.Lines.Count > 0);
     }
 
     [Fact]
@@ -43,8 +45,8 @@ public class GiacomBillingPdfIngesterTests
     {
         var result = Ingest(SyntheticGiacomPdfBuilder.BuildPreBillingSampleB());
 
-        result.Lines.Should().HaveCountGreaterThanOrEqualTo(2);
-        result.Lines.Should().Contain(l => l.ChargeTypeRaw.Contains("Adjustment", StringComparison.OrdinalIgnoreCase));
+        Assert.True(result.Lines.Count >= 2);
+        Assert.Contains(result.Lines, l => l.ChargeTypeRaw.Contains("Adjustment", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -52,8 +54,8 @@ public class GiacomBillingPdfIngesterTests
     {
         var result = Ingest(SyntheticGiacomPdfBuilder.BuildPostBillingSampleB());
 
-        result.ReportType.Should().Be(GiacomReportType.PostBilling);
-        result.Lines.Should().HaveCountGreaterThanOrEqualTo(1);
+        Assert.Equal(GiacomReportType.PostBilling, result.ReportType);
+        Assert.True(result.Lines.Count >= 1);
     }
 
     [Fact]
@@ -61,9 +63,9 @@ public class GiacomBillingPdfIngesterTests
     {
         var result = Ingest(SyntheticGiacomPdfBuilder.BuildWrappedProductNameSample());
 
-        result.Lines.Should().ContainSingle();
-        result.Lines[0].ProductNameRaw.Should().Contain("Security Add-on");
-        result.Lines[0].ProductNameRaw.Should().Contain("365 Premium");
+        Assert.Single(result.Lines);
+        Assert.Contains("Security Add-on", result.Lines[0].ProductNameRaw);
+        Assert.Contains("365 Premium", result.Lines[0].ProductNameRaw);
     }
 
     [Fact]
@@ -71,12 +73,12 @@ public class GiacomBillingPdfIngesterTests
     {
         var result = Ingest(SyntheticGiacomPdfBuilder.BuildPartialSuccessSample());
 
-        result.Status.Should().Be(IngestionOutcomeStatus.PartialSuccess);
-        result.Lines.Should().HaveCount(1);
-        result.LogEntries.Should().Contain(e =>
+        Assert.Equal(IngestionOutcomeStatus.PartialSuccess, result.Status);
+        Assert.Single(result.Lines);
+        Assert.Contains(result.LogEntries, e =>
             e.Reason == IngestionFailureReason.QuantityUnparseable &&
             e.Location!.LineIndex.HasValue);
-        result.Summary.LinesSkipped.Should().BeGreaterThanOrEqualTo(1);
+        Assert.True(result.Summary.LinesSkipped >= 1);
     }
 
     [Fact]
@@ -86,9 +88,9 @@ public class GiacomBillingPdfIngesterTests
         using var stream = new MemoryStream(encryptedBytes);
         var result = _ingester.Ingest(stream, TestContext.Current.CancellationToken);
 
-        result.Status.Should().Be(IngestionOutcomeStatus.Failure);
-        result.Lines.Should().BeEmpty();
-        result.LogEntries.Should().Contain(e =>
+        Assert.Equal(IngestionOutcomeStatus.Failure, result.Status);
+        Assert.Empty(result.Lines);
+        Assert.Contains(result.LogEntries, e =>
             e.Reason == IngestionFailureReason.DocumentEncrypted ||
             e.Reason == IngestionFailureReason.DocumentUnreadable);
     }
@@ -100,12 +102,12 @@ public class GiacomBillingPdfIngesterTests
         var first = Ingest(pdf);
         var second = Ingest(pdf);
 
-        second.Lines.Should().HaveCount(first.Lines.Count);
+        Assert.Equal(first.Lines.Count, second.Lines.Count);
         for (var i = 0; i < first.Lines.Count; i++)
         {
-            first.Lines[i].Id.Should().Be(second.Lines[i].Id);
-            first.Lines[i].ProductNameRaw.Should().Be(second.Lines[i].ProductNameRaw);
-            first.Lines[i].MexIdRaw.Should().Be(second.Lines[i].MexIdRaw);
+            Assert.Equal(second.Lines[i].Id, first.Lines[i].Id);
+            Assert.Equal(second.Lines[i].ProductNameRaw, first.Lines[i].ProductNameRaw);
+            Assert.Equal(second.Lines[i].MexIdRaw, first.Lines[i].MexIdRaw);
         }
     }
 
@@ -114,11 +116,11 @@ public class GiacomBillingPdfIngesterTests
     {
         var result = Ingest(SyntheticGiacomPdfBuilder.BuildPreBillingSampleA());
 
-        result.Lines.Should().NotBeEmpty();
-        result.Lines.Should().AllSatisfy(line =>
+        Assert.NotEmpty(result.Lines);
+        Assert.All(result.Lines, line =>
         {
-            line.ProductNameRaw.Should().NotBeNullOrWhiteSpace();
-            line.Id.SourceKind.Should().Be(Domain.Common.ImportSourceKind.GiacomBillingPdf);
+            Assert.False(string.IsNullOrWhiteSpace(line.ProductNameRaw));
+            Assert.Equal(Domain.Common.ImportSourceKind.GiacomBillingPdf, line.Id.SourceKind);
         });
     }
 
@@ -127,9 +129,9 @@ public class GiacomBillingPdfIngesterTests
     {
         var result = Ingest(SyntheticGiacomPdfBuilder.BuildEmptyCoverSheet());
 
-        result.Status.Should().Be(IngestionOutcomeStatus.Success);
-        result.Lines.Should().BeEmpty();
-        result.LogEntries.Should().Contain(e =>
+        Assert.Equal(IngestionOutcomeStatus.Success, result.Status);
+        Assert.Empty(result.Lines);
+        Assert.Contains(result.LogEntries, e =>
             e.Severity == IngestionLogSeverity.Warning &&
             e.Reason == IngestionFailureReason.EmptyDocument);
     }
@@ -142,8 +144,8 @@ public class GiacomBillingPdfIngesterTests
         var result = Ingest(pdf);
         stopwatch.Stop();
 
-        result.Lines.Should().HaveCount(50);
-        stopwatch.Elapsed.Should().BeLessThan(TimeSpan.FromMinutes(2));
+        Assert.Equal(50, result.Lines.Count);
+        Assert.True(stopwatch.Elapsed < TimeSpan.FromMinutes(2));
     }
 
     private GiacomPdfIngestionResult Ingest(byte[] pdfBytes)

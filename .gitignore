@@ -430,3 +430,5 @@ FodyWeavers.xsd
 
 # Playwright test results
 .playwright-cli/*.yml
+# Playwright CLI output (may contain credentials)
+.playwright-cli/

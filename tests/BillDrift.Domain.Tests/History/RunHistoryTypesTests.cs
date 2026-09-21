@@ -1,5 +1,4 @@
 using BillDrift.Domain.History;
-using FluentAssertions;
 
 namespace BillDrift.Domain.Tests.History;
 
@@ -11,7 +10,7 @@ public sealed class RunHistoryTypesTests
         var longValue = new string('a', 600);
         var key = StableMismatchKey.Create(longValue);
 
-        key.Value.Should().HaveLength(512);
+        Assert.Equal(512, key.Value.Length);
     }
 
     [Fact]
@@ -21,13 +20,13 @@ public sealed class RunHistoryTypesTests
             .Select(d => new InputSnapshotMetadata(d, true))
             .ToList();
 
-        snapshots.Should().HaveCount(5);
+        Assert.Equal(5, snapshots.Count);
     }
 
     [Fact]
     public void RunSummaryMetrics_clean_run_when_zero_mismatches()
     {
         var metrics = new RunSummaryMetrics(10, 0, new Dictionary<string, int>(), 0, true);
-        metrics.CleanRun.Should().BeTrue();
+        Assert.True(metrics.CleanRun);
     }
 }

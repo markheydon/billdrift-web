@@ -17,23 +17,23 @@ public static class GoldenFileComparer
         var expected = JsonSerializer.Deserialize<GoldenBundle>(expectedJson, JsonOptions)
             ?? throw new InvalidOperationException($"Golden file empty: {goldenFilePath}");
 
-        actual.SubscriptionItems.Should().HaveCount(expected.SubscriptionItems.Count);
+        Assert.Equal(expected.SubscriptionItems.Count, actual.SubscriptionItems.Count);
         for (var i = 0; i < expected.SubscriptionItems.Count; i++)
         {
             var exp = expected.SubscriptionItems[i];
             var act = actual.SubscriptionItems[i];
-            act.CustomerId.Should().Be(exp.CustomerId);
-            act.SubscriptionId.Should().Be(exp.SubscriptionId);
-            act.SubscriptionItemId.Should().Be(exp.SubscriptionItemId);
-            act.ProductId.Should().Be(exp.ProductId);
-            act.PriceId.Should().Be(exp.PriceId);
-            act.Quantity.Should().Be(exp.Quantity);
-            act.SubscriptionStatus.Should().Be(exp.SubscriptionStatus);
-            act.Id.SourceLineKey.Should().Be(exp.SourceLineKey);
+            Assert.Equal(exp.CustomerId, act.CustomerId);
+            Assert.Equal(exp.SubscriptionId, act.SubscriptionId);
+            Assert.Equal(exp.SubscriptionItemId, act.SubscriptionItemId);
+            Assert.Equal(exp.ProductId, act.ProductId);
+            Assert.Equal(exp.PriceId, act.PriceId);
+            Assert.Equal(exp.Quantity, act.Quantity);
+            Assert.Equal(exp.SubscriptionStatus, act.SubscriptionStatus);
+            Assert.Equal(exp.SourceLineKey, act.Id.SourceLineKey);
         }
 
-        actual.Products.Should().HaveCount(expected.Products.Count);
-        actual.Prices.Should().HaveCount(expected.Prices.Count);
+        Assert.Equal(expected.Products.Count, actual.Products.Count);
+        Assert.Equal(expected.Prices.Count, actual.Prices.Count);
     }
 
     public static void WriteGoldenFile(StripeCsvIngestionResult result, string goldenFilePath)

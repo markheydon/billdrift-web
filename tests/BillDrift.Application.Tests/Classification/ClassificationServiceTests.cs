@@ -1,7 +1,6 @@
 using BillDrift.Application.Classification;
 using BillDrift.Application.Tests.Reconciliation;
 using BillDrift.Domain.Classification;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Classification;
 
@@ -26,12 +25,12 @@ public sealed class ClassificationServiceTests
         var first = await service.ClassifyAsync(inputs, scope, cancellationToken);
         var second = await service.ClassifyAsync(inputs, scope, cancellationToken);
 
-        first.ByStableKey.Keys.Should().BeEquivalentTo(second.ByStableKey.Keys);
+        Assert.Equivalent(second.ByStableKey.Keys, first.ByStableKey.Keys);
         foreach (var key in first.ByStableKey.Keys)
         {
-            first.ByStableKey[key].Classification.Should().Be(second.ByStableKey[key].Classification);
-            first.ByStableKey[key].RuleBasis.Should().Be(second.ByStableKey[key].RuleBasis);
-            first.ByStableKey[key].Confidence.Should().Be(second.ByStableKey[key].Confidence);
+            Assert.Equal(second.ByStableKey[key].Classification, first.ByStableKey[key].Classification);
+            Assert.Equal(second.ByStableKey[key].RuleBasis, first.ByStableKey[key].RuleBasis);
+            Assert.Equal(second.ByStableKey[key].Confidence, first.ByStableKey[key].Confidence);
         }
     }
 }

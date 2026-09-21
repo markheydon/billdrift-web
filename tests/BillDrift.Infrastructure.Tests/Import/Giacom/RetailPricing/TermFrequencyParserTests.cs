@@ -13,8 +13,8 @@ public sealed class TermFrequencyParserTests
     [InlineData("P3Y", Term.Triennial)]
     public void TryParseTerm_maps_known_values(string raw, Term expected)
     {
-        TermFrequencyParser.TryParseTerm(raw, out var term).Should().BeTrue();
-        term.Should().Be(expected);
+        Assert.True(TermFrequencyParser.TryParseTerm(raw, out var term));
+        Assert.Equal(expected, term);
     }
 
     [Theory]
@@ -23,14 +23,14 @@ public sealed class TermFrequencyParserTests
     [InlineData("yearly", BillingFrequency.Annual)]
     public void TryParseFrequency_maps_known_values(string raw, BillingFrequency expected)
     {
-        TermFrequencyParser.TryParseFrequency(raw, out var frequency).Should().BeTrue();
-        frequency.Should().Be(expected);
+        Assert.True(TermFrequencyParser.TryParseFrequency(raw, out var frequency));
+        Assert.Equal(expected, frequency);
     }
 
     [Fact]
     public void TryParseTerm_rejects_unknown_values()
     {
-        TermFrequencyParser.TryParseTerm("Biennial", out var term).Should().BeFalse();
-        term.Should().Be(Term.Unknown);
+        Assert.False(TermFrequencyParser.TryParseTerm("Biennial", out var term));
+        Assert.Equal(Term.Unknown, term);
     }
 }

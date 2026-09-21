@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using BillDrift.Api.Tests.Infrastructure;
-using FluentAssertions;
 
 namespace BillDrift.Api.Tests.Approval;
 
@@ -23,6 +22,6 @@ public sealed class ApprovalIngestFromRunTests(BillDriftApiWebApplicationFactory
         message.Headers.Add("X-Operator-Id", "test-operator");
         var response = await _client.SendAsync(message, TestContext.Current.CancellationToken);
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

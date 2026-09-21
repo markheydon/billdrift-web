@@ -1,7 +1,6 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -20,9 +19,8 @@ public class ProposedChangeFactoryTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationTestDataBuilder.QuantityMismatch()));
 
-        run.ProposedChanges.Should().NotBeEmpty();
-        run.ProposedChanges[0].IdempotencyKey.Value.Should()
-            .StartWith($"{runId.Value}:");
+        Assert.NotEmpty(run.ProposedChanges);
+        Assert.StartsWith($"{runId.Value}:", run.ProposedChanges[0].IdempotencyKey.Value);
     }
 
     [Fact]
@@ -34,8 +32,8 @@ public class ProposedChangeFactoryTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationTestDataBuilder.MappingMissing()));
 
-        run.ProposedChanges.Should().BeEmpty();
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.MappingMissing);
+        Assert.Empty(run.ProposedChanges);
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.MappingMissing);
     }
 
     [Fact]
@@ -47,8 +45,8 @@ public class ProposedChangeFactoryTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationTestDataBuilder.DuplicateStripeItems()));
 
-        run.ProposedChanges.Should().BeEmpty();
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.MappingAmbiguous);
+        Assert.Empty(run.ProposedChanges);
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.MappingAmbiguous);
     }
 
     [Fact]
@@ -60,11 +58,11 @@ public class ProposedChangeFactoryTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationTestDataBuilder.SubscriptionTruthMappingMissing()));
 
-        run.Mismatches.Should().Contain(m =>
+        Assert.Contains(run.Mismatches, m =>
             m.Type == MismatchType.MappingMissing &&
             m.InvolvedEntityIds.SubscriptionLineId != null);
-        run.Mismatches.Should().NotContain(m => m.Type == MismatchType.MissingInStripe);
-        run.ProposedChanges.Should().BeEmpty();
+        Assert.DoesNotContain(run.Mismatches, m => m.Type == MismatchType.MissingInStripe);
+        Assert.Empty(run.ProposedChanges);
     }
 
     [Fact]
@@ -76,9 +74,9 @@ public class ProposedChangeFactoryTests
             ReconciliationTestDataBuilder.DefaultScope,
             ReconciliationTestDataBuilder.SubscriptionTruthNonCspOnly()));
 
-        run.Mismatches.Should().Contain(m =>
+        Assert.Contains(run.Mismatches, m =>
             m.Type == MismatchType.MappingMissing &&
             m.Description.StartsWith("Non-CSP line requires manual mapping:"));
-        run.ProposedChanges.Should().BeEmpty();
+        Assert.Empty(run.ProposedChanges);
     }
 }

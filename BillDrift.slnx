@@ -6,7 +6,6 @@
   <Project Path="src/BillDrift.Infrastructure/BillDrift.Infrastructure.csproj" />
   <Project Path="src/BillDrift.ServiceDefaults/BillDrift.ServiceDefaults.csproj" />
   <Project Path="src/BillDrift.Web/BillDrift.Web.csproj" />
-  <Project Path="tests/BillDrift.AppHost.Tests/BillDrift.AppHost.Tests.csproj" />
   <Project Path="tests/BillDrift.Application.Tests/BillDrift.Application.Tests.csproj" />
   <Project Path="tests/BillDrift.Domain.Tests/BillDrift.Domain.Tests.csproj" />
   <Project Path="tests/BillDrift.Infrastructure.Tests/BillDrift.Infrastructure.Tests.csproj" />

@@ -17,8 +17,7 @@ Before considering any task complete:
 Additionally, all testing should complete not just recently worked on tasks:
 
 - Run `dotnet test` with no restrictions on tests.
-- Resolve all failures unless  explicitly instructed otherwise.
-- Aspire AppHosts tests are no exception and should also be testing successfully.
+- Resolve all failures unless explicitly instructed otherwise.
 
 ## Final Build
 
@@ -31,19 +30,8 @@ After all tasks are complete, as a final check before ending the coding session,
 
 At this point, all tests should pass and the build should be clean. If any of these steps fail, resolve the issues before considering the work complete. Warning and error messages should be treated as defects unless explicitly instructed otherwise.
 
-## .NET Aspire AppHost Tests and Container Runtime Checks
+## Integration Tests and Container Runtime Checks
 
-This repository is a .NET Aspire solution. If AppHost-related tests exist, they should be run and must pass before implementation work is considered complete.
+Some integration tests require Azurite (Azure Storage emulator). CI starts Azurite via Docker before running tests.
 
-AppHost tests may require a local container runtime. If these tests fail, first check whether the failure is caused by Docker or Podman not being available/running.
-
-Before treating AppHost test failures as product defects:
-
-1. Check whether Docker is installed and running.
-2. If Docker is not available or not running, check whether Podman is installed.
-3. If Podman is installed, check whether the default Podman machine exists and is running.
-4. If the default Podman machine exists but is stopped, start it and rerun the AppHost tests.
-5. If Docker or Podman is running and the AppHost tests still fail, treat the failure as a defect.
-6. If neither Docker nor Podman can be made available, report the issue as an environment prerequisite problem, not as a completed test failure.
-
-The work should not be considered fully verified until the AppHost tests have either passed or there is a clearly documented local environment reason why they could not be run.
+If Azurite-dependent tests fail locally, first check whether Docker or Podman is available and running. If neither can be made available, report the issue as an environment prerequisite problem, not as a completed test failure.

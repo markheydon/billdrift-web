@@ -1,5 +1,4 @@
 using BillDrift.Application.Approval;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Approval;
 
@@ -18,7 +17,7 @@ public sealed class ApprovalAuditTests
         await service.RejectAsync(new RejectProposalCommand(run.Id, proposal.Id, "Incorrect mapping"), cancellationToken);
 
         var audit = await service.GetAuditHistoryAsync(run.Id, proposal.Id, cancellationToken);
-        audit.Should().Contain(e => e.Summary.Contains("Incorrect mapping", StringComparison.Ordinal));
+        Assert.Contains(audit, e => e.Summary.Contains("Incorrect mapping", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -37,6 +36,6 @@ public sealed class ApprovalAuditTests
             new ApprovalIngestionRequest(run2, exceptions1 with { RunId = run2.Id }, null),
             cancellationToken);
 
-        (await service.GetAuditHistoryAsync(run1.Id, cancellationToken: cancellationToken)).Count.Should().Be(before);
+        Assert.Equal(before, (await service.GetAuditHistoryAsync(run1.Id, cancellationToken: cancellationToken)).Count);
     }
 }

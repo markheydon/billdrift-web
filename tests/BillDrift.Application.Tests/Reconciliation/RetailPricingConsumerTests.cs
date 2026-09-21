@@ -1,7 +1,6 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Domain.Billing;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -47,6 +46,6 @@ public sealed class RetailPricingConsumerTests
                 inputs,
                 new ReconciliationOptions(PriceTolerance: Money.Gbp(0))));
 
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.PriceMismatch);
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.PriceMismatch);
     }
 }

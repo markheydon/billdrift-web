@@ -1,7 +1,6 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -19,7 +18,7 @@ public class ReconciliationPipelineTests
 
         var act = () => engine.Execute(request);
 
-        act.Should().Throw<DomainValidationException>();
+        Assert.Throws<DomainValidationException>(act);
     }
 
     [Fact]
@@ -33,8 +32,8 @@ public class ReconciliationPipelineTests
 
         var run = engine.Execute(request);
 
-        run.Mismatches.Should().BeEmpty();
-        run.MatchGroups.Should().BeEmpty();
-        run.Id.Value.Should().NotBe(Guid.Empty);
+        Assert.Empty(run.Mismatches);
+        Assert.Empty(run.MatchGroups);
+        Assert.NotEqual(Guid.Empty, run.Id.Value);
     }
 }

@@ -12,13 +12,13 @@ public class StripeStatusFilterTests
     [InlineData("canceled", true, true)]
     public void ShouldInclude_respects_active_set_and_option(string status, bool includeInactive, bool expected)
     {
-        StripeStatusFilter.ShouldInclude(status, includeInactive).Should().Be(expected);
+        Assert.Equal(expected, StripeStatusFilter.ShouldInclude(status, includeInactive));
     }
 
     [Fact]
     public void IsInactiveStatus_identifies_canceled()
     {
-        StripeStatusFilter.IsInactiveStatus("canceled").Should().BeTrue();
-        StripeStatusFilter.IsInactiveStatus("active").Should().BeFalse();
+        Assert.True(StripeStatusFilter.IsInactiveStatus("canceled"));
+        Assert.False(StripeStatusFilter.IsInactiveStatus("active"));
     }
 }

@@ -19,22 +19,22 @@ public static class GoldenFileComparer
         var expected = JsonSerializer.Deserialize<List<GoldenLine>>(expectedJson, JsonOptions)
             ?? throw new InvalidOperationException($"Golden file empty: {goldenFilePath}");
 
-        actual.Should().HaveCount(expected.Count);
+        Assert.Equal(expected.Count, actual.Count);
 
         for (var i = 0; i < expected.Count; i++)
         {
             var exp = expected[i];
             var act = actual[i];
 
-            act.MexIdRaw.Should().Be(exp.MexIdRaw);
-            act.ProductNameRaw.Should().Be(exp.ProductNameRaw);
-            act.QuantityRaw.Should().Be(exp.QuantityRaw);
-            act.ChargeTypeRaw.Should().Be(exp.ChargeTypeRaw);
-            act.PeriodStartRaw.Should().Be(exp.PeriodStartRaw);
-            act.PeriodEndRaw.Should().Be(exp.PeriodEndRaw);
-            act.LineCostRaw.Should().Be(exp.LineCostRaw);
-            act.SupplierReferenceIds.Should().BeEquivalentTo(exp.SupplierReferenceIds);
-            act.Id.SourceLineKey.Should().Be(exp.SourceLineKey);
+            Assert.Equal(exp.MexIdRaw, act.MexIdRaw);
+            Assert.Equal(exp.ProductNameRaw, act.ProductNameRaw);
+            Assert.Equal(exp.QuantityRaw, act.QuantityRaw);
+            Assert.Equal(exp.ChargeTypeRaw, act.ChargeTypeRaw);
+            Assert.Equal(exp.PeriodStartRaw, act.PeriodStartRaw);
+            Assert.Equal(exp.PeriodEndRaw, act.PeriodEndRaw);
+            Assert.Equal(exp.LineCostRaw, act.LineCostRaw);
+            Assert.Equivalent(exp.SupplierReferenceIds, act.SupplierReferenceIds);
+            Assert.Equal(exp.SourceLineKey, act.Id.SourceLineKey);
         }
     }
 

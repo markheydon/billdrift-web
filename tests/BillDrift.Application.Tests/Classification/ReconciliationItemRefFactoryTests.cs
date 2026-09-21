@@ -1,7 +1,6 @@
 using BillDrift.Application.Classification;
 using BillDrift.Application.Tests.Reconciliation;
 using BillDrift.Domain.Classification;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Classification;
 
@@ -15,9 +14,9 @@ public sealed class ReconciliationItemRefFactoryTests
 
         var itemRef = ReconciliationItemRefFactory.FromSupplierCostLine(line);
 
-        itemRef.Kind.Should().Be(ReconciliationItemKind.SupplierCost);
-        itemRef.StableKey.Should().StartWith($"{line.Customer.MexId.Value}:supplier:");
-        itemRef.CustomerMexId.Should().Be(line.Customer.MexId);
+        Assert.Equal(ReconciliationItemKind.SupplierCost, itemRef.Kind);
+        Assert.StartsWith($"{line.Customer.MexId.Value}:supplier:", itemRef.StableKey);
+        Assert.Equal(line.Customer.MexId, itemRef.CustomerMexId);
     }
 
     [Fact]
@@ -28,9 +27,9 @@ public sealed class ReconciliationItemRefFactoryTests
 
         var itemRef = ReconciliationItemRefFactory.FromSubscriptionLine(line);
 
-        itemRef.StableKey.Should().Contain(":truth:");
-        itemRef.StableKey.Should().Contain(line.CommercialKeyRoot.OfferId.Value);
-        itemRef.StableKey.Should().Contain(line.CommercialKeyRoot.SkuId.Value);
+        Assert.Contains(":truth:", itemRef.StableKey);
+        Assert.Contains(line.CommercialKeyRoot.OfferId.Value, itemRef.StableKey);
+        Assert.Contains(line.CommercialKeyRoot.SkuId.Value, itemRef.StableKey);
     }
 
     [Fact]
@@ -41,7 +40,7 @@ public sealed class ReconciliationItemRefFactoryTests
 
         var itemRef = ReconciliationItemRefFactory.FromStripeBillingItem(item);
 
-        itemRef.StableKey.Should().Be($"{item.Customer.MexId.Value}:stripe:{item.SubscriptionItemId.Value}");
+        Assert.Equal($"{item.Customer.MexId.Value}:stripe:{item.SubscriptionItemId.Value}", itemRef.StableKey);
     }
 
     [Fact]
@@ -50,8 +49,8 @@ public sealed class ReconciliationItemRefFactoryTests
         var inputs = ReconciliationTestDataBuilder.CleanMatchAllDomains();
         var refs = ReconciliationItemRefFactory.ExtractAll(inputs, ReconciliationTestDataBuilder.DefaultScope);
 
-        refs.Should().Contain(r => r.Kind == ReconciliationItemKind.SupplierCost);
-        refs.Should().Contain(r => r.Kind == ReconciliationItemKind.SubscriptionTruth);
-        refs.Should().Contain(r => r.Kind == ReconciliationItemKind.StripeBilling);
+        Assert.Contains(refs, r => r.Kind == ReconciliationItemKind.SupplierCost);
+        Assert.Contains(refs, r => r.Kind == ReconciliationItemKind.SubscriptionTruth);
+        Assert.Contains(refs, r => r.Kind == ReconciliationItemKind.StripeBilling);
     }
 }
