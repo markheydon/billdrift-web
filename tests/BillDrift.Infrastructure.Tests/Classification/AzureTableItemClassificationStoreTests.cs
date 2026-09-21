@@ -33,7 +33,7 @@ public sealed class AzureTableItemClassificationStoreTests
             cancellationToken);
 
         var loaded = await store.GetOverrideAsync(itemRef, cancellationToken);
-        loaded.Should().NotBeNull();
-        loaded!.Classification.Should().Be(ReconciliationItemClassification.MicrosoftCsp);
+        Assert.NotNull(loaded);
+        Assert.Equal(ReconciliationItemClassification.MicrosoftCsp, loaded!.Classification);
     }
 }

@@ -12,7 +12,7 @@ public class ProductScopeClassifierTests
     public void Microsoft_365_row_is_included()
     {
         var row = CreateRow(service: "Microsoft 365", productName: "Microsoft 365 Business Standard", productType: "CSP");
-        _classifier.Classify(row).Decision.Should().Be(ProductScopeDecision.Include);
+        Assert.Equal(ProductScopeDecision.Include, _classifier.Classify(row).Decision);
     }
 
     [Fact]
@@ -21,15 +21,15 @@ public class ProductScopeClassifierTests
         var row = CreateRow(service: "Exclaimer", productName: "Exclaimer Cloud Signatures", productType: "Third Party");
         var result = _classifier.Classify(row);
 
-        result.Decision.Should().Be(ProductScopeDecision.Exclude);
-        result.Reason.Should().Be(IngestionFailureReason.ProductOutOfScope);
+        Assert.Equal(ProductScopeDecision.Exclude, result.Decision);
+        Assert.Equal(IngestionFailureReason.ProductOutOfScope, result.Reason);
     }
 
     [Fact]
     public void Sparse_service_with_m365_product_name_is_included_with_warning()
     {
         var row = CreateRow(service: null, productName: "Microsoft 365 E3", productType: null);
-        _classifier.Classify(row).Decision.Should().Be(ProductScopeDecision.Include);
+        Assert.Equal(ProductScopeDecision.Include, _classifier.Classify(row).Decision);
     }
 
     [Fact]
@@ -38,8 +38,8 @@ public class ProductScopeClassifierTests
         var row = CreateRow(service: null, productName: null, productType: null, offerId: "OFFER-1", skuId: "SKU-1");
         var result = _classifier.Classify(row);
 
-        result.Decision.Should().Be(ProductScopeDecision.IncludeWithAmbiguityWarning);
-        result.Reason.Should().Be(IngestionFailureReason.ProductScopeAmbiguous);
+        Assert.Equal(ProductScopeDecision.IncludeWithAmbiguityWarning, result.Decision);
+        Assert.Equal(IngestionFailureReason.ProductScopeAmbiguous, result.Reason);
     }
 
     private static ParsedSubscriptionManagementRow CreateRow(

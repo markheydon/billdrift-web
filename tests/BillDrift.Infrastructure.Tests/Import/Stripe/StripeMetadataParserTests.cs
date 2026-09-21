@@ -16,8 +16,8 @@ public class StripeMetadataParserTests
 
         var metadata = StripeMetadataParser.ExtractFromHeaders(headers, row);
 
-        metadata["mex_id"].Should().Be("MEX1");
-        metadata["offer_id"].Should().Be("OFF1");
+        Assert.Equal("MEX1", metadata["mex_id"]);
+        Assert.Equal("OFF1", metadata["offer_id"]);
     }
 
     [Fact]
@@ -32,8 +32,8 @@ public class StripeMetadataParserTests
 
         var metadata = StripeMetadataParser.ExtractFromHeaders(headers, row);
 
-        StripeMetadataParser.GetMexId(metadata).Should().Be("MEX2");
-        StripeMetadataParser.GetSkuId(metadata).Should().Be("SKU2");
+        Assert.Equal("MEX2", StripeMetadataParser.GetMexId(metadata));
+        Assert.Equal("SKU2", StripeMetadataParser.GetSkuId(metadata));
     }
 
     [Fact]
@@ -45,6 +45,6 @@ public class StripeMetadataParserTests
             ["giacom_ref"] = "REF-2"
         };
 
-        StripeMetadataParser.GetSupplierReferences(metadata).Should().BeEquivalentTo(["REF-1", "REF-2"]);
+        Assert.Equivalent(new[] { "REF-1", "REF-2" }, StripeMetadataParser.GetSupplierReferences(metadata));
     }
 }

@@ -47,10 +47,9 @@ updates:
       tests:
         patterns:
           - xunit
-          - Moq
+          - NSubstitute
           - Microsoft.NET.Test.Sdk
           - coverlet
-          - FluentAssertions
         update-types:
           - minor
           - patch

@@ -2,7 +2,6 @@ using BillDrift.Application.Classification;
 using BillDrift.Application.Tests.Reconciliation;
 using BillDrift.Domain.Classification;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Classification;
 
@@ -41,9 +40,9 @@ public sealed class ClassificationRuleEngineTests
             activeOverride: null,
             DateTimeOffset.UtcNow);
 
-        result.Classification.Should().Be(ReconciliationItemClassification.MicrosoftCsp);
-        result.Confidence.Should().Be(ClassificationConfidence.High);
-        result.RuleBasis.Should().Contain("OfferSku");
+        Assert.Equal(ReconciliationItemClassification.MicrosoftCsp, result.Classification);
+        Assert.Equal(ClassificationConfidence.High, result.Confidence);
+        Assert.Contains("OfferSku", result.RuleBasis);
     }
 
     [Fact]
@@ -72,9 +71,9 @@ public sealed class ClassificationRuleEngineTests
             activeOverride: null,
             DateTimeOffset.UtcNow);
 
-        result.Classification.Should().Be(ReconciliationItemClassification.NonCspSupplier);
-        result.Confidence.Should().Be(ClassificationConfidence.High);
-        result.RuleBasis.Should().Be("NonCsp:SupplierOnly");
+        Assert.Equal(ReconciliationItemClassification.NonCspSupplier, result.Classification);
+        Assert.Equal(ClassificationConfidence.High, result.Confidence);
+        Assert.Equal("NonCsp:SupplierOnly", result.RuleBasis);
     }
 
     [Fact]
@@ -103,8 +102,8 @@ public sealed class ClassificationRuleEngineTests
         var config = new ClassificationRuleConfiguration([mexId], []);
         var result = _engine.Evaluate(signals, config, null, DateTimeOffset.UtcNow);
 
-        result.Classification.Should().Be(ReconciliationItemClassification.Internal);
-        result.RuleBasis.Should().Contain("InternalMexId");
+        Assert.Equal(ReconciliationItemClassification.Internal, result.Classification);
+        Assert.Contains("InternalMexId", result.RuleBasis);
     }
 
     [Fact]
@@ -135,8 +134,8 @@ public sealed class ClassificationRuleEngineTests
             null,
             DateTimeOffset.UtcNow);
 
-        result.Classification.Should().Be(ReconciliationItemClassification.NonCspSupplier);
-        result.Confidence.Should().Be(ClassificationConfidence.Low);
-        result.RuleBasis.Should().StartWith("ConservativeDefault:");
+        Assert.Equal(ReconciliationItemClassification.NonCspSupplier, result.Classification);
+        Assert.Equal(ClassificationConfidence.Low, result.Confidence);
+        Assert.StartsWith("ConservativeDefault:", result.RuleBasis);
     }
 }

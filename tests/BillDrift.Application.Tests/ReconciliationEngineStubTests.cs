@@ -2,7 +2,6 @@ using BillDrift.Application.Reconciliation;
 using BillDrift.Application.Tests.Reconciliation;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests;
 
@@ -19,8 +18,8 @@ public class ReconciliationEngineStubTests
 
         var run = engine.Execute(request);
 
-        run.Mismatches.Should().BeEmpty();
-        run.ProposedChanges.Should().BeEmpty();
-        run.Id.Value.Should().NotBe(Guid.Empty);
+        Assert.Empty(run.Mismatches);
+        Assert.Empty(run.ProposedChanges);
+        Assert.NotEqual(Guid.Empty, run.Id.Value);
     }
 }

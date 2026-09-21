@@ -46,7 +46,7 @@ public sealed class AzureBlobChangesetExporterTests
             null);
 
         var exported = await exporter.ExportAsync(changeset, cancellationToken);
-        exported.BlobUri.Should().NotBeNullOrEmpty();
+        Assert.False(string.IsNullOrEmpty(exported.BlobUri));
     }
 
     private sealed class InMemoryApprovalStoreForInfrastructureTests : IApprovalStore

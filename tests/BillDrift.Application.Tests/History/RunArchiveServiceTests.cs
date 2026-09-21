@@ -2,7 +2,6 @@ using BillDrift.Application.History;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.History;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.History;
 
@@ -18,9 +17,9 @@ public sealed class RunArchiveServiceTests
 
         var record = await service.PersistAsync(request, TestContext.Current.CancellationToken);
 
-        record.Status.Should().Be(RunArchiveStatus.Completed);
-        record.SummaryMetrics.MismatchCount.Should().Be(run.Mismatches.Count);
-        (await store.GetRunAsync(run.Id, TestContext.Current.CancellationToken)).Should().NotBeNull();
+        Assert.Equal(RunArchiveStatus.Completed, record.Status);
+        Assert.Equal(run.Mismatches.Count, record.SummaryMetrics.MismatchCount);
+        Assert.NotNull((await store.GetRunAsync(run.Id, TestContext.Current.CancellationToken)));
     }
 
     [Fact]
@@ -35,8 +34,8 @@ public sealed class RunArchiveServiceTests
 
         var record = await service.PersistAsync(request, TestContext.Current.CancellationToken);
 
-        record.InputSnapshots.Should().HaveCount(5);
-        record.InputSnapshots.First(s => s.Domain == InputDomainType.StripeBilling).IsPresent.Should().BeFalse();
+        Assert.Equal(5, record.InputSnapshots.Count);
+        Assert.False(record.InputSnapshots.First(s => s.Domain == InputDomainType.StripeBilling).IsPresent);
     }
 
     [Fact]
@@ -50,7 +49,7 @@ public sealed class RunArchiveServiceTests
         await service.PersistAsync(request, TestContext.Current.CancellationToken);
         var act = async () => await service.PersistAsync(request, TestContext.Current.CancellationToken);
 
-        await act.Should().ThrowAsync<RunAlreadyArchivedException>();
+        await Assert.ThrowsAsync<RunAlreadyArchivedException>(act);
     }
 
     [Fact]
@@ -63,10 +62,10 @@ public sealed class RunArchiveServiceTests
 
         var act = async () => await service.PersistAsync(CreatePersistRequest(run), TestContext.Current.CancellationToken);
 
-        await act.Should().ThrowAsync<InvalidOperationException>();
+        await Assert.ThrowsAsync<InvalidOperationException>(act);
         var record = await store.GetRunAsync(run.Id, TestContext.Current.CancellationToken);
-        record!.Status.Should().Be(RunArchiveStatus.Failed);
-        record.FailureReason.Should().NotBeNullOrEmpty();
+        Assert.Equal(RunArchiveStatus.Failed, record!.Status);
+        Assert.False(string.IsNullOrEmpty(record.FailureReason));
     }
 
     [Fact]
@@ -78,13 +77,13 @@ public sealed class RunArchiveServiceTests
         var request = CreatePersistRequest(run);
 
         var firstAttempt = async () => await failingService.PersistAsync(request, TestContext.Current.CancellationToken);
-        await firstAttempt.Should().ThrowAsync<InvalidOperationException>();
+        await Assert.ThrowsAsync<InvalidOperationException>(firstAttempt);
 
         var retryService = CreateService(store);
         var retry = async () => await retryService.PersistAsync(request, TestContext.Current.CancellationToken);
 
-        await retry.Should().ThrowAsync<RunAlreadyArchivedException>();
-        (await store.GetRunAsync(run.Id, TestContext.Current.CancellationToken))!.Status.Should().Be(RunArchiveStatus.Failed);
+        await Assert.ThrowsAsync<RunAlreadyArchivedException>(retry);
+        Assert.Equal(RunArchiveStatus.Failed, (await store.GetRunAsync(run.Id, TestContext.Current.CancellationToken))!.Status);
     }
 
     private static RunArchiveService CreateService(InMemoryRunHistoryStore store) =>

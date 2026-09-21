@@ -18,10 +18,10 @@ public class BlockSegmenterTests
 
         var headers = CustomerBlockSegmenter.FindBlockHeaders(lines);
 
-        headers.Should().HaveCount(2);
-        headers[0].MexId.Should().Be("MEX10001");
-        headers[0].CustomerName.Should().Be("Acme Corp");
-        headers[1].MexId.Should().Be("MEX10002");
+        Assert.Equal(2, headers.Count);
+        Assert.Equal("MEX10001", headers[0].MexId);
+        Assert.Equal("Acme Corp", headers[0].CustomerName);
+        Assert.Equal("MEX10002", headers[1].MexId);
     }
 
     private static PdfTextLine Line(int page, string text)

@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using BillDrift.Api.Tests.Infrastructure;
-using FluentAssertions;
 
 namespace BillDrift.Api.Tests.Reconciliation;
 
@@ -17,7 +16,7 @@ public sealed class ReconciliationEndpointsTests(BillDriftApiWebApplicationFacto
             new { },
             TestContext.Current.CancellationToken);
 
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -32,7 +31,7 @@ public sealed class ReconciliationEndpointsTests(BillDriftApiWebApplicationFacto
             },
             TestContext.Current.CancellationToken);
 
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -41,6 +40,6 @@ public sealed class ReconciliationEndpointsTests(BillDriftApiWebApplicationFacto
         var runId = Guid.NewGuid();
         var response = await _client.GetAsync($"/api/reconciliation/runs/{runId}", TestContext.Current.CancellationToken);
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

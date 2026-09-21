@@ -1,7 +1,6 @@
 using BillDrift.Application.CatalogueReconciliation;
 using BillDrift.Application.Mapping;
 using BillDrift.Domain.Approval;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.CatalogueReconciliation;
 
@@ -16,7 +15,7 @@ public class CatalogueApprovalAdapterTests
 
         var proposals = adapter.ToApprovalProposals(run, "operator@test");
 
-        proposals.Should().Contain(p =>
+        Assert.Contains(proposals, p =>
             p.Category == ApprovalProposalCategory.Catalogue &&
             p.Eligibility == ApprovalEligibility.Eligible);
     }
@@ -30,6 +29,6 @@ public class CatalogueApprovalAdapterTests
 
         var proposals = adapter.ToApprovalProposals(run, "operator@test");
 
-        proposals.Should().OnlyContain(p => p.Eligibility == ApprovalEligibility.CatalogueConflict);
+        Assert.All(proposals, p => Assert.Equal(ApprovalEligibility.CatalogueConflict, p.Eligibility));
     }
 }

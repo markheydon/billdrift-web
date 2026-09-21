@@ -1,7 +1,6 @@
 using BillDrift.Application.Normalization;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Import;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Normalization;
 
@@ -16,13 +15,13 @@ public sealed class PriceListNormalizerTests
 
         var price = _normalizer.Normalize(raw);
 
-        price.Source.Should().Be(PriceSource.Catalogue);
-        price.Classification.Should().Be(ProductClassification.Csp);
-        price.Rrp.Amount.Should().Be(12.00m);
-        price.Wholesale.Amount.Should().Be(8.50m);
-        price.Margin.Should().NotBeNull();
-        price.MarginPercent.Should().Be(29.17m);
-        price.Platform.Should().Be(PricingPlatform.Nce);
+        Assert.Equal(PriceSource.Catalogue, price.Source);
+        Assert.Equal(ProductClassification.Csp, price.Classification);
+        Assert.Equal(12.00m, price.Rrp.Amount);
+        Assert.Equal(8.50m, price.Wholesale.Amount);
+        Assert.NotNull(price.Margin);
+        Assert.Equal(29.17m, price.MarginPercent);
+        Assert.Equal(PricingPlatform.Nce, price.Platform);
     }
 
     [Fact]
@@ -42,10 +41,10 @@ public sealed class PriceListNormalizerTests
 
         var price = _normalizer.Normalize(raw);
 
-        price.Source.Should().Be(PriceSource.ManualOverride);
-        price.Classification.Should().Be(ProductClassification.NonCsp);
-        price.Rrp.Amount.Should().Be(10.00m);
-        price.Wholesale.Amount.Should().Be(7.00m);
+        Assert.Equal(PriceSource.ManualOverride, price.Source);
+        Assert.Equal(ProductClassification.NonCsp, price.Classification);
+        Assert.Equal(10.00m, price.Rrp.Amount);
+        Assert.Equal(7.00m, price.Wholesale.Amount);
     }
 
     [Theory]
@@ -54,8 +53,8 @@ public sealed class PriceListNormalizerTests
     [InlineData("Triennial", Term.Triennial)]
     public void TryParseTerm_supports_retail_pricing_aliases(string raw, Term expected)
     {
-        PriceListNormalizer.TryParseTerm(raw, out var term).Should().BeTrue();
-        term.Should().Be(expected);
+        Assert.True(PriceListNormalizer.TryParseTerm(raw, out var term));
+        Assert.Equal(expected, term);
     }
 
     private static RawPriceListRow CreateCatalogueRow() =>

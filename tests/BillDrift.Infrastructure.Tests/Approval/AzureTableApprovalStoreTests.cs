@@ -38,7 +38,7 @@ public sealed class AzureTableApprovalStoreTests
         await store.AppendDecisionAsync(decision, cancellationToken);
 
         var loaded = await store.GetProposalAsync(runId, proposal.Id, cancellationToken);
-        loaded.Should().NotBeNull();
+        Assert.NotNull(loaded);
     }
 
     private static ApprovalProposal CreateProposal(RunId runId) =>

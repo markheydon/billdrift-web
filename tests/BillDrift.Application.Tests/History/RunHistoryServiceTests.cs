@@ -2,7 +2,6 @@ using BillDrift.Application.History;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.History;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.History;
 
@@ -22,8 +21,8 @@ public sealed class RunHistoryServiceTests
             BillingPeriodEnd: new DateOnly(2026, 2, 28)),
             cancellationToken: TestContext.Current.CancellationToken);
 
-        response.Items.Should().HaveCount(1);
-        response.Items[0].BillingPeriod.Start.Should().Be(new DateOnly(2026, 2, 1));
+        var item = Assert.Single(response.Items);
+        Assert.Equal(new DateOnly(2026, 2, 1), item.BillingPeriod.Start);
     }
 
     [Fact]
@@ -36,8 +35,8 @@ public sealed class RunHistoryServiceTests
 
         var detail = await service.GetRunDetailAsync(runId, includeResults: false, cancellationToken: TestContext.Current.CancellationToken);
 
-        detail.Results.Should().BeNull();
-        detail.SummaryMetrics.Should().NotBeNull();
+        Assert.Null(detail.Results);
+        Assert.NotNull(detail.SummaryMetrics);
     }
 
     [Fact]
@@ -51,8 +50,8 @@ public sealed class RunHistoryServiceTests
 
         var detail = await service.GetRunDetailAsync(runId, cancellationToken: TestContext.Current.CancellationToken);
 
-        detail.ProposalStatusLinks.Should().NotBeNull();
-        detail.ExecutionOutcomes.Should().BeEmpty();
+        Assert.NotNull(detail.ProposalStatusLinks);
+        Assert.Empty(detail.ExecutionOutcomes);
     }
 
     [Fact]
@@ -65,7 +64,7 @@ public sealed class RunHistoryServiceTests
 
         var detail = await service.GetRunDetailAsync(runId, cancellationToken: TestContext.Current.CancellationToken);
 
-        detail.ExecutionOutcomes.Should().BeEmpty();
+        Assert.Empty(detail.ExecutionOutcomes);
     }
 
     private static RunHistoryService CreateService(

@@ -2,7 +2,6 @@ using BillDrift.Application.Reconciliation;
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.ExceptionSurfacing;
 
@@ -26,9 +25,9 @@ public class SuppressionRulesTests
         var run = CreateRun([group], [mappingMismatch, quantityMismatch], []);
         var vm = _surfacing.Surface(run);
 
-        vm.FlatExceptions().Should().NotContain(e => e.Category == ExceptionCategory.QuantityLicenceMismatch);
-        vm.FlatExceptions().Should().Contain(e => e.Category == ExceptionCategory.OfferSkuAmbiguousMapping);
-        vm.Summary.SuppressedCount.Should().BeGreaterThan(0);
+        Assert.DoesNotContain(vm.FlatExceptions(), e => e.Category == ExceptionCategory.QuantityLicenceMismatch);
+        Assert.Contains(vm.FlatExceptions(), e => e.Category == ExceptionCategory.OfferSkuAmbiguousMapping);
+        Assert.True(vm.Summary.SuppressedCount > 0);
     }
 
     [Fact]
@@ -70,9 +69,9 @@ public class SuppressionRulesTests
             .Where(e => e.Category == ExceptionCategory.QuantityLicenceMismatch)
             .ToList();
 
-        quantity.Should().HaveCount(1);
-        quantity[0].ProposedChangeId.Should().BeNull();
-        quantity[0].RequiresActionNow.Should().BeFalse();
+        var quantityException = Assert.Single(quantity);
+        Assert.Null(quantityException.ProposedChangeId);
+        Assert.False(quantityException.RequiresActionNow);
     }
 
     [Fact]
@@ -86,11 +85,11 @@ public class SuppressionRulesTests
 
         if (run.Mismatches.Count > vm.Summary.TotalCount)
         {
-            vm.Summary.SuppressedCount.Should().BeGreaterThan(0);
+            Assert.True(vm.Summary.SuppressedCount > 0);
         }
         else
         {
-            vm.Summary.TotalCount.Should().BeGreaterThan(0);
+            Assert.True(vm.Summary.TotalCount > 0);
         }
     }
 

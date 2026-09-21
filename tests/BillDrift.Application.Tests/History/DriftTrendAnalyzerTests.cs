@@ -2,7 +2,6 @@ using BillDrift.Application.History;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.History;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.History;
 
@@ -29,9 +28,9 @@ public sealed class DriftTrendAnalyzerTests
 
         var trends = _analyzer.Analyze(entries, minOccurrences: 3);
 
-        trends.Should().HaveCount(1);
-        trends[0].OccurrenceCount.Should().BeGreaterThanOrEqualTo(3);
-        trends[0].IsRecurring.Should().BeTrue();
+        var trend = Assert.Single(trends);
+        Assert.True(trend.OccurrenceCount >= 3);
+        Assert.True(trend.IsRecurring);
     }
 
     [Fact]
@@ -54,6 +53,6 @@ public sealed class DriftTrendAnalyzerTests
 
         var trends = _analyzer.Analyze(entries, minOccurrences: 2);
 
-        trends.Should().BeEmpty();
+        Assert.Empty(trends);
     }
 }

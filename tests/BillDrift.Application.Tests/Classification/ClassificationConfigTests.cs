@@ -1,7 +1,6 @@
 using BillDrift.Application.Classification;
 using BillDrift.Domain.Classification;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Classification;
 
@@ -40,7 +39,7 @@ public sealed class ClassificationConfigTests
             null,
             DateTimeOffset.UtcNow);
 
-        result.Classification.Should().Be(ReconciliationItemClassification.Internal);
+        Assert.Equal(ReconciliationItemClassification.Internal, result.Classification);
     }
 
     [Fact]
@@ -54,8 +53,8 @@ public sealed class ClassificationConfigTests
             cancellationToken);
 
         var config = await store.GetConfigurationAsync(cancellationToken);
-        config.ProductCategoryRules.Should().ContainSingle();
-        config.ProductCategoryRules[0].Category.Should().Be(ProductCategory.CustomService);
+        Assert.Single(config.ProductCategoryRules);
+        Assert.Equal(ProductCategory.CustomService, config.ProductCategoryRules[0].Category);
     }
 
     [Fact]
@@ -82,6 +81,6 @@ public sealed class ClassificationConfigTests
             cancellationToken);
 
         var activeOverride = await store.GetOverrideAsync(itemRef, cancellationToken);
-        activeOverride!.Classification.Should().Be(ReconciliationItemClassification.MicrosoftCsp);
+        Assert.Equal(ReconciliationItemClassification.MicrosoftCsp, activeOverride!.Classification);
     }
 }

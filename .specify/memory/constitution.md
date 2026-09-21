@@ -1,18 +1,14 @@
 <!--
 Sync Impact Report
 ==================
-Version change: 1.1.0 → 1.2.0
+Version change: 1.2.0 → 1.2.1
 Modified principles:
-  - II. Testing Standards → added anti-mocking-interface guidance
-Added sections:
-  - VI. Pragmatic Simplicity (new core principle)
+  - II. Testing Standards → added formal tooling stack (xUnit v3, NSubstitute, Playwright E2E policy, AppHost test ban)
 Removed sections: None
 Templates requiring updates:
-  - .specify/templates/plan-template.md ✅ updated (Complexity Tracking references Principle VI)
-  - .specify/templates/spec-template.md ✅ no change (no implementation-specific constraints)
-  - .specify/templates/tasks-template.md ✅ updated (Polish phase simplicity verification)
-  - .specify/templates/commands/*.md — N/A (no command files present)
-  - README.md ✅ no changes required
+  - .specify/templates/plan-template.md ✅ no change (advisory Testing placeholder)
+  - .specify/templates/spec-template.md ✅ no change
+  - .specify/templates/tasks-template.md ✅ no change
 Follow-up TODOs: None
 -->
 
@@ -66,6 +62,14 @@ Billing-critical behavior MUST be proven by automated tests before it ships.
   details.
 - Interfaces SHOULD NOT be created solely to enable mocking; domain logic SHOULD
   normally be tested through concrete types.
+- Automated tests MUST use **xUnit v3**, **built-in xUnit Assert methods only**, and
+  **NSubstitute** for mocks, stubs, and test doubles when substitutes are required.
+- The following MUST NOT be introduced: FluentAssertions, AwesomeAssertions, Shouldly,
+  Moq, NUnit, MSTest.
+- .NET Aspire AppHost modelling and orchestration MUST NOT be tested.
+- End-to-end tests MUST use **Playwright** when E2E coverage is required; focus on
+  key user journeys and business-critical workflows, not individual UI elements, and
+  do not use Playwright as a replacement for unit tests.
 
 **Rationale**: Incorrect reconciliation directly causes missed revenue or customer
 overbilling. Tests are the primary safety net for a domain where manual spreadsheets
@@ -206,4 +210,4 @@ clarifications and non-semantic wording.
 **Compliance review**: Feature specs, plans, and tasks generated via Spec Kit MUST be
 reviewed against this constitution before implementation begins and again before merge.
 
-**Version**: 1.2.0 | **Ratified**: 2026-06-26 | **Last Amended**: 2026-07-02
+**Version**: 1.2.1 | **Ratified**: 2026-06-26 | **Last Amended**: 2026-09-21

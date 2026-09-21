@@ -6,7 +6,6 @@ using BillDrift.Domain.Approval;
 using BillDrift.Domain.Classification;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Approval;
 
@@ -24,11 +23,11 @@ public sealed class ApprovalIngestionServiceTests
             new ApprovalIngestionRequest(run, exceptions, null),
             cancellationToken);
 
-        result.PendingCount.Should().BeGreaterThan(0);
+        Assert.True(result.PendingCount > 0);
         var queue = await service.GetQueueAsync(run.Id, cancellationToken: cancellationToken);
-        queue.CustomerGroups.SelectMany(g => g.SubscriptionProposals)
-            .Should()
-            .OnlyContain(p => p.State == ApprovalDecisionState.Pending);
+        Assert.All(
+            queue.CustomerGroups.SelectMany(g => g.SubscriptionProposals),
+            p => Assert.Equal(ApprovalDecisionState.Pending, p.State));
     }
 
     [Fact]
@@ -42,7 +41,7 @@ public sealed class ApprovalIngestionServiceTests
         await service.IngestAsync(new ApprovalIngestionRequest(run, exceptions, null), cancellationToken);
 
         var proposals = await store.ListProposalsByRunAsync(run.Id, cancellationToken);
-        proposals.Should().NotContain(p => p.State == ApprovalDecisionState.Approved);
+        Assert.DoesNotContain(proposals, p => p.State == ApprovalDecisionState.Approved);
     }
 
     [Fact]
@@ -64,10 +63,10 @@ public sealed class ApprovalIngestionServiceTests
             .Where(p => p.ActionType == ProposedActionType.CreateOrUpdateCatalogueEntry)
             .ToList();
 
-        catalogue.Should().HaveCount(2);
-        catalogue.Should().Contain(p => p.Eligibility == ApprovalEligibility.CatalogueConflict);
+        Assert.Equal(2, catalogue.Count);
+        Assert.Contains(catalogue, p => p.Eligibility == ApprovalEligibility.CatalogueConflict);
         // The safeguard must prevent both conflicting catalogue entries from becoming approvable.
-        catalogue.Count(p => p.Eligibility == ApprovalEligibility.Eligible).Should().BeLessThanOrEqualTo(1);
+        Assert.True(catalogue.Count(p => p.Eligibility == ApprovalEligibility.Eligible) <= 1);
     }
 
     private static ReconciliationRun BuildRunWithDuplicateCatalogueChanges()

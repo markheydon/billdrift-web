@@ -1,7 +1,6 @@
 using BillDrift.Application.Mapping;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Mapping;
-using FluentAssertions;
 
 namespace BillDrift.Domain.Tests.Mapping;
 
@@ -15,8 +14,8 @@ public class ProductMappingTests
 
         var result = resolver.Resolve("MS365 Business Basic", [mapping]);
 
-        result.Status.Should().Be(MappingResolutionStatus.Found);
-        result.Mapping.Should().NotBeNull();
+        Assert.Equal(MappingResolutionStatus.Found, result.Status);
+        Assert.NotNull(result.Mapping);
     }
 
     [Fact]
@@ -28,7 +27,7 @@ public class ProductMappingTests
 
         var result = resolver.Resolve("Office 365", [mapping1, mapping2]);
 
-        result.Status.Should().Be(MappingResolutionStatus.Ambiguous);
+        Assert.Equal(MappingResolutionStatus.Ambiguous, result.Status);
     }
 
     private static ProductMapping CreateMapping(IEnumerable<string> variants) =>

@@ -1,6 +1,5 @@
 using BillDrift.Application.Reconciliation.Matching;
 using BillDrift.Domain.Mapping;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -31,7 +30,7 @@ public class FuzzyNameMatcherTests
 
         var candidates = matcher.FindCandidates("Microsoft 365 Business Basic", mappings);
 
-        candidates.Should().HaveCount(1);
+        Assert.Single(candidates);
     }
 
     [Fact]
@@ -46,7 +45,7 @@ public class FuzzyNameMatcherTests
 
         var candidates = matcher.FindCandidates("Microsoft 365 Business Basic", mappings);
 
-        candidates.Should().HaveCountGreaterThan(1);
+        Assert.True(candidates.Count > 1);
     }
 
     [Fact]
@@ -61,6 +60,6 @@ public class FuzzyNameMatcherTests
 
         var candidates = matcher.FindCandidates("Microsoft 365 Business Basic", mappings);
 
-        candidates[0].Key.OfferId.Value.Should().Be("O1");
+        Assert.Equal("O1", candidates[0].Key.OfferId.Value);
     }
 }

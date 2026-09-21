@@ -1,7 +1,6 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.ExceptionSurfacing;
 
@@ -15,10 +14,10 @@ public class EvidenceBuilderTests
         var vm = _builder.SurfaceScenario("quantity-mismatch", new ReconciliationOptions(PriceTolerance: Money.Gbp(0)));
 
         var exception = vm.FlatExceptions().Single(e => e.Category == ExceptionCategory.QuantityLicenceMismatch);
-        exception.Evidence.Select(e => e.Source).Should().Contain(EvidenceSource.SubscriptionTruth);
-        exception.Evidence.Select(e => e.Source).Should().Contain(EvidenceSource.StripeSubscriptionItem);
-        exception.Explanation.Should().Contain("10");
-        exception.Explanation.Should().Contain("5");
+        Assert.Contains(EvidenceSource.SubscriptionTruth, exception.Evidence.Select(e => e.Source));
+        Assert.Contains(EvidenceSource.StripeSubscriptionItem, exception.Evidence.Select(e => e.Source));
+        Assert.Contains("10", exception.Explanation);
+        Assert.Contains("5", exception.Explanation);
     }
 
     [Fact]
@@ -27,7 +26,7 @@ public class EvidenceBuilderTests
         var vm = _builder.SurfaceScenario("mapping-ambiguous");
 
         var exception = vm.FlatExceptions().Single(e => e.Category == ExceptionCategory.OfferSkuAmbiguousMapping);
-        exception.Evidence.Should().Contain(e => e.Source == EvidenceSource.ProductMapping && e.Field == "Candidate");
+        Assert.Contains(exception.Evidence, e => e.Source == EvidenceSource.ProductMapping && e.Field == "Candidate");
     }
 
     [Fact]
@@ -36,7 +35,7 @@ public class EvidenceBuilderTests
         var vm = _builder.SurfaceScenario("price-mismatch", new ReconciliationOptions(PriceTolerance: Money.Gbp(0)));
 
         var exception = vm.FlatExceptions().Single(e => e.Category == ExceptionCategory.StripePriceRrpMismatch);
-        exception.Evidence.Should().Contain(e => e.Source == EvidenceSource.IntendedRetailPrice);
-        exception.Evidence.Should().Contain(e => e.Source == EvidenceSource.StripeSubscriptionItem);
+        Assert.Contains(exception.Evidence, e => e.Source == EvidenceSource.IntendedRetailPrice);
+        Assert.Contains(exception.Evidence, e => e.Source == EvidenceSource.StripeSubscriptionItem);
     }
 }

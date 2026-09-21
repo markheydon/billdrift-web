@@ -29,15 +29,15 @@ public sealed class RetailPricingImportServiceTests
             "reseller-pricing-sample-a.csv",
             cancellationToken: TestContext.Current.CancellationToken);
 
-        run.Status.Should().BeOneOf(IngestionRunStatus.Completed, IngestionRunStatus.PartialSuccess);
-        run.ContentFingerprint.Should().NotBeNullOrWhiteSpace();
+        Assert.Contains(run.Status, new[] { IngestionRunStatus.Completed, IngestionRunStatus.PartialSuccess });
+        Assert.False(string.IsNullOrWhiteSpace(run.ContentFingerprint));
 
         var indexed = await indexStore.GetRetailPricingByIdAsync(run.IngestionId, TestContext.Current.CancellationToken);
-        indexed.Should().NotBeNull();
+        Assert.NotNull(indexed);
 
         var prices = await blobStore.GetResolvedPricesAsync(run.IngestionId, TestContext.Current.CancellationToken);
-        prices.Should().NotBeNull();
-        prices!.Should().NotBeEmpty();
+        Assert.NotNull(prices);
+        Assert.NotEmpty(prices!);
     }
 
     [Fact]
@@ -56,9 +56,9 @@ public sealed class RetailPricingImportServiceTests
             "oversized.csv",
             cancellationToken: TestContext.Current.CancellationToken);
 
-        await act.Should().ThrowAsync<RetailPricingUploadTooLargeException>();
+        await Assert.ThrowsAsync<RetailPricingUploadTooLargeException>(act);
 
         var runs = await indexStore.ListRecentRetailPricingAsync(10, TestContext.Current.CancellationToken);
-        runs.Should().BeEmpty();
+        Assert.Empty(runs);
     }
 }

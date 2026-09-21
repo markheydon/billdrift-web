@@ -2,7 +2,6 @@ using BillDrift.Application.Reconciliation.Indexing;
 using BillDrift.Application.Reconciliation.Matching;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Mapping;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -27,9 +26,9 @@ public class CommercialKeyResolverTests
 
         var resolution = resolver.Resolve(line);
 
-        resolution.Confidence.Should().Be(MatchConfidence.High);
-        resolution.ResolutionPath.Should().Be(ProductResolutionPath.ExplicitOfferSku);
-        resolution.CommercialKeyRoot.Should().NotBeNull();
+        Assert.Equal(MatchConfidence.High, resolution.Confidence);
+        Assert.Equal(ProductResolutionPath.ExplicitOfferSku, resolution.ResolutionPath);
+        Assert.NotNull(resolution.CommercialKeyRoot);
     }
 
     [Fact]
@@ -40,7 +39,7 @@ public class CommercialKeyResolverTests
 
         var resolution = resolver.ResolveByName("Microsoft 365 Business Basic");
 
-        resolution.Confidence.Should().Be(MatchConfidence.Medium);
-        resolution.ResolutionPath.Should().Be(ProductResolutionPath.NameVariantExact);
+        Assert.Equal(MatchConfidence.Medium, resolution.Confidence);
+        Assert.Equal(ProductResolutionPath.NameVariantExact, resolution.ResolutionPath);
     }
 }

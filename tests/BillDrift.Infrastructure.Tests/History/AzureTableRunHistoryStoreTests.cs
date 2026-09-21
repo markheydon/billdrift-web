@@ -24,9 +24,9 @@ public sealed class AzureTableRunHistoryStoreTests
         await store.UpsertRunAsync(record, TestContext.Current.CancellationToken);
         var loaded = await store.GetRunAsync(runId, TestContext.Current.CancellationToken);
 
-        loaded.Should().NotBeNull();
-        loaded!.RunId.Should().Be(runId);
-        loaded.Status.Should().Be(RunArchiveStatus.Completed);
+        Assert.NotNull(loaded);
+        Assert.Equal(runId, loaded!.RunId);
+        Assert.Equal(RunArchiveStatus.Completed, loaded.Status);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public sealed class AzureTableRunHistoryStoreTests
             TestContext.Current.CancellationToken);
 
         var events = await store.ListAuditEventsAsync(runId, TestContext.Current.CancellationToken);
-        events.Should().HaveCount(1);
+        Assert.Single(events);
     }
 
     private static AzureTableRunHistoryStore CreateStore(string tableName)
@@ -98,7 +98,7 @@ public sealed class AzureBlobRunArchiveStoreTests
             DateTimeOffset.UtcNow);
 
         var result = await store.WriteRunArchiveAsync(run, context, TestContext.Current.CancellationToken);
-        result.ManifestBlobPath.Should().Contain(run.Id.Value.ToString("D"));
+        Assert.Contains(run.Id.Value.ToString("D"), result.ManifestBlobPath);
 
         await store.VerifyManifestIntegrityAsync(run.Id, TestContext.Current.CancellationToken);
     }
@@ -129,7 +129,7 @@ public sealed class AzureBlobRunArchiveStoreTests
         await store.WriteRunArchiveAsync(run, context, TestContext.Current.CancellationToken);
 
         var content = await store.LoadInputBlobAsync(run.Id, InputDomainType.StripeBilling, TestContext.Current.CancellationToken);
-        content.Should().Contain("\"records\":[]");
+        Assert.Contains("\"records\":[]", content);
     }
 
     [Fact]
@@ -142,7 +142,7 @@ public sealed class AzureBlobRunArchiveStoreTests
         var store = CreateStore(containerName);
         var act = async () => await store.LoadInputBlobAsync(RunId.New(), InputDomainType.StripeBilling, TestContext.Current.CancellationToken);
 
-        await act.Should().ThrowAsync<RunNotFoundException>();
+        await Assert.ThrowsAsync<RunNotFoundException>(act);
     }
 
     private static AzureBlobRunArchiveStore CreateStore(string containerName)

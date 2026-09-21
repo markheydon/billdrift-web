@@ -1,7 +1,6 @@
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.ExceptionSurfacing;
 
@@ -15,7 +14,7 @@ public class ViewModelTypesTests
 
         var id = SurfacedExceptionId.FromMismatch(runId, mismatchId);
 
-        id.Value.Should().Be($"{runId.Value}:m:{mismatchId.Value}");
+        Assert.Equal($"{runId.Value}:m:{mismatchId.Value}", id.Value);
     }
 
     [Fact]
@@ -25,7 +24,7 @@ public class ViewModelTypesTests
 
         var id = SurfacedExceptionId.FromDerived(runId, "OrphanedStripe", "si_abc");
 
-        id.Value.Should().Be($"{runId.Value}:d:OrphanedStripe:si_abc");
+        Assert.Equal($"{runId.Value}:d:OrphanedStripe:si_abc", id.Value);
     }
 
     [Fact]
@@ -34,8 +33,8 @@ public class ViewModelTypesTests
         var empty = CreateViewModel(totalCount: 0);
         var withItems = CreateViewModel(totalCount: 2);
 
-        empty.HasExceptions.Should().BeFalse();
-        withItems.HasExceptions.Should().BeTrue();
+        Assert.False(empty.HasExceptions);
+        Assert.True(withItems.HasExceptions);
     }
 
     [Fact]
@@ -65,7 +64,7 @@ public class ViewModelTypesTests
             new ExceptionRunSummary(2, new Dictionary<ExceptionSeverity, int>(), new Dictionary<ExceptionCategory, int>(), new Dictionary<ReconciliationDomain, int>(), 2, 1, 0),
             [groupA, groupB]);
 
-        vm.FlatExceptions().Select(e => e.Id.Value).Should().Equal("ex-1", "ex-2");
+        Assert.Equal(new[] { "ex-1", "ex-2" }, vm.FlatExceptions().Select(e => e.Id.Value));
     }
 
     private static ReconciliationExceptionViewModel CreateViewModel(int totalCount) =>

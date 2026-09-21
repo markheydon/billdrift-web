@@ -1,7 +1,6 @@
 using BillDrift.Application.CatalogueReconciliation;
 using BillDrift.Application.Mapping;
 using BillDrift.Domain.CatalogueReconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.CatalogueReconciliation;
 
@@ -17,7 +16,7 @@ public class DeterminismTests
         var first = engine.Execute(inputs, runId: runId);
         var second = engine.Execute(inputs, runId: runId);
 
-        GoldenRunComparer.AreEquivalent(first, second).Should().BeTrue();
+        Assert.True(GoldenRunComparer.AreEquivalent(first, second));
     }
 
     [Fact]
@@ -30,6 +29,6 @@ public class DeterminismTests
         var first = engine.Execute(inputs, runId: runId);
         var second = engine.Execute(inputs, runId: runId);
 
-        GoldenRunComparer.AreEquivalent(first, second).Should().BeTrue();
+        Assert.True(GoldenRunComparer.AreEquivalent(first, second));
     }
 }

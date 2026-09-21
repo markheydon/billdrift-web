@@ -1,7 +1,6 @@
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Import;
 using BillDrift.Domain.Import.Stripe;
-using FluentAssertions;
 
 namespace BillDrift.Domain.Tests.Import;
 
@@ -14,8 +13,8 @@ public class RawImportTests
         var b = RawImportId.Create(ImportSourceKind.GiacomBillingPdf, "doc-1", "line-1");
         var c = RawImportId.Create(ImportSourceKind.GiacomBillingPdf, "doc-1", "line-2");
 
-        a.Should().Be(b);
-        a.Should().NotBe(c);
+        Assert.Equal(b, a);
+        Assert.NotEqual(c, a);
     }
 
     [Fact]
@@ -35,9 +34,9 @@ public class RawImportTests
             "billing.pdf",
             DateTimeOffset.Parse("2026-01-01Z"));
 
-        line.ProductNameRaw.Should().Be("Product As Written");
-        line.MexIdRaw.Should().Be(" MEX99 ");
-        line.ChargeTypeRaw.Should().Be("Recurring");
+        Assert.Equal("Product As Written", line.ProductNameRaw);
+        Assert.Equal(" MEX99 ", line.MexIdRaw);
+        Assert.Equal("Recurring", line.ChargeTypeRaw);
     }
 
     [Fact]
@@ -58,7 +57,7 @@ public class RawImportTests
             1,
             new Dictionary<string, string> { ["mex_id"] = "MEX1" });
 
-        item.Metadata["mex_id"].Should().Be("MEX1");
-        item.Quantity.Should().Be(3);
+        Assert.Equal("MEX1", item.Metadata["mex_id"]);
+        Assert.Equal(3, item.Quantity);
     }
 }

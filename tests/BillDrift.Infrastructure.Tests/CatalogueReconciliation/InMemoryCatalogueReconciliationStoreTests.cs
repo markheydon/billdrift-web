@@ -28,7 +28,7 @@ public class InMemoryCatalogueReconciliationStoreTests
         await store.SaveRunAsync(run, TestContext.Current.CancellationToken);
         var loaded = await store.GetRunAsync(run.RunId, TestContext.Current.CancellationToken);
 
-        loaded.Should().NotBeNull();
-        loaded!.RunId.Should().Be(run.RunId);
+        Assert.NotNull(loaded);
+        Assert.Equal(run.RunId, loaded!.RunId);
     }
 }

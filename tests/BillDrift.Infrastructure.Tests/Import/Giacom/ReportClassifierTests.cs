@@ -9,20 +9,20 @@ public class ReportClassifierTests
     public void Classify_PreBillingMarkers_ReturnsPreBilling()
     {
         var result = ReportClassifier.Classify(["Giacom Pre-Billing Report", "Reseller summary"]);
-        result.Should().Be(GiacomReportType.PreBilling);
+        Assert.Equal(GiacomReportType.PreBilling, result);
     }
 
     [Fact]
     public void Classify_PostBillingMarkers_ReturnsPostBilling()
     {
         var result = ReportClassifier.Classify(["Tax Invoice", "Post-Billing"]);
-        result.Should().Be(GiacomReportType.PostBilling);
+        Assert.Equal(GiacomReportType.PostBilling, result);
     }
 
     [Fact]
     public void Classify_UnknownMarkers_ReturnsUnknown()
     {
         var result = ReportClassifier.Classify(["Supplier Report"]);
-        result.Should().Be(GiacomReportType.Unknown);
+        Assert.Equal(GiacomReportType.Unknown, result);
     }
 }

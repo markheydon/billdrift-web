@@ -1,7 +1,6 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -32,6 +31,6 @@ public class MismatchDetectorTests
             inputs,
             options));
 
-        run.Mismatches.Should().Contain(m => m.Type == expectedType);
+        Assert.Contains(run.Mismatches, m => m.Type == expectedType);
     }
 }

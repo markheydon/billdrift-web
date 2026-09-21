@@ -43,10 +43,10 @@ public sealed class AzureBlobIngestionArchiveStoreTests
             uploadedAt,
             TestContext.Current.CancellationToken);
 
-        manifestPath.Should().EndWith("manifest.json");
+        Assert.EndsWith("manifest.json", manifestPath);
         var loaded = await store.GetIngestionResultAsync(ingestionId, TestContext.Current.CancellationToken);
-        loaded.Should().NotBeNull();
-        loaded!.SourceDocumentId.Should().Be("abc123");
+        Assert.NotNull(loaded);
+        Assert.Equal("abc123", loaded!.SourceDocumentId);
     }
 
     [Fact]
@@ -87,15 +87,15 @@ public sealed class AzureBlobIngestionArchiveStoreTests
             uploadedAt,
             TestContext.Current.CancellationToken);
 
-        manifestPath.Should().EndWith("manifest.json");
+        Assert.EndsWith("manifest.json", manifestPath);
         var loaded = await store.GetRetailPricingResultAsync(ingestionId, TestContext.Current.CancellationToken);
-        loaded.Should().NotBeNull();
-        loaded!.SourceDocumentId.Should().Be("pricing-hash");
-        loaded.RawCatalogueRows.Should().HaveCount(1);
-        loaded.CataloguePrices.Should().HaveCount(1);
-        loaded.ManualPrices.Should().HaveCount(1);
-        loaded.RawManualEntries.Should().HaveCount(1);
-        loaded.ResolvedPrices.Should().HaveCount(1);
+        Assert.NotNull(loaded);
+        Assert.Equal("pricing-hash", loaded!.SourceDocumentId);
+        Assert.Single(loaded.RawCatalogueRows);
+        Assert.Single(loaded.CataloguePrices);
+        Assert.Single(loaded.ManualPrices);
+        Assert.Single(loaded.RawManualEntries);
+        Assert.Single(loaded.ResolvedPrices);
     }
 
     [Fact]
@@ -123,14 +123,14 @@ public sealed class AzureBlobIngestionArchiveStoreTests
             TestContext.Current.CancellationToken);
 
         var manifest = await DownloadManifestAsync(containerName, ingestionId, TestContext.Current.CancellationToken);
-        manifest.Blobs.Source.Should().Be(uploadedPath);
+        Assert.Equal(uploadedPath, manifest.Blobs.Source);
 
         // The blob at the manifest-recorded source path must actually exist.
         var blobServiceClient = AzureStorageTestSupport.CreateBlobServiceClient(AzureStorageTestSupport.GetConnectionString());
         var sourceBlob = blobServiceClient
             .GetBlobContainerClient(containerName)
             .GetBlobClient(manifest.Blobs.Source);
-        (await sourceBlob.ExistsAsync(TestContext.Current.CancellationToken)).Value.Should().BeTrue();
+        Assert.True((await sourceBlob.ExistsAsync(TestContext.Current.CancellationToken)).Value);
     }
 
     private static async Task<RetailPricingManifestDocument> DownloadManifestAsync(

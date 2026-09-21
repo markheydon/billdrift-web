@@ -2,7 +2,6 @@ using BillDrift.Application.Reconciliation;
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.ExceptionSurfacing;
 
@@ -17,9 +16,9 @@ public class ExceptionSurfacingServiceTests
     {
         var vm = _builder.SurfaceScenario("mixed-three-customers", runId: FixedRunId);
 
-        vm.Summary.TotalCount.Should().Be(vm.FlatExceptions().Count);
-        vm.Summary.BySeverity.Values.Sum().Should().Be(vm.Summary.TotalCount);
-        vm.Summary.RequiresActionNowCount.Should().BeGreaterThan(0);
+        Assert.Equal(vm.FlatExceptions().Count, vm.Summary.TotalCount);
+        Assert.Equal(vm.Summary.TotalCount, vm.Summary.BySeverity.Values.Sum());
+        Assert.True(vm.Summary.RequiresActionNowCount > 0);
     }
 
     [Fact]
@@ -27,9 +26,9 @@ public class ExceptionSurfacingServiceTests
     {
         var vm = _builder.SurfaceScenario("clean-run-empty", runId: FixedRunId);
 
-        vm.HasExceptions.Should().BeFalse();
-        vm.Summary.TotalCount.Should().Be(0);
-        vm.CustomerGroups.Should().BeEmpty();
+        Assert.False(vm.HasExceptions);
+        Assert.Equal(0, vm.Summary.TotalCount);
+        Assert.Empty(vm.CustomerGroups);
     }
 
     [Fact]
@@ -40,7 +39,7 @@ public class ExceptionSurfacingServiceTests
             FixedRunId);
 
         var exception = vm.FlatExceptions().Single(e => e.Category == ExceptionCategory.QuantityLicenceMismatch);
-        exception.ProposedChangeId.Should().NotBeNull();
+        Assert.NotNull(exception.ProposedChangeId);
     }
 
     [Fact]
@@ -50,6 +49,6 @@ public class ExceptionSurfacingServiceTests
 
         var flat = vm.FlatExceptions().Select(e => e.Id.Value).ToList();
         var grouped = vm.CustomerGroups.SelectMany(g => g.Exceptions).Select(e => e.Id.Value).ToList();
-        flat.Should().Equal(grouped);
+        Assert.Equal(grouped, flat);
     }
 }

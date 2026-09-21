@@ -1,7 +1,6 @@
 using BillDrift.Application.History;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.History;
 
@@ -14,7 +13,7 @@ public sealed class PricingDriftAnalyzerTests
     {
         var key = CommercialKey.Create(OfferId.Create("OFFER1"), SkuId.Create("SKU1"), Term.P1Y, BillingFrequency.Annual);
         var entries = _analyzer.Analyze(key, []);
-        entries.Should().BeEmpty();
+        Assert.Empty(entries);
     }
 
     [Fact]
@@ -27,6 +26,6 @@ public sealed class PricingDriftAnalyzerTests
         };
 
         var act = () => _analyzer.Analyze(key, runs);
-        act.Should().NotThrow();
+        Assert.Null(Record.Exception(act));
     }
 }

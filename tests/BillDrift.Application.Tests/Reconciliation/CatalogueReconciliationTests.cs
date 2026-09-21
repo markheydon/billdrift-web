@@ -1,6 +1,5 @@
 using BillDrift.Application.Reconciliation;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -16,8 +15,8 @@ public class CatalogueReconciliationTests
             ReconciliationInputsFixtureLoader.Load("catalogue-missing"),
             new ReconciliationOptions(ProposeCatalogueChanges: true)));
 
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.CatalogueMissing);
-        run.ProposedChanges.Should().Contain(p => p.ActionType == ProposedActionType.CreateOrUpdateCatalogueEntry);
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.CatalogueMissing);
+        Assert.Contains(run.ProposedChanges, p => p.ActionType == ProposedActionType.CreateOrUpdateCatalogueEntry);
     }
 
     [Fact]
@@ -30,6 +29,6 @@ public class CatalogueReconciliationTests
             ReconciliationInputsFixtureLoader.Load("price-mismatch"),
             new ReconciliationOptions(PriceTolerance: Money.Gbp(0))));
 
-        run.Mismatches.Should().Contain(m => m.Type == MismatchType.PriceMismatch);
+        Assert.Contains(run.Mismatches, m => m.Type == MismatchType.PriceMismatch);
     }
 }

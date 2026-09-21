@@ -2,7 +2,6 @@ using BillDrift.Application.Approval;
 using BillDrift.Domain.Approval;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Approval;
 
@@ -18,8 +17,8 @@ public sealed class ApprovedChangesetBuilderTests
 
         var changeset = builder.Build(runId, [approved, pending], "operator");
 
-        changeset.Entries.Should().HaveCount(1);
-        changeset.Entries[0].ProposalId.Should().Be(approved.Id);
+        var entry = Assert.Single(changeset.Entries);
+        Assert.Equal(approved.Id, entry.ProposalId);
     }
 
     [Fact]
@@ -44,7 +43,7 @@ public sealed class ApprovedChangesetBuilderTests
 
         var changeset = builder.Build(runId, [subscription, catalogue], "operator");
 
-        changeset.Entries[0].ActionType.Should().Be(ProposedActionType.CreateOrUpdateCatalogueEntry);
+        Assert.Equal(ProposedActionType.CreateOrUpdateCatalogueEntry, changeset.Entries[0].ActionType);
     }
 
     private static ApprovalProposal CreateProposal(

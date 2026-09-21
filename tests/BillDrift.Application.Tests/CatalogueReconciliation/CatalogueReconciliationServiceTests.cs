@@ -4,7 +4,6 @@ using BillDrift.Application.Mapping;
 using BillDrift.Application.Tests.Approval;
 using BillDrift.Infrastructure.CatalogueReconciliation;
 using BillDrift.Infrastructure.Ingestion;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.CatalogueReconciliation;
 
@@ -34,9 +33,9 @@ public sealed class CatalogueReconciliationServiceTests
                 inputs.ProductMappings),
             TestContext.Current.CancellationToken);
 
-        run.Exceptions.Should().BeEmpty();
-        run.Inputs.InputReferences.StripeIngestionRunId.Should().Be(stripeIngestionRunId);
-        run.Inputs.InputReferences.PricingIngestionRunId.Should().Be(pricingIngestionRunId);
+        Assert.Empty(run.Exceptions);
+        Assert.Equal(stripeIngestionRunId, run.Inputs.InputReferences.StripeIngestionRunId);
+        Assert.Equal(pricingIngestionRunId, run.Inputs.InputReferences.PricingIngestionRunId);
     }
 
     [Fact]
@@ -60,8 +59,8 @@ public sealed class CatalogueReconciliationServiceTests
                 inputs.ProductMappings),
             TestContext.Current.CancellationToken);
 
-        (await act.Should().ThrowAsync<CatalogueReconciliationValidationException>())
-            .Which.Message.Should().Contain(stripeIngestionRunId.ToString("D"));
+        var ex = await Assert.ThrowsAsync<CatalogueReconciliationValidationException>(act);
+        Assert.Contains(stripeIngestionRunId.ToString("D"), ex.Message);
     }
 
     [Fact]
@@ -91,7 +90,7 @@ public sealed class CatalogueReconciliationServiceTests
                 inputs.StripePrices),
             TestContext.Current.CancellationToken);
 
-        run.Exceptions.Should().BeEmpty();
+        Assert.Empty(run.Exceptions);
     }
 
     private static CatalogueReconciliationService CreateService(

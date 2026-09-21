@@ -5,7 +5,6 @@ using BillDrift.Application.Tests.Reconciliation;
 using BillDrift.Domain.Classification;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Classification;
 
@@ -48,7 +47,7 @@ public sealed class ClassificationIntegrationTests
             inputs,
             Classifications: classifications));
 
-        run.Mismatches.Should().NotContain(m => m.Type == MismatchType.MissingInStripe);
+        Assert.DoesNotContain(run.Mismatches, m => m.Type == MismatchType.MissingInStripe);
     }
 
     [Fact]
@@ -86,7 +85,7 @@ public sealed class ClassificationIntegrationTests
         var surfacing = new ExceptionSurfacingService();
         var viewModel = surfacing.Surface(run, options: null, classifications);
 
-        viewModel.FlatExceptions().Should().NotContain(e => e.Category == ExceptionCategory.MissingBillingItem);
+        Assert.DoesNotContain(viewModel.FlatExceptions(), e => e.Category == ExceptionCategory.MissingBillingItem);
     }
 
     [Fact]
@@ -108,11 +107,11 @@ public sealed class ClassificationIntegrationTests
             inputs,
             Classifications: classifications));
 
-        run.ProposedChanges.Should().BeEmpty();
+        Assert.Empty(run.ProposedChanges);
 
         var surfacing = new ExceptionSurfacingService();
         var viewModel = surfacing.Surface(run, options: null, classifications);
-        viewModel.FlatExceptions().Should().Contain(e => e.Category == ExceptionCategory.NonCspManualReview);
+        Assert.Contains(viewModel.FlatExceptions(), e => e.Category == ExceptionCategory.NonCspManualReview);
     }
 
     [Fact]
@@ -139,6 +138,6 @@ public sealed class ClassificationIntegrationTests
             cancellationToken);
 
         var stripeRef = ReconciliationItemRefFactory.FromStripeBillingItem(inputs.StripeItems[0]);
-        classifications.Get(stripeRef)!.Classification.Should().Be(ReconciliationItemClassification.CustomService);
+        Assert.Equal(ReconciliationItemClassification.CustomService, classifications.Get(stripeRef)!.Classification);
     }
 }

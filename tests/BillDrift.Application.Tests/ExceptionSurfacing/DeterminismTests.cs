@@ -1,6 +1,5 @@
 using BillDrift.Application.Reconciliation.ExceptionSurfacing;
 using BillDrift.Domain.Reconciliation;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.ExceptionSurfacing;
 
@@ -21,8 +20,8 @@ public class DeterminismTests
         var first = surfacing.Surface(run);
         var second = surfacing.Surface(run);
 
-        ExceptionViewModelComparer.AreEquivalent(first, second).Should().BeTrue();
-        first.GeneratedAt.Should().NotBe(second.GeneratedAt);
+        Assert.True(ExceptionViewModelComparer.AreEquivalent(first, second));
+        Assert.NotEqual(second.GeneratedAt, first.GeneratedAt);
     }
 
     [Fact]
@@ -36,6 +35,6 @@ public class DeterminismTests
         var ids1 = surfacing.Surface(run).FlatExceptions().Select(e => e.Id.Value).ToList();
         var ids2 = surfacing.Surface(run).FlatExceptions().Select(e => e.Id.Value).ToList();
 
-        ids1.Should().Equal(ids2);
+        Assert.Equal(ids2, ids1);
     }
 }

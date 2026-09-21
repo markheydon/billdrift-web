@@ -2,7 +2,6 @@ using BillDrift.Application.Classification;
 using BillDrift.Application.Tests.Reconciliation;
 using BillDrift.Domain.Classification;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Classification;
 
@@ -22,7 +21,7 @@ public sealed class ClassificationOverrideTests
         var itemRef = ReconciliationItemRefFactory.FromSupplierCostLine(inputs.SupplierCostLines[0]);
 
         var before = await service.ClassifyAsync(inputs, scope, cancellationToken);
-        before.Get(itemRef)!.Classification.Should().Be(ReconciliationItemClassification.NonCspSupplier);
+        Assert.Equal(ReconciliationItemClassification.NonCspSupplier, before.Get(itemRef)!.Classification);
 
         await service.ApplyOverrideAsync(new ClassificationOverride(
             itemRef,
@@ -33,8 +32,8 @@ public sealed class ClassificationOverrideTests
             cancellationToken);
 
         var after = await service.ClassifyAsync(inputs, scope, cancellationToken);
-        after.Get(itemRef)!.Classification.Should().Be(ReconciliationItemClassification.MicrosoftCsp);
-        after.Get(itemRef)!.Source.Should().Be(ClassificationSource.ManualOverride);
+        Assert.Equal(ReconciliationItemClassification.MicrosoftCsp, after.Get(itemRef)!.Classification);
+        Assert.Equal(ClassificationSource.ManualOverride, after.Get(itemRef)!.Source);
     }
 
     [Fact]
@@ -56,8 +55,8 @@ public sealed class ClassificationOverrideTests
             cancellationToken);
 
         var cleared = await service.ClearOverrideAsync(itemRef, "operator-1", inputs, scope, cancellationToken);
-        cleared.Source.Should().Be(ClassificationSource.Automatic);
-        cleared.Classification.Should().Be(ReconciliationItemClassification.NonCspSupplier);
+        Assert.Equal(ClassificationSource.Automatic, cleared.Source);
+        Assert.Equal(ReconciliationItemClassification.NonCspSupplier, cleared.Classification);
     }
 
     [Fact]
@@ -77,6 +76,6 @@ public sealed class ClassificationOverrideTests
             DateTimeOffset.UtcNow),
             cancellationToken);
 
-        await act.Should().ThrowAsync<DomainValidationException>();
+        await Assert.ThrowsAsync<DomainValidationException>(act);
     }
 }

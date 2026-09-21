@@ -25,8 +25,8 @@ public class StripeBillingCsvIngesterPerformanceTests
         var result = ingester.Ingest(request, TestContext.Current.CancellationToken);
         var elapsed = DateTimeOffset.UtcNow - started;
 
-        result.SubscriptionItems.Should().HaveCount(1000);
-        elapsed.Should().BeLessThan(TimeSpan.FromSeconds(60));
+        Assert.Equal(1000, result.SubscriptionItems.Count);
+        Assert.True(elapsed < TimeSpan.FromSeconds(60));
     }
 
     private static string BuildSyntheticSubscriptionsCsv(int rowCount)

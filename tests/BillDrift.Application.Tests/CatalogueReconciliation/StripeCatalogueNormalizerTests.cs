@@ -1,7 +1,6 @@
 using BillDrift.Application.CatalogueReconciliation;
 using BillDrift.Domain.Common;
 using BillDrift.Domain.Import.Stripe;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.CatalogueReconciliation;
 
@@ -25,7 +24,7 @@ public class StripeCatalogueNormalizerTests
 
         var prices = normalizer.NormalizePrices([raw]);
 
-        prices.Should().ContainSingle();
-        prices[0].UnitAmount.Amount.Should().Be(12m);
+        Assert.Single(prices);
+        Assert.Equal(12m, prices[0].UnitAmount.Amount);
     }
 }

@@ -1,7 +1,6 @@
 using BillDrift.Application.Reconciliation.Indexing;
 using BillDrift.Domain.Billing;
 using BillDrift.Domain.Common;
-using FluentAssertions;
 
 namespace BillDrift.Application.Tests.Reconciliation;
 
@@ -43,8 +42,8 @@ public class IntendedPriceIndexTests
 
         var index = IntendedPriceIndex.Build([catalogue, manual]);
 
-        index.TryGet(key, out var price).Should().BeTrue();
-        price!.Rrp.Amount.Should().Be(12m);
-        price.Source.Should().Be(PriceSource.ManualOverride);
+        Assert.True(index.TryGet(key, out var price));
+        Assert.Equal(12m, price!.Rrp.Amount);
+        Assert.Equal(PriceSource.ManualOverride, price.Source);
     }
 }
