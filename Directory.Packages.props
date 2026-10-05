@@ -4,12 +4,12 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Aspire -->
-    <PackageVersion Include="Aspire.Azure.Data.Tables" Version="13.5.4" />
-    <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="13.5.4" />
-    <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="13.5.4" />
+    <PackageVersion Include="Aspire.Azure.Data.Tables" Version="13.6.0" />
+    <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="13.6.0" />
+    <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="13.6.0" />
     <!-- Azure Storage -->
     <PackageVersion Include="Azure.Data.Tables" Version="12.13.0" />
-    <PackageVersion Include="Azure.Storage.Blobs" Version="12.29.2" />
+    <PackageVersion Include="Azure.Storage.Blobs" Version="12.30.0" />
     <!-- CSV -->
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
     <!-- PDF -->
