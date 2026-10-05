@@ -12,6 +12,14 @@ updates:
       - dependencies
     assignees:
       - markheydon
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - major
+          - minor
+          - patch
 
   - package-ecosystem: devcontainers
     directory: /
@@ -25,6 +33,13 @@ updates:
       - dependencies
     assignees:
       - markheydon
+    groups:
+      devcontainers:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
 
   - package-ecosystem: nuget
     directory: /
@@ -46,49 +61,48 @@ updates:
     groups:
       tests:
         patterns:
-          - xunit
-          - NSubstitute
+          - xunit*
+          - NSubstitute*
           - Microsoft.NET.Test.Sdk
-          - coverlet
+          - coverlet*
         update-types:
           - minor
           - patch
 
       microsoft-extensions:
         patterns:
-          - "^Microsoft\\.Extensions\\."
+          - Microsoft.Extensions.*
         update-types:
           - minor
           - patch
 
       azure:
         patterns:
-          - "^Azure\\."
-          - "^Microsoft\\.Azure\\."
-          - "^Aspire\\."
+          - Azure.*
+          - Microsoft.Azure.*
+          - Aspire.*
         update-types:
           - minor
           - patch
 
       opentelemetry:
         patterns:
-          - "^OpenTelemetry"
+          - OpenTelemetry.*
         update-types:
           - minor
           - patch
 
       analyzers:
         patterns:
-          - Analyzer$
-          - Analyzers$
-          - "^Microsoft\\.CodeAnalysis"
+          - "*Analyzers*"
+          - Microsoft.CodeAnalysis.*
         update-types:
           - minor
           - patch
 
-      minor-and-patch:
+      other:
         patterns:
-          - ".*"
+          - "*"
         update-types:
           - minor
           - patch
