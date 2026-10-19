@@ -1,6 +1,11 @@
 <Project>
   <PropertyGroup>
+    <!--
+      Central Package Management: declare versions here; projects use version-less PackageReference.
+      Transitive pinning lets us override vulnerable or mismatched transitive versions below.
+    -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
     <!-- Aspire -->
@@ -37,5 +42,11 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.20.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.20.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.20.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Transitive overrides (NU1902/NU1903); not referenced directly from projects -->
+    <PackageVersion Include="MessagePack" Version="2.5.307" />
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.13" />
   </ItemGroup>
 </Project>

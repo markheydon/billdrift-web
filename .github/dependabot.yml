@@ -8,16 +8,11 @@ updates:
       time: "04:00"
       timezone: Europe/London
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
-    assignees:
-      - markheydon
     groups:
       github-actions:
         patterns:
           - "*"
         update-types:
-          - major
           - minor
           - patch
 
@@ -29,12 +24,24 @@ updates:
       time: "04:00"
       timezone: Europe/London
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
-    assignees:
-      - markheydon
     groups:
       devcontainers:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: dotnet-sdk
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+      timezone: Europe/London
+    open-pull-requests-limit: 2
+    groups:
+      dotnet-sdk:
         patterns:
           - "*"
         update-types:
@@ -49,10 +56,6 @@ updates:
       time: "04:00"
       timezone: Europe/London
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
-    assignees:
-      - markheydon
     ignore:
       # Microsoft.OpenApi 3.x is not compatible with ASP.NET Core 10; stay on 2.x until a future ASP.NET release.
       - dependency-name: Microsoft.OpenApi
@@ -68,14 +71,12 @@ updates:
         update-types:
           - minor
           - patch
-
       microsoft-extensions:
         patterns:
           - Microsoft.Extensions.*
         update-types:
           - minor
           - patch
-
       azure:
         patterns:
           - Azure.*
@@ -84,14 +85,12 @@ updates:
         update-types:
           - minor
           - patch
-
       opentelemetry:
         patterns:
           - OpenTelemetry.*
         update-types:
           - minor
           - patch
-
       analyzers:
         patterns:
           - "*Analyzers*"
@@ -99,7 +98,6 @@ updates:
         update-types:
           - minor
           - patch
-
       other:
         patterns:
           - "*"
