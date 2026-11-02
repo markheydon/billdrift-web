@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Text;
 using BillDrift.Application.Import;
 using CsvHelper;
-using CsvHelper.Configuration;
 
 namespace BillDrift.Infrastructure.Import.Giacom.RetailPricing;
 
@@ -34,36 +33,27 @@ internal sealed class ResellerPricingCsvRowReader
         using var stream = new MemoryStream(content);
         using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
 
-        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        var options = new CsvReaderOptions
         {
-            HasHeaderRecord = true,
-            MissingFieldFound = null,
-            BadDataFound = null,
-            TrimOptions = TrimOptions.Trim,
-            IgnoreBlankLines = true
+            HasHeader = true,
+            TrimWhitespace = true,
+            SkipEmptyLines = true,
+            FormatProvider = CultureInfo.InvariantCulture
         };
 
-        using var csv = new CsvReader(reader, config);
-        if (!csv.Read() || !csv.ReadHeader())
-        {
-            return new ResellerPricingCsvReadResult
-            {
-                FileFailure = IngestionFailureReason.MandatoryHeaderMissing,
-                FailureMessage = "CSV file has no header row."
-            };
-        }
+        using var csv = CsvReader.Create(reader, options);
 
-        var headers = csv.HeaderRecord?
+        var headers = csv.Headers
             .Where(h => !string.IsNullOrWhiteSpace(h))
             .Select(h => h.Trim())
-            .ToList() ?? [];
+            .ToList();
 
         if (headers.Count == 0)
         {
             return new ResellerPricingCsvReadResult
             {
                 FileFailure = IngestionFailureReason.MandatoryHeaderMissing,
-                FailureMessage = "CSV header row is empty."
+                FailureMessage = "CSV file has no header row."
             };
         }
 
@@ -86,7 +76,7 @@ internal sealed class ResellerPricingCsvRowReader
             var row = new Dictionary<string, string>(StringComparer.Ordinal);
             foreach (var header in headers)
             {
-                row[header] = csv.GetField(header) ?? string.Empty;
+                row[header] = csv.GetString(header);
             }
 
             if (row.Values.All(string.IsNullOrWhiteSpace))
