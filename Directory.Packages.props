@@ -11,6 +11,7 @@
     <!-- Aspire -->
     <PackageVersion Include="Aspire.Azure.Data.Tables" Version="13.6.4" />
     <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="13.6.4" />
+    <PackageVersion Include="Aspire.Hosting" Version="13.6.5" />
     <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="13.6.4" />
     <!-- Azure Storage -->
     <PackageVersion Include="Azure.Data.Tables" Version="12.13.0" />
