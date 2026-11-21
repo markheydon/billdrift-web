@@ -1,45 +1,5 @@
 version: 2
 updates:
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-      time: "04:00"
-      timezone: Europe/London
-    open-pull-requests-limit: 5
-    assignees:
-      - markheydon
-    labels:
-      - dependencies
-    groups:
-      github-actions:
-        patterns:
-          - "*"
-        update-types:
-          - minor
-          - patch
-
-  - package-ecosystem: devcontainers
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-      time: "04:00"
-      timezone: Europe/London
-    open-pull-requests-limit: 5
-    assignees:
-      - markheydon
-    labels:
-      - dependencies
-    groups:
-      devcontainers:
-        patterns:
-          - "*"
-        update-types:
-          - minor
-          - patch
-
   - package-ecosystem: nuget
     directory: /
     schedule:
@@ -56,9 +16,7 @@ updates:
       - dependency-name: "Microsoft.Extensions.*"
         update-types:
           - version-update:semver-major
-    ignore:
-      # Microsoft.OpenApi 3.x is not compatible with ASP.NET Core 10; stay on 2.x until a future ASP.NET release.
-      - dependency-name: Microsoft.OpenApi
+      - dependency-name: "Aspire.*"
         update-types:
           - version-update:semver-major
     groups:
@@ -77,11 +35,16 @@ updates:
         update-types:
           - minor
           - patch
+      aspire:
+        patterns:
+          - Aspire.*
+        update-types:
+          - minor
+          - patch
       azure:
         patterns:
           - Azure.*
           - Microsoft.Azure.*
-          - Aspire.*
         update-types:
           - minor
           - patch
@@ -99,6 +62,47 @@ updates:
           - minor
           - patch
       other:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+      timezone: Europe/London
+    open-pull-requests-limit: 5
+    assignees:
+      - markheydon
+    labels:
+      - dependencies
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - major
+          - minor
+          - patch
+
+  - package-ecosystem: devcontainers
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+      timezone: Europe/London
+    open-pull-requests-limit: 5
+    assignees:
+      - markheydon
+    labels:
+      - dependencies
+    groups:
+      devcontainers:
         patterns:
           - "*"
         update-types:
